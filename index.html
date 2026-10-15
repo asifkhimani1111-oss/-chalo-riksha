@@ -40,7 +40,7 @@
             font-weight: bold;
             color: #34495e;
         }
-        select {
+        select, input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -48,14 +48,6 @@
             font-size: 16px;
             box-sizing: border-box;
             background-color: #fff;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 16px;
-            box-sizing: border-box;
         }
         .btn {
             background-color: #25D366;
@@ -98,7 +90,7 @@
     </div>
 
     <div class="form-group">
-        <label for="pickup">ક્યાંથી બેસવું છે? (Pickup):</label>
+        <label for="pickup">ક્યાંથી બેસવું છે? (પિકઅપ):</label>
         <select id="pickup" onchange="calculateFare()">
             <option value="">-- પિકઅપ લોકેશન પસંદ કરો --</option>
             <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
@@ -110,7 +102,7 @@
     </div>
 
     <div class="form-group">
-        <label for="drop">ક્યાં જવું છે? (Drop):</label>
+        <label for="drop">ક્યાં જવું છે? (ડ્રોપ):</label>
         <select id="drop" onchange="calculateFare()">
             <option value="">-- ડ્રોપ લોકેશન પસંદ કરો --</option>
             <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
@@ -126,7 +118,7 @@
         અંદાજિત ભાડું: ₹<span id="totalFare">0</span>
     </div>
 
-    <button class="btn" onclick="bookOnWhatsApp()">💬 WhatsApp પર બુક કરો</button>
+    <button class="btn" onclick="bookOnWhatsApp()">💬 વોટ્સએપ પર બુક કરો</button>
 </div>
 
 <script>
@@ -148,8 +140,7 @@
             return;
         }
 
-        // અહીં લોકેશન મુજબ અંદાજિત કિમી સેટ કરેલા છે
-        let distance = 2; // ડિફોલ્ટ 2 કિમી
+        let distance = 2; 
         if ((pickup === 'સ્વામિનારાયણ મંદિર' && drop === 'બસ સ્ટેન્ડ') || (pickup === 'બસ સ્ટેન્ડ' && drop === 'સ્વામિનારાયણ મંદિર')) {
             distance = 1.5;
         } else if ((pickup === 'હોસ્પિટલ રોડ' && drop === 'ગઢડા બાયપાસ') || (pickup === 'ગઢડા બાયપાસ' && drop === 'હોસ્પિટલ રોડ')) {
@@ -182,7 +173,7 @@
             return;
         }
 
-        let myWhatsAppNumber = "919426852334"; // તારો વોટ્સએપ નંબર
+        let myWhatsAppNumber = "919426852334"; 
 
         let message = `🛺 *નવી રિક્ષા બુકિંગ*\n\n` +
                       `👤 નામ: ${name}\n` +
