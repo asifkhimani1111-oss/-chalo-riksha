@@ -123,9 +123,29 @@
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
+            margin-bottom: 10px;
         }
         .btn:hover {
             background-color: #128C7E;
+        }
+        .driver-list-item {
+            background: #fdfefe;
+            border: 1px solid #d5dbdb;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .call-btn {
+            background-color: #3498db;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -135,7 +155,7 @@
     <!-- ટેબ બટન્સ -->
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('passenger')">મુસાફર</button>
-        <button class="tab-btn" onclick="switchTab('driver')">ડ્રાઈવર</button>
+        <button class="tab-btn" onclick="switchTab('driver')">ડ્રાઈવરો</button>
         <button class="tab-btn" onclick="switchTab('admin')">એડમિન</button>
     </div>
 
@@ -175,7 +195,7 @@
         <div class="info-grid">
             <div class="info-card">
                 <span>અંદાજિત અંતર</span>
-                <strong id="totalDist">1.5 km</strong>
+                <strong id="totalDist">0 km</strong>
             </div>
             <div class="info-card">
                 <span>प्रति किमी दर</span>
@@ -186,7 +206,7 @@
         <div class="info-grid">
             <div class="info-card">
                 <span>સમય</span>
-                <strong>~6 મિનિટ</strong>
+                <strong id="totalTime">~0 મિનિટ</strong>
             </div>
         </div>
 
@@ -197,28 +217,41 @@
             </div>
             <div class="fare-row">
                 <span>અંદાજિત ભાડું</span>
-                <span id="calcFare">₹42.5</span>
-            </div>
-            <div class="fare-row">
-                <span>ગ્રાહક બુકિંગ ફી</span>
-                <span>₹0</span>
+                <span id="calcFare">₹20</span>
             </div>
             <div class="fare-row total">
                 <span>ફુલ અંદાજ</span>
-                <span id="totalFare">₹42.5</span>
+                <span id="totalFare">₹20</span>
             </div>
         </div>
 
         <button class="btn" onclick="bookOnWhatsApp()">💬 વોટ્સએપ પર બુક કરો</button>
     </div>
 
-    <!-- ડ્રાઈવર સેક્શન -->
+    <!-- ડ્રાઈવર લિસ્ટ સેક્શન -->
     <div id="driver-section" class="section">
-        <h3>ડ્રાઈવર ડેશબોર્ડ</h3>
-        <p>અહીં ડ્રાઈવર પોતાની ઉપલબ્ધતા અને રાઈડ ચેક કરી શકશે.</p>
-        <div class="form-group">
-            <label>ડ્રાઈવર લિસ્ટ:</label>
-            <input type="text" value="સિક્કા ભાઈ, સદ્દામ ભાઈ, યુનુસ ભાઈ, ગફૂર मामा..." readonly>
+        <h3>ઓનલાઈન રિક્ષા ડ્રાઈવરો</h3>
+        <p style="font-size: 13px; color: #666;">મુસાફર સીધા કોલ કરીને ડ્રાઈવરનો સંપર્ક કરી શકે છે:</p>
+
+        <div class="driver-list-item">
+            <div><strong>સિક્કા ભાઈ</strong><br><small>રિક્ષા: GJ-14-1111</small></div>
+            <a href="tel:9426852334" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-list-item">
+            <div><strong>સદ્દામ ભાઈ</strong><br><small>રિક્ષા: GJ-14-2222</small></div>
+            <a href="tel:9426852334" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-list-item">
+            <div><strong>યુનુસ ભાઈ</strong><br><small>રિક્ષા: GJ-14-3333</small></div>
+            <a href="tel:9426852334" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-list-item">
+            <div><strong>ગફૂર मामा</strong><br><small>રિક્ષા: GJ-14-4444</small></div>
+            <a href="tel:9426852334" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-list-item">
+            <div><strong>અન્ય ડ્રાઈવર ભાઈ</strong><br><small>રિક્ષા: GJ-14-5555</small></div>
+            <a href="tel:9426852334" class="call-btn">📞 કોલ કરો</a>
         </div>
     </div>
 
@@ -226,15 +259,13 @@
     <div id="admin-section" class="section">
         <h3>એડમિન કંટ્રોલ પેનલ</h3>
         <div class="form-group">
-            <label>ડ્રાઈવર ફાળવો (સાત ઓરિજિનલ ડ્રાઈવર):</label>
+            <label>ડ્રાઈવર ફાળવો:</label>
             <select id="assignedDriver">
-                <option value="સિક્કા ભાઈ">સિક્કા ભાઈ</option>
-                <option value="સદ્દામ ભાઈ">સદ્દામ ભાઈ</option>
-                <option value="યુનુસ ભાઈ">યુનુસ ભાઈ</option>
-                <option value="ગફૂર मामा">ગફૂર मामा</option>
-                <option value="ડ્રાઈવર 5">ડ્રાઈવર 5 (નામ ઉમેરો)</option>
-                <option value="ડ્રાઈવર 6">ડ્રાઈવર 6 (નામ ઉમેરો)</option>
-                <option value="ડ્રાઈવર 7">ડ્રાઈવર 7 (નામ ઉમેરો)</option>
+                <option value="સિક્કા ભાઈ (GJ-14-1111)">સિક્કા ભાઈ</option>
+                <option value="સદ્દામ ભાઈ (GJ-14-2222)">સદ્દામ ભાઈ</option>
+                <option value="યુનુસ ભાઈ (GJ-14-3333)">યુનુસ ભાઈ</option>
+                <option value="ગફૂર मामा (GJ-14-4444)">ગફૂર मामा</option>
+                <option value="અન્ય ડ્રાઈવર (GJ-14-5555)">અન્ય ડ્રાઈવર</option>
             </select>
         </div>
         <div class="form-group">
@@ -269,16 +300,35 @@
 
         if (pickup === drop) {
             alert('પિકઅપ અને ડ્રોપ સ્થળ અલગ હોવા જોઈએ!');
+            document.getElementById('totalDist').innerText = '0 km';
+            document.getElementById('totalTime').innerText = '~0 મિનિટ';
+            document.getElementById('calcFare').innerText = '₹20';
+            document.getElementById('totalFare').innerText = '₹20';
             return;
         }
 
-        let dist = 1.5;
-        if (pickup !== drop) {
-            dist = 2.0;
+        // લોકેશન મુજબ અલગ-અલગ કિમી અને સમય સેટ કર્યો છે
+        let dist = 2.0;
+        let time = 7;
+
+        if ((pickup === 'ગઢડા બસ સ્ટેન્ડ' && drop === 'ગોપીનાથજી મંદિર') || (pickup === 'ગોપીનાથજી મંદિર' && drop === 'ગઢડા બસ સ્ટેન્ડ')) {
+            dist = 1.5;
+            time = 5;
+        } else if ((pickup === 'સ્વામિનારાયણ મંદિર' && drop === 'હોસ્પિટલ રોડ') || (pickup === 'હોસ્પિટલ રોડ' && drop === 'સ્વામિનારાયણ મંદિર')) {
+            dist = 2.5;
+            time = 8;
+        } else if ((pickup === 'માર્કેટિંગ યાર્ડ' && drop === 'ગઢડા બસ સ્ટેન્ડ') || (pickup === 'ગઢડા બસ સ્ટેન્ડ' && drop === 'માર્કેટિંગ યાર્ડ')) {
+            dist = 3.0;
+            time = 10;
+        } else {
+            dist = 2.2;
+            time = 7;
         }
+
         let fare = 20 + (dist * 15);
 
         document.getElementById('totalDist').innerText = dist + ' km';
+        document.getElementById('totalTime').innerText = '~' + time + ' મિનિટ';
         document.getElementById('calcFare').innerText = '₹' + fare;
         document.getElementById('totalFare').innerText = '₹' + fare;
     }
@@ -287,6 +337,7 @@
         let name = document.getElementById('passengerName').value.trim();
         let pickup = document.getElementById('pickup').value;
         let drop = document.getElementById('drop').value;
+        let dist = document.getElementById('totalDist').innerText;
         let totalFare = document.getElementById('totalFare').innerText;
         let driver = document.getElementById('assignedDriver').value;
         let adminNum = document.getElementById('adminNumber').value;
@@ -300,6 +351,7 @@
                       `👤 મુસાફર: ${name}\n` +
                       `📍 પિકઅપ: ${pickup}\n` +
                       `🏁 ડ્રોપ: ${drop}\n` +
+                      `📏 અંતર: ${dist}\n` +
                       `💰 ફુલ અંદાજ: ${totalFare}\n` +
                       `🛺 ફાળવેલ ડ્રાઈવર: ${driver}`;
 
