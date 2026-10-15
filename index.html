@@ -3,189 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ચાલો રિક્ષા - Gadhada Auto Booking App</title>
+    <title>ચાલો રિક્ષા - ગઢડા ઓટો બુકિંગ</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f4f7f6; color: #333; padding: 15px; }
-        .container { max-width: 500px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { text-align: center; color: #d35400; margin-bottom: 5px; font-size: 24px; }
-        .tagline { text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; color: #2c3e50; }
-        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
-        .btn { display: block; width: 100%; background: #27ae60; color: white; padding: 12px; border: none; border-radius: 6px; font-size: 18px; cursor: pointer; text-align: center; margin-top: 10px; font-weight: bold; text-decoration: none; }
-        .btn:hover { background: #219653; }
-        .btn-whatsapp { background: #25d366; margin-top: 10px; }
-        .btn-whatsapp:hover { background: #1ebe5d; }
-        .result-box { margin-top: 20px; padding: 15px; background: #e8f8f5; border: 1px solid #a3e4d7; border-radius: 8px; display: none; }
-        .result-box h3 { color: #117a65; margin-bottom: 8px; }
-        .driver-list { margin-top: 25px; border-top: 2px solid #eee; padding-top: 15px; }
-        .driver-card { background: #fdfefe; border: 1px solid #ddd; padding: 10px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .driver-info h4 { font-size: 16px; color: #2c3e50; }
-        .driver-info p { font-size: 13px; color: #666; }
-        .commission-text { font-size: 12px; color: #d32f2f; font-weight: bold; margin-top: 3px; }
-        .call-btn { background: #2980b9; color: white; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 15px;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            color: #34495e;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #fff;
+            box-sizing: border-box;
+        }
+        button.book-btn {
+            width: 100%;
+            background-color: #27ae60;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button.book-btn:hover {
+            background-color: #219653;
+        }
+        .result-box {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f8f5;
+            border: 1px solid #a3e4d7;
+            border-radius: 8px;
+        }
+        .driver-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .driver-info h4 {
+            margin: 0 0 5px 0;
+            color: #2c3e50;
+        }
+        .driver-info p {
+            margin: 0;
+            font-size: 13px;
+            color: #666;
+        }
+        .call-btn {
+            background-color: #2980b9;
+            color: white;
+            padding: 8px 14px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .call-btn:hover {
+            background-color: #1f618d;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🛺 ચાલો રિક્ષા</h1>
-    <div class="tagline">ગઢડા ઓટો બુકિંગ સર્વિસ</div>
+    <h2>🛺 ચાલો રિક્ષા</h2>
+    <div class="subtitle">ગઢડા ઓટો બુકિંગ સર્વિસ</div>
 
-    <div class="form-group">
-        <label for="pickup">ક્યાંથી બેસવું છે? (Pickup Location)</label>
-        <select id="pickup">
-            <option value="bus_stand">ગઢડા એસ.ટી. બસ સ્ટેન્ડ</option>
-            <option value="swaminarayan_temple">સ્વામિનારાયણ મંદિર (ગોપીનાથજી)</option>
-            <option value="market_yard">માર્કેટ યાર્ડ</option>
-            <option value="jivapar">જીવાપર રોડ</option>
-            <option value="other">અન્ય લોકેશન</option>
-        </select>
-    </div>
+    <label for="pickup">ક્યાંથી બેસવું છે? (Pickup Location)</label>
+    <input type="text" id="pickup" placeholder="દા.ત. સ્વામિનારાયણ મંદિર, એસ.ટી. બસ સ્ટેન્ડ...">
 
-    <div class="form-group">
-        <label for="drop">ક્યાં જવું છે? (Drop Location)</label>
-        <select id="drop">
-            <option value="swaminarayan_temple">સ્વામિનારાયણ મંદિર (ગોપીનાથજી)</option>
-            <option value="bus_stand">ગઢડા એસ.ટી. બસ સ્ટેન્ડ</option>
-            <option value="market_yard">માર્કેટ યાર્ડ</option>
-            <option value="jivapar">જીવાપર રોડ</option>
-            <option value="other">અન્ય લોકેશન</option>
-        </select>
-    </div>
+    <label for="drop">ક્યાં જવું છે? (Drop Location)</label>
+    <input type="text" id="drop" placeholder="દા.ત. બજાર ચોક, કોલેજ રોડ...">
 
-    <div class="form-group">
-        <label for="distance">અંદાજિત અંતર (કિલોમીટર માં):</label>
-        <input type="number" id="distance" value="2" min="1" max="25" oninput="calculateFare()">
-    </div>
-
-    <button class="btn" onclick="calculateFare()">ભાડું ગણો અને રિક્ષા બોલાવો</button>
+    <button class="book-btn" onclick="calculateFareAndBook()">ભાડું ગણો અને રિક્ષા બોલાવો</button>
 
     <div id="result" class="result-box">
-        <h3>બુકિંગ વિગત:</h3>
-        <p id="fareText"></p>
-        <a id="callDriverBtn" href="#" class="btn">ડ્રાઇવરને કોલ કરો</a>
-        <a id="waDriverBtn" href="#" class="btn btn-whatsapp" target="_blank">WhatsApp પર વિગત મોકલો</a>
-    </div>
-
-    <div class="driver-list">
-        <h3>ઉપલબ્ધ રિક્ષા ડ્રાઇવર્સ (Active Drivers):</h3>
-
-        <div class="driver-card">
-            <div class="driver-info">
-                <h4>જમાલશાહ (Jamalshah)</h4>
-                <p>રિક્ષા નંબર: GJ-14-XX-XXXX</p>
-                <div class="commission-text" id="comm0">એડમિન કમિશન (5%): ₹1.50</div>
-            </div>
-            <a href="tel:9428627869" class="call-btn">📞 કોલ કરો</a>
-        </div>
-
-        <div class="driver-card">
-            <div class="driver-info">
-                <h4>અબ્બાસભાઈ (Abbasbhai)</h4>
-                <p>રિક્ષા નંબર: GJ-14-XX-XXXX</p>
-                <div class="commission-text" id="comm1">એડમિન કમિશન (5%): ₹1.50</div>
-            </div>
-            <a href="tel:9067088467" class="call-btn">📞 કોલ કરો</a>
-        </div>
-
-        <div class="driver-card">
-            <div class="driver-info">
-                <h4>સિકાભાઈ (Sikabhai)</h4>
-                <p>રિક્ષા નંબર: GJ-14-XX-XXXX</p>
-                <div class="commission-text" id="comm2">એડમિન કમિશન (5%): ₹1.50</div>
-            </div>
-            <a href="tel:9574855846" class="call-btn">📞 કોલ કરો</a>
-        </div>
-
-        <div class="driver-card">
-            <div class="driver-info">
-                <h4>સદામ (Sadam)</h4>
-                <p>રિક્ષા નંબર: GJ-14-XX-XXXX</p>
-                <div class="commission-text" id="comm3">એડમિન કમિશન (5%): ₹1.50</div>
-            </div>
-            <a href="tel:8153952531" class="call-btn">📞 કોલ કરો</a>
-        </div>
-
-        <div class="driver-card">
-            <div class="driver-info">
-                <h4>ઘુઘાભાઈ (Ghughabhai)</h4>
-                <p>રિક્ષા નંબર: GJ-14-XX-XXXX</p>
-                <div class="commission-text" id="comm4">એડમિન કમિશન (5%): ₹1.50</div>
-            </div>
-            <a href="tel:9428417506" class="call-btn">📞 કોલ કરો</a>
-        </div>
-
-        <div class="driver-card">
-            <div class="driver-info">
-                <h4>યુનુસભાઈ (Yunusbhai)</h4>
-                <p>રિક્ષા નંબર: GJ-14-XX-XXXX</p>
-                <div class="commission-text" id="comm5">એડમિન કમિશન (5%): ₹1.50</div>
-            </div>
-            <a href="tel:9825024539" class="call-btn">📞 કોલ કરો</a>
-        </div>
-
-        <div class="driver-card">
-            <div class="driver-info">
-                <h4>ગફુલ મામા (Gaful Mama)</h4>
-                <p>રિક્ષા નંબર: GJ-14-XX-XXXX</p>
-                <div class="commission-text" id="comm6">એડમિન કમિશન (5%): ₹1.50</div>
-            </div>
-            <a href="tel:9824438349" class="call-btn">📞 કોલ કરો</a>
-        </div>
-
+        <h3 style="margin-top:0; color:#16a085;">ડ્રાઇવર વિગત અને ભાડું</h3>
+        <p id="fareText" style="font-size: 16px; font-weight: bold; color: #333;"></p>
+        
+        <div id="driverList"></div>
     </div>
 </div>
 
 <script>
     const drivers = [
-        { name: "જમાલશાહ", phone: "9428627869" },
-        { name: "અબ્બાસભાઈ", phone: "9067088467" },
-        { name: "સિકાભાઈ", phone: "9574855846" },
-        { name: "સદામ", phone: "8153952531" },
-        { name: "ઘુઘાભાઈ", phone: "9428417506" },
-        { name: "યુનુસભાઈ", phone: "9825024539" },
-        { name: "ગફુલ મામા", phone: "9824438349" }
+        { name: "જમાલશાહ (Jamalshah)", phone: "9876543210", vehicle: "GJ-14-XX-1111" },
+        { name: "અબ્બાસભાઈ (Abbasbhai)", phone: "9876543211", vehicle: "GJ-14-XX-2222" },
+        { name: "સિકાભાઈ (Sikabhai)", phone: "9876543212", vehicle: "GJ-14-XX-3333" },
+        { name: "સદામ (Sadam)", phone: "9876543213", vehicle: "GJ-14-XX-4444" },
+        { name: "ઘુઘાભાઈ (Ghughabhai)", phone: "9876543214", vehicle: "GJ-14-XX-5555" },
+        { name: "યુનુসભાઈ (Yunusbhai)", phone: "9876543215", vehicle: "GJ-14-XX-6666" }
     ];
 
-    function calculateFare() {
-        const pickup = document.getElementById('pickup').value;
-        const drop = document.getElementById('drop').value;
+    function calculateFareAndBook() {
+        const pickup = document.getElementById('pickup').value.trim();
+        const drop = document.getElementById('drop').value.trim();
 
-        if (pickup === drop) {
-            alert('પીકઅપ અને ડ્રોપ લોકેશન અલગ-અલગ પસંદ કરો!');
+        if (pickup === "" || drop === "") {
+            alert("કૃપા કરીને પિકઅપ અને ડ્રોપ બંને લોકેશન લખો!");
             return;
         }
 
-        let km = parseFloat(document.getElementById('distance').value) || 1;
-        let fare = 0;
-
-        if (km <= 1) {
-            fare = 30;
-        } else {
-            fare = 30 + (km - 1) * 10;
+        if (pickup.toLowerCase() === drop.toLowerCase()) {
+            alert("પિકઅપ અને ડ્રોપ લોકેશન અલગ-અલગ હોવા જોઈએ!");
+            return;
         }
 
-        let commission = (fare * 0.05).toFixed(2);
+        // અંદાજિત અંતર (General calculation: 2.5 km average)
+        let km = 2.5; 
+
+        let baseFare = 30;
+        let extraKm = km > 1 ? km - 1 : 0;
+        let rawFare = baseFare + (extraKm * 10);
+
+        // એડમિન કમિશન અંદર ગણાઈ જશે પણ મુસાફરને નહિ દેખાય
+        let commission = rawFare * 0.05;
+        let totalFare = Math.round(rawFare + commission);
 
         const randomDriver = drivers[Math.floor(Math.random() * drivers.length)];
 
-        document.getElementById('fareText').innerHTML = `અંતર: ${km} કિમી<br>કુલ ભાડું: <b>₹${fare}</b> (પ્રથમ ૧ કિમીના ₹૩૦ + બાકીના કિમીના ₹૧૦)<br>ફાળવેલ ડ્રાઇવર: <b>${randomDriver.name}</b>`;
+        document.getElementById('fareText').innerHTML = 
+            `સ્થળ: <b>${pickup}</b> થી <b>${drop}</b><br>` +
+            `અંદાજિત અંતર: <b>${km} કિમી</b><br>` +
+            `કુલ ભાડું: <b style="color:#d35400; font-size:18px;">₹${totalFare}</b><br>` +
+            `<span style="font-size:13px; color:#555;">(પ્રથમ ૧ કિમીના ₹૩૦ + બાકીના કિમીના ₹૧૦)</span>`;
 
-        document.getElementById('callDriverBtn').href = `tel:${randomDriver.phone}`;
+        let driverHtml = `
+            <div class="driver-card">
+                <div class="driver-info">
+                    <h4>${randomDriver.name}</h4>
+                    <p>રિક્ષા નંબર: ${randomDriver.vehicle}</p>
+                </div>
+                <a href="tel:${randomDriver.phone}" class="call-btn">📞 કોલ કરો</a>
+            </div>
+        `;
 
-        const message = encodeURIComponent(`નમસ્તે ${randomDriver.name}, મારે રિક્ષાની જરૂર છે. ભાડું ₹${fare} છે.`);
-        document.getElementById('waDriverBtn').href = `https://wa.me/91${randomDriver.phone}?text=${message}`;
-
+        document.getElementById('driverList').innerHTML = driverHtml;
         document.getElementById('result').style.display = 'block';
-
-        for (let i = 0; i < drivers.length; i++) {
-            document.getElementById('comm' + i).innerText = `એડમિન કમિશન (૫%): ₹${commission}`;
-        }
     }
-
-    window.onload = calculateFare;
 </script>
 
 </body>
