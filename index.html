@@ -40,7 +40,16 @@
             font-weight: bold;
             color: #34495e;
         }
-        input, select {
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+        input {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -85,25 +94,35 @@
 
     <div class="form-group">
         <label for="passengerName">મુસાફરનું નામ:</label>
-        <input type="text" id="passengerName" placeholder="તમારું નામ લખੋ">
+        <input type="text" id="passengerName" placeholder="તમારું નામ લખો">
     </div>
 
     <div class="form-group">
         <label for="pickup">ક્યાંથી બેસવું છે? (Pickup):</label>
-        <input type="text" id="pickup" placeholder="ઉદા. સ્વામિનારાયણ મંદિર">
+        <select id="pickup" onchange="calculateFare()">
+            <option value="">-- પિકઅપ લોકેશન પસંદ કરો --</option>
+            <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
+            <option value="બસ સ્ટેન્ડ">બસ સ્ટેન્ડ</option>
+            <option value="હોસ્પિટલ રોડ">હોસ્પિટલ રોડ</option>
+            <option value="માર્કેટિંગ યાર્ડ">માર્કેટિંગ યાર્ડ</option>
+            <option value="ગઢડા બાયપાસ">ગઢડા બાયપાસ</option>
+        </select>
     </div>
 
     <div class="form-group">
         <label for="drop">ક્યાં જવું છે? (Drop):</label>
-        <input type="text" id="drop" placeholder="ઉદા. બસ સ્ટેન્ડ">
-    </div>
-
-    <div class="form-group">
-        <label for="distance">અંદાજિત અંતર (કિમી માં):</label>
-        <input type="number" id="distance" placeholder="અંતર લખો (દા.ત. 3)" oninput="calculateFare()">
+        <select id="drop" onchange="calculateFare()">
+            <option value="">-- ડ્રોપ લોકેશન પસંદ કરો --</option>
+            <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
+            <option value="બસ સ્ટેન્ડ">બસ સ્ટેન્ડ</option>
+            <option value="હોસ્પિટલ રોડ">હોસ્પિટલ રોડ</option>
+            <option value="માર્કેટિંગ યાર્ડ">માર્કેટિંગ યાર્ડ</option>
+            <option value="ગઢડા બાયપાસ">ગઢડા બાયપાસ</option>
+        </select>
     </div>
 
     <div class="fare-box" id="fareDisplay">
+        અંદાજિત અંતર: <span id="totalDist">0</span> કિમી<br>
         અંદાજિત ભાડું: ₹<span id="totalFare">0</span>
     </div>
 
@@ -112,40 +131,58 @@
 
 <script>
     function calculateFare() {
-        let dist = parseFloat(document.getElementById('distance').value);
+        let pickup = document.getElementById('pickup').value;
+        let drop = document.getElementById('drop').value;
         let fareDisplay = document.getElementById('fareDisplay');
         let totalFareSpan = document.getElementById('totalFare');
+        let totalDistSpan = document.getElementById('totalDist');
 
-        if (isNaN(dist) || dist <= 0) {
+        if (!pickup || !drop) {
             fareDisplay.style.display = 'none';
             return;
         }
 
-        let fare = 0;
-        if (dist <= 1) {
-            fare = 30; // પહેલા 1 કિમીના ₹30
-        } else {
-            fare = 30 + (dist - 1) * 10; // પછીના દરેક કિમીના ₹10
+        if (pickup === drop) {
+            alert('પિકઅપ અને ડ્રોપ લોકેશન અલગ-અલગ હોવા જોઈએ!');
+            fareDisplay.style.display = 'none';
+            return;
         }
 
+        // અહીં લોકેશન મુજબ અંદાજિત કિમી સેટ કરેલા છે
+        let distance = 2; // ડિફોલ્ટ 2 કિમી
+        if ((pickup === 'સ્વામિનારાયણ મંદિર' && drop === 'બસ સ્ટેન્ડ') || (pickup === 'બસ સ્ટેન્ડ' && drop === 'સ્વામિનારાયણ મંદિર')) {
+            distance = 1.5;
+        } else if ((pickup === 'હોસ્પિટલ રોડ' && drop === 'ગઢડા બાયપાસ') || (pickup === 'ગઢડા બાયપાસ' && drop === 'હોસ્પિટલ રોડ')) {
+            distance = 3.5;
+        } else {
+            distance = 2.5;
+        }
+
+        let fare = 0;
+        if (distance <= 1) {
+            fare = 30;
+        } else {
+            fare = 30 + (Math.ceil(distance) - 1) * 10;
+        }
+
+        totalDistSpan.innerText = distance;
         totalFareSpan.innerText = fare;
         fareDisplay.style.display = 'block';
     }
 
     function bookOnWhatsApp() {
         let name = document.getElementById('passengerName').value.trim();
-        let pickup = document.getElementById('pickup').value.trim();
-        let drop = document.getElementById('drop').value.trim();
-        let distance = document.getElementById('distance').value.trim();
+        let pickup = document.getElementById('pickup').value;
+        let drop = document.getElementById('drop').value;
+        let distance = document.getElementById('totalDist').innerText;
         let fare = document.getElementById('totalFare').innerText;
 
-        if (!name || !pickup || !drop || !distance) {
-            alert('કૃપા કરીને બધી માહિતી ભરો!');
+        if (!name || !pickup || !drop) {
+            alert('કૃપા કરીને બધી માહિતી પસંદ કરો!');
             return;
         }
 
-        // અહીં તમારો WhatsApp નંબર લખેલો છે (91 પાછળ દેશનો કોડ છે)
-        let myWhatsAppNumber = "919426852334"; // <--- આ નંબર બદલીને તમારો WhatsApp નંબર નાખી દેજો!
+        let myWhatsAppNumber = "919426852334"; // તારો વોટ્સએપ નંબર
 
         let message = `🛺 *નવી રિક્ષા બુકિંગ*\n\n` +
                       `👤 નામ: ${name}\n` +
