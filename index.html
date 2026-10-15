@@ -31,75 +31,49 @@
             font-size: 14px;
             margin-bottom: 20px;
         }
+        .form-group {
+            margin-bottom: 15px;
+        }
         label {
-            font-weight: bold;
             display: block;
-            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
             color: #34495e;
         }
-        input[type="text"] {
+        input, select {
             width: 100%;
-            padding: 12px;
-            margin-top: 5px;
+            padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 16px;
-            background: #fff;
             box-sizing: border-box;
         }
-        button.book-btn {
-            width: 100%;
-            background-color: #27ae60;
+        .btn {
+            background-color: #25D366;
             color: white;
-            padding: 14px;
             border: none;
-            border-radius: 8px;
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 20px;
-        }
-        button.book-btn:hover {
-            background-color: #219653;
-        }
-        .result-box {
-            display: none;
-            margin-top: 20px;
-            padding: 15px;
-            background: #e8f8f5;
-            border: 1px solid #a3e4d7;
-            border-radius: 8px;
-        }
-        .driver-card {
-            background: #fff;
-            border: 1px solid #ddd;
-            padding: 12px;
             margin-top: 10px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
-        .driver-info h4 {
-            margin: 0 0 5px 0;
-            color: #2c3e50;
+        .btn:hover {
+            background-color: #128C7E;
         }
-        .driver-info p {
-            margin: 0;
-            font-size: 13px;
-            color: #666;
-        }
-        .call-btn {
-            background-color: #2980b9;
-            color: white;
-            padding: 8px 14px;
-            text-decoration: none;
+        .fare-box {
+            background-color: #e8f8f5;
+            border: 1px solid #a3e4d7;
+            padding: 15px;
             border-radius: 6px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
             font-weight: bold;
-            font-size: 14px;
-        }
-        .call-btn:hover {
-            background-color: #1f618d;
+            color: #0e6655;
+            display: none;
         }
     </style>
 </head>
@@ -107,79 +81,81 @@
 
 <div class="container">
     <h2>🛺 ચાલો રિક્ષા</h2>
-    <div class="subtitle">ગઢડા ઓટો બુકિંગ સર્વિસ</div>
+    <div class="subtitle">ગઢડા ઓટો બુકિંગ સેવા</div>
 
-    <label for="pickup">ક્યાંથી બેસવું છે? (Pickup Location)</label>
-    <input type="text" id="pickup" placeholder="દા.ત. સ્વામિનારાયણ મંદિર, એસ.ટી. બસ સ્ટેન્ડ...">
-
-    <label for="drop">ક્યાં જવું છે? (Drop Location)</label>
-    <input type="text" id="drop" placeholder="દા.ત. બજાર ચોક, કોલેજ રોડ...">
-
-    <button class="book-btn" onclick="calculateFareAndBook()">ભાડું ગણો અને રિક્ષા બોલાવો</button>
-
-    <div id="result" class="result-box">
-        <h3 style="margin-top:0; color:#16a085;">ડ્રાઇવર વિગત અને ભાડું</h3>
-        <p id="fareText" style="font-size: 16px; font-weight: bold; color: #333;"></p>
-        
-        <div id="driverList"></div>
+    <div class="form-group">
+        <label for="passengerName">મુસાફરનું નામ:</label>
+        <input type="text" id="passengerName" placeholder="તમારું નામ લખੋ">
     </div>
+
+    <div class="form-group">
+        <label for="pickup">ક્યાંથી બેસવું છે? (Pickup):</label>
+        <input type="text" id="pickup" placeholder="ઉદા. સ્વામિનારાયણ મંદિર">
+    </div>
+
+    <div class="form-group">
+        <label for="drop">ક્યાં જવું છે? (Drop):</label>
+        <input type="text" id="drop" placeholder="ઉદા. બસ સ્ટેન્ડ">
+    </div>
+
+    <div class="form-group">
+        <label for="distance">અંદાજિત અંતર (કિમી માં):</label>
+        <input type="number" id="distance" placeholder="અંતર લખો (દા.ત. 3)" oninput="calculateFare()">
+    </div>
+
+    <div class="fare-box" id="fareDisplay">
+        અંદાજિત ભાડું: ₹<span id="totalFare">0</span>
+    </div>
+
+    <button class="btn" onclick="bookOnWhatsApp()">💬 WhatsApp પર બુક કરો</button>
 </div>
 
 <script>
-    const drivers = [
-        { name: "જમાલશાહ (Jamalshah)", phone: "9876543210", vehicle: "GJ-14-XX-1111" },
-        { name: "અબ્બાસભાઈ (Abbasbhai)", phone: "9876543211", vehicle: "GJ-14-XX-2222" },
-        { name: "સિકાભાઈ (Sikabhai)", phone: "9876543212", vehicle: "GJ-14-XX-3333" },
-        { name: "સદામ (Sadam)", phone: "9876543213", vehicle: "GJ-14-XX-4444" },
-        { name: "ઘુઘાભાઈ (Ghughabhai)", phone: "9876543214", vehicle: "GJ-14-XX-5555" },
-        { name: "યુનુসભાઈ (Yunusbhai)", phone: "9876543215", vehicle: "GJ-14-XX-6666" }
-    ];
+    function calculateFare() {
+        let dist = parseFloat(document.getElementById('distance').value);
+        let fareDisplay = document.getElementById('fareDisplay');
+        let totalFareSpan = document.getElementById('totalFare');
 
-    function calculateFareAndBook() {
-        const pickup = document.getElementById('pickup').value.trim();
-        const drop = document.getElementById('drop').value.trim();
-
-        if (pickup === "" || drop === "") {
-            alert("કૃપા કરીને પિકઅપ અને ડ્રોપ બંને લોકેશન લખો!");
+        if (isNaN(dist) || dist <= 0) {
+            fareDisplay.style.display = 'none';
             return;
         }
 
-        if (pickup.toLowerCase() === drop.toLowerCase()) {
-            alert("પિકઅપ અને ડ્રોપ લોકેશન અલગ-અલગ હોવા જોઈએ!");
+        let fare = 0;
+        if (dist <= 1) {
+            fare = 30; // પહેલા 1 કિમીના ₹30
+        } else {
+            fare = 30 + (dist - 1) * 10; // પછીના દરેક કિમીના ₹10
+        }
+
+        totalFareSpan.innerText = fare;
+        fareDisplay.style.display = 'block';
+    }
+
+    function bookOnWhatsApp() {
+        let name = document.getElementById('passengerName').value.trim();
+        let pickup = document.getElementById('pickup').value.trim();
+        let drop = document.getElementById('drop').value.trim();
+        let distance = document.getElementById('distance').value.trim();
+        let fare = document.getElementById('totalFare').innerText;
+
+        if (!name || !pickup || !drop || !distance) {
+            alert('કૃપા કરીને બધી માહિતી ભરો!');
             return;
         }
 
-        // અંદાજિત અંતર (General calculation: 2.5 km average)
-        let km = 2.5; 
+        // અહીં તમારો WhatsApp નંબર લખેલો છે (91 પાછળ દેશનો કોડ છે)
+        let myWhatsAppNumber = "919426852334"; // <--- આ નંબર બદલીને તમારો WhatsApp નંબર નાખી દેજો!
 
-        let baseFare = 30;
-        let extraKm = km > 1 ? km - 1 : 0;
-        let rawFare = baseFare + (extraKm * 10);
+        let message = `🛺 *નવી રિક્ષા બુકિંગ*\n\n` +
+                      `👤 નામ: ${name}\n` +
+                      `📍 પિકઅપ: ${pickup}\n` +
+                      `🏁 ડ્રોપ: ${drop}\n` +
+                      `📏 અંતર: ${distance} કિમી\n` +
+                      `💰 ભાડું: ₹${fare}`;
 
-        // એડમિન કમિશન અંદર ગણાઈ જશે પણ મુસાફરને નહિ દેખાય
-        let commission = rawFare * 0.05;
-        let totalFare = Math.round(rawFare + commission);
-
-        const randomDriver = drivers[Math.floor(Math.random() * drivers.length)];
-
-        document.getElementById('fareText').innerHTML = 
-            `સ્થળ: <b>${pickup}</b> થી <b>${drop}</b><br>` +
-            `અંદાજિત અંતર: <b>${km} કિમી</b><br>` +
-            `કુલ ભાડું: <b style="color:#d35400; font-size:18px;">₹${totalFare}</b><br>` +
-            `<span style="font-size:13px; color:#555;">(પ્રથમ ૧ કિમીના ₹૩૦ + બાકીના કિમીના ₹૧૦)</span>`;
-
-        let driverHtml = `
-            <div class="driver-card">
-                <div class="driver-info">
-                    <h4>${randomDriver.name}</h4>
-                    <p>રિક્ષા નંબર: ${randomDriver.vehicle}</p>
-                </div>
-                <a href="tel:${randomDriver.phone}" class="call-btn">📞 કોલ કરો</a>
-            </div>
-        `;
-
-        document.getElementById('driverList').innerHTML = driverHtml;
-        document.getElementById('result').style.display = 'block';
+        let url = `https://wa.me/${myWhatsAppNumber}?text=` + encodeURIComponent(message);
+        window.open(url, '_blank');
     }
 </script>
 
