@@ -113,6 +113,19 @@
             font-size: 18px;
             color: #0f3d2e;
         }
+        .fare-row.commission {
+            color: #d35400;
+            font-weight: bold;
+            font-size: 15px;
+            border-top: 1px dashed #ddd;
+            padding-top: 8px;
+            margin-top: 5px;
+        }
+        .fare-row.driver-share {
+            color: #2980b9;
+            font-weight: bold;
+            font-size: 15px;
+        }
         .btn {
             background-color: #25D366;
             color: white;
@@ -199,7 +212,7 @@
             </div>
             <div class="info-card">
                 <span>प्रति किमी दर</span>
-                <strong>₹15 / કીમી</strong>
+                <strong>₹10 / કીમી</strong>
             </div>
         </div>
 
@@ -213,15 +226,23 @@
         <div class="fare-table">
             <div class="fare-row">
                 <span>શરૂઆતનું ભાડું</span>
-                <span>₹20</span>
+                <span>₹30</span>
             </div>
             <div class="fare-row">
                 <span>અંદાજિત ભાડું</span>
-                <span id="calcFare">₹20</span>
+                <span id="calcFare">₹30</span>
             </div>
             <div class="fare-row total">
-                <span>ફુલ અંદાજ</span>
-                <span id="totalFare">₹20</span>
+                <span>કુલ ભાડું</span>
+                <span id="totalFare">₹30</span>
+            </div>
+            <div class="fare-row commission">
+                <span>તમારું ૫% કમિશન:</span>
+                <span id="commissionAmt">₹1.5</span>
+            </div>
+            <div class="fare-row driver-share">
+                <span>ડ્રાઈવરનો ભાગ (૯૫%):</span>
+                <span id="driverShareAmt">₹28.5</span>
             </div>
         </div>
 
@@ -302,12 +323,13 @@
             alert('પિકઅપ અને ડ્રોપ સ્થળ અલગ હોવા જોઈએ!');
             document.getElementById('totalDist').innerText = '0 km';
             document.getElementById('totalTime').innerText = '~0 મિનિટ';
-            document.getElementById('calcFare').innerText = '₹20';
-            document.getElementById('totalFare').innerText = '₹20';
+            document.getElementById('calcFare').innerText = '₹30';
+            document.getElementById('totalFare').innerText = '₹30';
+            document.getElementById('commissionAmt').innerText = '₹1.5';
+            document.getElementById('driverShareAmt').innerText = '₹28.5';
             return;
         }
 
-        // લોકેશન મુજબ અલગ-અલગ કિમી અને સમય સેટ કર્યો છે
         let dist = 2.0;
         let time = 7;
 
@@ -325,12 +347,16 @@
             time = 7;
         }
 
-        let fare = 20 + (dist * 15);
+        let fare = 30 + (dist * 10);
+        let commission = (fare * 0.05).toFixed(1); // ૫% કમિશન
+        let driverShare = (fare - commission).toFixed(1); // ડ્રાઈવરનો ભાગ
 
         document.getElementById('totalDist').innerText = dist + ' km';
         document.getElementById('totalTime').innerText = '~' + time + ' મિનિટ';
         document.getElementById('calcFare').innerText = '₹' + fare;
         document.getElementById('totalFare').innerText = '₹' + fare;
+        document.getElementById('commissionAmt').innerText = '₹' + commission;
+        document.getElementById('driverShareAmt').innerText = '₹' + driverShare;
     }
 
     function bookOnWhatsApp() {
@@ -339,6 +365,8 @@
         let drop = document.getElementById('drop').value;
         let dist = document.getElementById('totalDist').innerText;
         let totalFare = document.getElementById('totalFare').innerText;
+        let commission = document.getElementById('commissionAmt').innerText;
+        let driverShare = document.getElementById('driverShareAmt').innerText;
         let driver = document.getElementById('assignedDriver').value;
         let adminNum = document.getElementById('adminNumber').value;
 
@@ -347,13 +375,15 @@
             return;
         }
 
-        let message = `🛺 *નવી રિક્ષા બુકિંગ*\n\n` +
+        let message = `🛺 *નવી રિક્ષા બુકિંગ હિસાબ*\n\n` +
                       `👤 મુસાફર: ${name}\n` +
                       `📍 પિકઅપ: ${pickup}\n` +
                       `🏁 ડ્રોપ: ${drop}\n` +
                       `📏 અંતર: ${dist}\n` +
-                      `💰 ફુલ અંદાજ: ${totalFare}\n` +
-                      `🛺 ફાળવેલ ડ્રાઈવર: ${driver}`;
+                      `💰 કુલ ભાડું: ${totalFare}\n` +
+                      `📊 તમારું ૫% કમિશન: ${commission}\n` +
+                      `🛺 ડ્રાઈવરનો ભાગ: ${driverShare}\n` +
+                      `👤 ફાળવેલ ડ્રાઈવર: ${driver}`;
 
         let url = `https://wa.me/${adminNum}?text=` + encodeURIComponent(message);
         window.open(url, '_blank');
