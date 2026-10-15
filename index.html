@@ -131,21 +131,24 @@
         .driver-list-item {
             background: #fdfefe;
             border: 1px solid #d5dbdb;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .call-btn {
-            background-color: #3498db;
+            background-color: #27ae60;
             color: white;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 8px 15px;
+            border-radius: 6px;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: bold;
+        }
+        .call-btn:hover {
+            background-color: #219653;
         }
     </style>
 </head>
@@ -158,7 +161,7 @@
         <button class="tab-btn" onclick="switchTab('admin')">એડમિન</button>
     </div>
 
-    <!-- મુસાફર સેક્શન (માત્ર ભાડું દેખાશે) -->
+    <!-- મુસાફર સેક્શન -->
     <div id="passenger-section" class="section active">
         <h3>સવારીનો અંદાજ</h3>
 
@@ -212,15 +215,15 @@
         <div class="fare-table">
             <div class="fare-row">
                 <span>શરૂઆતનું ભાડું</span>
-                <span>₹30</span>
+                <span>₹55</span>
             </div>
             <div class="fare-row">
                 <span>અંદાજિત ભાડું</span>
-                <span id="calcFare">₹30</span>
+                <span id="calcFare">₹55</span>
             </div>
             <div class="fare-row total">
                 <span>કુલ ભાડું</span>
-                <span id="totalFare">₹30</span>
+                <span id="totalFare">₹55</span>
             </div>
         </div>
 
@@ -230,27 +233,23 @@
     <!-- ડ્રાઈવર લિસ્ટ સેક્શન -->
     <div id="driver-section" class="section">
         <h3>ઓનલાઈન રિક્ષા ડ્રાઈવરો</h3>
-        <p style="font-size: 13px; color: #666;">મુસાફર સીધા કોલ કરીને ડ્રાઈવરનો સંપર્ક કરી શકે છે:</p>
+        <p style="font-size: 13px; color: #666;">ગ્રાહક સીધો કોલ કરીને રિક્ષા બોલાવી શકે છે:</p>
 
         <div class="driver-list-item">
-            <div><strong>સિક્કા ભાઈ</strong><br><small>રિક્ષા: GJ-14-1111</small></div>
-            <a href="tel:9574855846" class="call-btn">📞 કોલ કરો</a>
+            <div><strong>રમીઝ ભાઈ</strong><br><small>મોબાઈલ: 7779085469</small></div>
+            <a href="tel:7779085469" class="call-btn">📞 કોલ કરો</a>
         </div>
         <div class="driver-list-item">
-            <div><strong>સદ્દામ ભાઈ</strong><br><small>રિક્ષા: GJ-14-2222</small></div>
-            <a href="tel:8153952531" class="call-btn">📞 કોલ કરો</a>
+            <div><strong>ચાવડા અલ્ફાઝ</strong><br><small>મોબાઈල්: 7383940831</small></div>
+            <a href="tel:7383940831" class="call-btn">📞 કોલ કરો</a>
         </div>
         <div class="driver-list-item">
-            <div><strong>યુનુસ ભાઈ</strong><br><small>રિક્ષા: GJ-14-3333</small></div>
-            <a href="tel:9825024539" class="call-btn">📞 કોલ કરો</a>
+            <div><strong>ચાવડા ફ્રિદ</strong><br><small>મોબાઈલ: 9327272466</small></div>
+            <a href="tel:9327272466" class="call-btn">📞 કોલ કરો</a>
         </div>
         <div class="driver-list-item">
-            <div><strong>ગફૂર मामा</strong><br><small>રિક્ષા: GJ-14-4444</small></div>
-            <a href="tel:9824438349" class="call-btn">📞 કોલ કરો</a>
-        </div>
-        <div class="driver-list-item">
-            <div><strong>અન્ય ડ્રાઈવર ભાઈ</strong><br><small>રિક્ષા: GJ-14-5555</small></div>
-            <a href="tel:9428627869" class="call-btn">📞 કોલ કરો</a>
+            <div><strong>નાનો કોલસાવાળા</strong><br><small>મોબાઈલ: 9157003186</small></div>
+            <a href="tel:9157003186" class="call-btn">📞 કોલ કરો</a>
         </div>
     </div>
 
@@ -260,11 +259,10 @@
         <div class="form-group">
             <label>ડ્રાઈવર ફાળવો:</label>
             <select id="assignedDriver">
-                <option value="સિક્કા ભાઈ (GJ-14-1111)">સિક્કા ભાઈ</option>
-                <option value="સદ્દામ ભાઈ (GJ-14-2222)">સદ્દામ ભાઈ</option>
-                <option value="યુનુસ ભાઈ (GJ-14-3333)">યુનુસ ભાઈ</option>
-                <option value="ગફૂર मामा (GJ-14-4444)">ગફૂર मामा</option>
-                <option value="અન્ય ડ્રાઈવર (GJ-14-5555)">અન્ય ડ્રાઈવર</option>
+                <option value="રમીઝ ભાઈ (7779085469)">રમીઝ ભાઈ</option>
+                <option value="ચાવડા અલ્ફાઝ (7383940831)">ચાવડા અલ્ફાઝ</option>
+                <option value="ચાવડા ફ્રિદ (9327272466)">ચાવડા ફ્રિદ</option>
+                <option value="નાનો કોલસાવાળા (9157003186)">નાનો કોલસાવાળા</option>
             </select>
         </div>
         <div class="form-group">
@@ -275,9 +273,9 @@
 </div>
 
 <script>
-    let globalFare = 30;
-    let globalCommission = 1.5;
-    let globalDriverShare = 28.5;
+    let globalFare = 55;
+    let globalCommission = 2.75;
+    let globalDriverShare = 52.25;
 
     function switchTab(tabName) {
         document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -305,11 +303,11 @@
             alert('પિકઅપ અને ડ્રોપ સ્થળ અલગ હોવા જોઈએ!');
             document.getElementById('totalDist').innerText = '0 km';
             document.getElementById('totalTime').innerText = '~0 મિનિટ';
-            document.getElementById('calcFare').innerText = '₹30';
-            document.getElementById('totalFare').innerText = '₹30';
-            globalFare = 30;
-            globalCommission = 1.5;
-            globalDriverShare = 28.5;
+            document.getElementById('calcFare').innerText = '₹55';
+            document.getElementById('totalFare').innerText = '₹55';
+            globalFare = 55;
+            globalCommission = 2.75;
+            globalDriverShare = 52.25;
             return;
         }
 
@@ -330,7 +328,7 @@
             time = 7;
         }
 
-        globalFare = 30 + (dist * 10);
+        globalFare = 55 + (dist * 10);
         globalCommission = (globalFare * 0.05).toFixed(1);
         globalDriverShare = (globalFare - globalCommission).toFixed(1);
 
@@ -353,7 +351,6 @@
             return;
         }
 
-        // WhatsApp મેસેજમાં તારા અને ડ્રાઈવર માટે કમિશન દેખાશે
         let message = `🛺 *નવી રિક્ષા બુકિંગ હિસાબ*\n\n` +
                       `👤 મુસાફર: ${name}\n` +
                       `📍 પિકઅપ: ${pickup}\n` +
@@ -370,4 +367,4 @@
 </script>
 
 </body>
-</html
+</html>
