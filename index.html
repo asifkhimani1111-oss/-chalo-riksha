@@ -113,19 +113,6 @@
             font-size: 18px;
             color: #0f3d2e;
         }
-        .fare-row.commission {
-            color: #d35400;
-            font-weight: bold;
-            font-size: 15px;
-            border-top: 1px dashed #ddd;
-            padding-top: 8px;
-            margin-top: 5px;
-        }
-        .fare-row.driver-share {
-            color: #2980b9;
-            font-weight: bold;
-            font-size: 15px;
-        }
         .btn {
             background-color: #25D366;
             color: white;
@@ -172,7 +159,7 @@
         <button class="tab-btn" onclick="switchTab('admin')">એડમિન</button>
     </div>
 
-    <!-- મુસાફર સેક્શન -->
+    <!-- મુસાફર સેક્શન (અહીં માત્ર ભાડું જ દેખાશે, કમિશન નહીં) -->
     <div id="passenger-section" class="section active">
         <h3>સવારીનો અંદાજ</h3>
 
@@ -236,14 +223,6 @@
                 <span>કુલ ભાડું</span>
                 <span id="totalFare">₹30</span>
             </div>
-            <div class="fare-row commission">
-                <span>તમારું ૫% કમિશન:</span>
-                <span id="commissionAmt">₹1.5</span>
-            </div>
-            <div class="fare-row driver-share">
-                <span>ડ્રાઈવરનો ભાગ (૯૫%):</span>
-                <span id="driverShareAmt">₹28.5</span>
-            </div>
         </div>
 
         <button class="btn" onclick="bookOnWhatsApp()">💬 વોટ્સએપ પર બુક કરો</button>
@@ -297,6 +276,10 @@
 </div>
 
 <script>
+    let currentFare = 30;
+    let currentCommission = 1.5;
+    let currentDriverShare = 28.5;
+
     function switchTab(tabName) {
         document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -325,8 +308,9 @@
             document.getElementById('totalTime').innerText = '~0 મિનિટ';
             document.getElementById('calcFare').innerText = '₹30';
             document.getElementById('totalFare').innerText = '₹30';
-            document.getElementById('commissionAmt').innerText = '₹1.5';
-            document.getElementById('driverShareAmt').innerText = '₹28.5';
+            currentFare = 30;
+            currentCommission = 1.5;
+            currentDriverShare = 28.5;
             return;
         }
 
@@ -347,16 +331,14 @@
             time = 7;
         }
 
-        let fare = 30 + (dist * 10);
-        let commission = (fare * 0.05).toFixed(1); // ૫% કમિશન
-        let driverShare = (fare - commission).toFixed(1); // ડ્રાઈવરનો ભાગ
+        currentFare = 30 + (dist * 10);
+        currentCommission = (currentFare * 0.05).toFixed(1); // ૫% કમિશન
+        currentDriverShare = (currentFare - currentCommission).toFixed(1); // ડ્રાઈવરનો ભાગ
 
         document.getElementById('totalDist').innerText = dist + ' km';
         document.getElementById('totalTime').innerText = '~' + time + ' મિનિટ';
-        document.getElementById('calcFare').innerText = '₹' + fare;
-        document.getElementById('totalFare').innerText = '₹' + fare;
-        document.getElementById('commissionAmt').innerText = '₹' + commission;
-        document.getElementById('driverShareAmt').innerText = '₹' + driverShare;
+        document.getElementById('calcFare').innerText = '₹' + currentFare;
+        document.getElementById('totalFare').innerText = '₹' + currentFare;
     }
 
     function bookOnWhatsApp() {
@@ -364,9 +346,6 @@
         let pickup = document.getElementById('pickup').value;
         let drop = document.getElementById('drop').value;
         let dist = document.getElementById('totalDist').innerText;
-        let totalFare = document.getElementById('totalFare').innerText;
-        let commission = document.getElementById('commissionAmt').innerText;
-        let driverShare = document.getElementById('driverShareAmt').innerText;
         let driver = document.getElementById('assignedDriver').value;
         let adminNum = document.getElementById('adminNumber').value;
 
@@ -375,14 +354,15 @@
             return;
         }
 
+        // એડમિનના વોટ્સએપ પર જ કમિશન અને હિસાબ જશે, મુસાફરને નહીં દેખાય
         let message = `🛺 *નવી રિક્ષા બુકિંગ હિસાબ*\n\n` +
                       `👤 મુસાફર: ${name}\n` +
                       `📍 પિકઅપ: ${pickup}\n` +
                       `🏁 ડ્રોપ: ${drop}\n` +
                       `📏 અંતર: ${dist}\n` +
-                      `💰 કુલ ભાડું: ${totalFare}\n` +
-                      `📊 તમારું ૫% કમિશન: ${commission}\n` +
-                      `🛺 ડ્રાઈવરનો ભાગ: ${driverShare}\n` +
+                      `💰 કુલ ભાડું: ₹${currentFare}\n` +
+                      `📊 તમારું ૫% કમિશન: ₹${currentCommission}\n` +
+                      `🛺 ડ્રાઈવરનો ભાગ: ₹${currentDriverShare}\n` +
                       `👤 ફાળવેલ ડ્રાઈવર: ${driver}`;
 
         let url = `https://wa.me/${adminNum}?text=` + encodeURIComponent(message);
