@@ -1,108 +1,247 @@
+
 <!DOCTYPE html>
 <html lang="gu">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ચાલો રિક્ષા - ગઢડા</title>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 15px; }
-        .container { max-width: 400px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 12px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
-        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; background-color: #fff; }
-        .btn { background-color: #25D366; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .fare-box { background: #f1f8f5; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 16px; font-weight: bold; color: #0f3d2e; text-align: center; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f3d2e">
+<title>ચાલો રિક્ષા - ગઢડા ઓટો બુકિંગ</title>
+<style>
+body{font-family:Arial,sans-serif;background:#f4f6f8;margin:0;padding:15px;color:#333}
+.container{max-width:500px;margin:0 auto;background:#fff;padding:20px;border-radius:12px;box-shadow:0 4px 10px #0000001a}
+.tabs{display:flex;justify-content:space-between;margin-bottom:20px;background:#e4e7eb;padding:5px;border-radius:8px}
+.tab-btn{flex:1;padding:10px;text-align:center;background:none;border:0;font-weight:bold;cursor:pointer;border-radius:6px;color:#555}
+.tab-btn.active{background:#0f3d2e;color:white}
+.section{display:none}.section.active{display:block}
+h3{color:#2c3e50;margin-bottom:15px}
+.form-group{margin-bottom:15px}
+label{display:block;margin-bottom:5px;font-weight:bold;color:#34495e;font-size:14px}
+select,input{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:16px;box-sizing:border-box;background:#fff}
+.fare-box{background:#f1f8f5;padding:12px;border-radius:8px;margin-bottom:15px;font-size:18px;font-weight:bold;color:#0f3d2e;text-align:center;border:1px solid #d1e7dd}
+.btn{background:#25D366;color:white;border:0;padding:12px;width:100%;border-radius:6px;font-size:18px;font-weight:bold;cursor:pointer;margin-bottom:10px}
+.btn:hover{background:#128C7E}
+.driver-card{background:#fdfefe;border:1px solid #d5dbdb;padding:12px;border-radius:8px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.call-btn{background:#27ae60;color:white;padding:8px 12px;border-radius:6px;text-decoration:none;font-size:15px;font-weight:bold;white-space:nowrap}
+.note{font-size:12px;color:#666;line-height:1.5}
+</style>
 </head>
 <body>
-
 <div class="container">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('passenger',this)">મુસાફર</button>
+    <button class="tab-btn" onclick="switchTab('driver',this)">ડ્રાઈવરો</button>
+    <button class="tab-btn" onclick="switchTab('admin',this)">એડમિન</button>
+  </div>
+
+  <div id="passenger-section" class="section active">
     <h3>🛺 ચાલો રિક્ષા બુકિંગ</h3>
-
     <div class="form-group">
-        <label>મુસાફરનું નામ:</label>
-        <input type="text" id="pName" placeholder="તમારું નામ લખો">
+      <label>મુસાફરનું નામ:</label>
+      <input id="passengerName" type="text" placeholder="તમારું નામ લખો">
     </div>
-
     <div class="form-group">
-        <label>પિકઅપ સ્થળ:</label>
-        <select id="pickup" onchange="calc()">
-            <option value="">-- પસંદ કરો --</option>
-            <option value="ગઢડા બસ સ્ટેન્ડ">ગઢડા બસ સ્ટેન્ડ</option>
-            <option value="ગોપીનાથજી મંદિર">ગોપીનાથજી મંદિર</option>
-            <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
-            <option value="હોસ્પિટલ રોડ">હોસ્પિટલ રોડ</option>
-            <option value="માર્કેટિંગ યાર્ડ">માર્કેટિંગ યાર્ડ</option>
-        </select>
+      <label>પિકઅપ સ્થળ:</label>
+      <select id="pickup">
+        <option value="">-- પિકઅપ પસંદ કરો --</option>
+        <option>ગઢડા બસ સ્ટેન્ડ</option>
+        <option>ગોપીનાથજી મંદિર</option>
+        <option>સ્વામિનારાયણ મંદિર</option>
+        <option>હોસ્પિટલ રોડ</option>
+        <option>માર્કેટિંગ યાર્ડ</option>
+      </select>
     </div>
-
     <div class="form-group">
-        <label>જવાનું સ્થળ (ડ્રોપ):</label>
-        <select id="drop" onchange="calc()">
-            <option value="">-- પસંદ કરો --</option>
-            <option value="ગઢડા બસ સ્ટેન્ડ">ગઢડા બસ સ્ટેન્ડ</option>
-            <option value="ગોપીનાથજી મંદિર">ગોપીનાથજી મંદિર</option>
-            <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
-            <option value="હોસ્પિટલ રોડ">હોસ્પિટલ રોડ</option>
-            <option value="માર્કેટિંગ યાર્ડ">માર્કેટિંગ યાર્ડ</option>
-        </select>
+      <label>જવાનું સ્થળ (ડ્રોપ):</label>
+      <select id="drop">
+        <option value="">-- ડ્રોપ પસંદ કરો --</option>
+        <option>ગઢડા બસ સ્ટેન્ડ</option>
+        <option>ગોપીનાથજી મંદિર</option>
+        <option>સ્વામિનારાયણ મંદિર</option>
+        <option>હોસ્પિટલ રોડ</option>
+        <option>માર્કેટિંગ યાર્ડ</option>
+      </select>
     </div>
-
     <div class="form-group">
-        <label>ડ્રાઈવર પસંદ કરો:</label>
-        <select id="driver">
-            <option value="9111111111">સિક્કા ભાઈ (GJ-14-1111)</option>
-            <option value="9222222222">સદ્દામ ભાઈ (GJ-14-2222)</option>
-            <option value="9333333333">યુનુસ ભાઈ (GJ-14-3333)</option>
-            <option value="9444444444">ગફૂર મામા (GJ-14-4444)</option>
-            <option value="9555555555">અન્ય ડ્રાઈવર ભાઈ (GJ-14-5555)</option>
-            <option value="7779085469">રમીઝ ભાઈ (7779085469)</option>
-            <option value="7383940831">ચાવડા અલ્ફાઝ (7383940831)</option>
-            <option value="9327272466">ચાવડા ફ્રિદ (9327272466)</option>
-            <option value="9157003186">નાનો કોલસાવાળા (9157003186)</option>
-        </select>
+      <label>ડ્રાઈવર પસંદ કરો:</label>
+      <select id="driverSelect">
+        <option value="9111111111">સિક્કા ભાઈ (GJ-14-1111)</option>
+        <option value="9222222222">સદ્દામ ભાઈ (GJ-14-2222)</option>
+        <option value="9333333333">યુનુસ ભાઈ (GJ-14-3333)</option>
+        <option value="9444444444">ગફૂર મામા (GJ-14-4444)</option>
+        <option value="9555555555">અન્ય ડ્રાઈવર ભાઈ (GJ-14-5555)</option>
+        <option value="7779085469">રમીઝ ભાઈ (7779085469)</option>
+        <option value="7383940831">ચાવડા અલ્ફાઝ (7383940831)</option>
+        <option value="9327272466">ચાવડા ફ્રિદ (9327272466)</option>
+        <option value="9157003186">નાનો કોલસાવાળા (9157003186)</option>
+      </select>
     </div>
-
     <div class="fare-box">
-        કુલ ભાડું: <span id="fareDisplay">₹55</span>
+      કુલ ભાડું: <span id="fareAmount">₹55</span>
+      <div id="distanceInfo" style="font-size:14px;margin-top:6px;font-weight:normal">પિકઅપ અને ડ્રોપ પસંદ કરો</div>
     </div>
+    <button class="btn" onclick="bookOnWhatsApp()">💬 વોટ્સએપ પર બુક કરો</button>
+    <p class="note">ભાડું: પહેલા 1 કિમી માટે ₹55, ત્યાર પછી દરેક વધારાના કિમી માટે ₹10. અંતર હાલ અંદાજિત છે.</p>
+  </div>
 
-    <button class="btn" onclick="book()">💬 વોટ્સએપ પર બુક કરો</button>
+  <div id="driver-section" class="section">
+    <h3>ઓનલાઈન રિક્ષા ડ્રાઈવરો</h3>
+    <p style="font-size:13px;color:#666">ગ્રાહક સીધો કોલ કરીને રિક્ષા બોલાવી શકે છે:</p>
+    <div class="driver-card"><div><strong>સિક્કા ભાઈ</strong><br><small>GJ-14-1111</small></div><a href="tel:9111111111" class="call-btn">📞 કોલ કરો</a></div>
+    <div class="driver-card"><div><strong>સદ્દામ ભાઈ</strong><br><small>GJ-14-2222</small></div><a href="tel:9222222222" class="call-btn">📞 કોલ કરો</a></div>
+    <div class="driver-card"><div><strong>યુનુસ ભાઈ</strong><br><small>GJ-14-3333</small></div><a href="tel:9333333333" class="call-btn">📞 કોલ કરો</a></div>
+    <div class="driver-card"><div><strong>ગફૂર મામા</strong><br><small>GJ-14-4444</small></div><a href="tel:9444444444" class="call-btn">📞 કોલ કરો</a></div>
+    <div class="driver-card"><div><strong>અન્ય ડ્રાઈવર ભાઈ</strong><br><small>GJ-14-5555</small></div><a href="tel:9555555555" class="call-btn">📞 કોલ કરો</a></div>
+    <div class="driver-card"><div><strong>રમીઝ ભાઈ</strong><br><small>મોબાઈલ: 7779085469</small></div><a href="tel:7779085469" class="call-btn">📞 કોલ કરો</a></div>
+    <div class="driver-card"><div><strong>ચાવડા અલ્ફાઝ</strong><br><small>મોબાઈલ: 7383940831</small></div><a href="tel:7383940831" class="call-btn">📞 કોલ કરો</a></div>
+    <div class="driver-card"><div><strong>ચાવડા ફ્રિદ</strong><br><small>મોબાઈલ: 9327272466</small></div><a href="tel:9327272466" class="call-btn">📞 કોલ કરો</a></div>
+    <div class="driver-card"><div><strong>નાનો કોલસાવાળા</strong><br><small>મોબાઈલ: 9157003186</small></div><a href="tel:9157003186" class="call-btn">📞 કોલ કરો</a></div>
+  </div>
+
+  <div id="admin-section" class="section">
+    <h3>એડમિન કંટ્રોલ પેનલ</h3>
+    <div class="form-group">
+      <label>એડમિન WhatsApp નંબર:</label>
+      <input id="adminNumber" value="919426852334">
+    </div>
+    <div class="form-group">
+      <label>કમિશન (%):</label>
+      <input id="commission" type="number" min="0" max="100" value="10">
+    </div>
+    <button class="btn" onclick="saveSettings()">સેટિંગ સેવ કરો</button>
+    <p id="adminMessage" class="note">કમિશન અને એડમિન નંબર આ બ્રાઉઝરમાં સેવ થશે.</p>
+    <p class="note">નોંધ: આ ડેમો સેટિંગ છે; તે બીજા ફોન પર આપમેળે સિંક થતું નથી.</p>
+  </div>
 </div>
 
 <script>
-    let finalFare = 55;
+const places = [
+  "ગઢડા બસ સ્ટેન્ડ",
+  "ગોપીનાથજી મંદિર",
+  "સ્વામિનારાયણ મંદિર",
+  "હોસ્પિટલ રોડ",
+  "માર્કેટિંગ યાર્ડ"
+];
 
-    function calc() {
-        let p = document.getElementById('pickup').value;
-        let d = document.getElementById('drop').value;
-        if (!p || !d || p === d) {
-            finalFare = 55;
-            document.getElementById('fareDisplay').innerText = '₹55';
-            return;
-        }
-        let dist = 2.2;
-        finalFare = 55 + Math.round(dist * 10);
-        document.getElementById('fareDisplay').innerText = '₹' + finalFare;
-    }
+/*
+ અંદાજિત અંતર (કિમી), બંને દિશામાં સમાન ગણાય છે.
+ આ આંકડા ઉદાહરણરૂપ છે, વાસ્તવિક રસ્તાનું માપ નથી.
+ એડમિનને પછી સાચા અંતર મુજબ આ કોષ્ટક સુધારવો જોઈએ.
+*/
+const distanceKm = [
+  [0, 1.2, 1.5, 1.0, 2.5],
+  [1.2, 0, 1.0, 1.8, 3.0],
+  [1.5, 1.0, 0, 1.7, 3.2],
+  [1.0, 1.8, 1.7, 0, 2.0],
+  [2.5, 3.0, 3.2, 2.0, 0]
+];
 
-    function book() {
-        let name = document.getElementById('pName').value.trim();
-        let p = document.getElementById('pickup').value;
-        let d = document.getElementById('drop').value;
-        let dSelect = document.getElementById('driver');
-        let dPhone = dSelect.value;
-        let dName = dSelect.options[dSelect.selectedIndex].text;
+let totalFare = 55;
+let totalDistanceKm = 0;
 
-        if (!name || !p || !d) {
-            alert('કૃપા કરીને નામ અને બંને સ્થળ પસંદ કરો!');
-            return;
-        }
+function switchTab(tabName, button) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabName + '-section').classList.add('active');
+  button.classList.add('active');
+}
 
-        let msg = `🛺 *નવી રિક્ષા બુકિંગ*\n\n👤 મુસાફર: ${name}\n📍 પિકઅપ: ${p}\n🏁 ડ્રોપ: ${d}\n💰 કુલ ભાડું: ₹${finalFare}\n👤 ડ્રાઈવર: ${dName}`;
-        window.open(`https://wa.me/91${dPhone}?text=` + encodeURIComponent(msg), '_blank');
-    }
+function calculateFare() {
+  const pickup = document.getElementById('pickup').value;
+  const drop = document.getElementById('drop').value;
+
+  if (!pickup || !drop) {
+    totalDistanceKm = 0;
+    totalFare = 55;
+    document.getElementById('fareAmount').textContent = '₹55';
+    document.getElementById('distanceInfo').textContent = 'પિકઅપ અને ડ્રોપ પસંદ કરો';
+    return;
+  }
+
+  const from = places.indexOf(pickup);
+  const to = places.indexOf(drop);
+  totalDistanceKm = distanceKm[from][to];
+
+  if (from === to) {
+    totalFare = 55;
+    document.getElementById('distanceInfo').textContent =
+      'એક જ સ્થળ • ન્યૂનતમ ભાડું ₹55';
+  } else {
+    const billableKm = Math.max(1, Math.ceil(totalDistanceKm));
+    totalFare = 55 + (billableKm - 1) * 10;
+    document.getElementById('distanceInfo').textContent =
+      'અંદાજિત અંતર: ' + totalDistanceKm.toFixed(1) +
+      ' કિમી • ભાડા માટે ' + billableKm + ' કિમી ગણ્યા';
+  }
+
+  document.getElementById('fareAmount').textContent = '₹' + totalFare;
+}
+
+function saveSettings() {
+  const number = document.getElementById('adminNumber').value.trim();
+  const commission = Number(document.getElementById('commission').value);
+
+  if (!number) {
+    alert('એડમિન WhatsApp નંબર લખો.');
+    return;
+  }
+  if (!Number.isFinite(commission) || commission < 0 || commission > 100) {
+    alert('કમિશન 0 થી 100 વચ્ચે રાખો.');
+    return;
+  }
+
+  try {
+    localStorage.setItem('chaloRikshaAdminNumber', number);
+    localStorage.setItem('chaloRikshaCommission', String(commission));
+    document.getElementById('adminMessage').textContent =
+      'સેટિંગ સેવ થઈ ગયું. કમિશન: ' + commission + '%';
+  } catch (e) {
+    document.getElementById('adminMessage').textContent =
+      'આ બ્રાઉઝરમાં સેટિંગ સેવ થઈ શક્યું નથી.';
+  }
+}
+
+function loadSettings() {
+  try {
+    const number = localStorage.getItem('chaloRikshaAdminNumber');
+    const commission = localStorage.getItem('chaloRikshaCommission');
+    if (number) document.getElementById('adminNumber').value = number;
+    if (commission !== null) document.getElementById('commission').value = commission;
+  } catch (e) {}
+}
+
+document.getElementById('pickup').addEventListener('change', calculateFare);
+document.getElementById('drop').addEventListener('change', calculateFare);
+
+function bookOnWhatsApp() {
+  const name = document.getElementById('passengerName').value.trim();
+  const pickup = document.getElementById('pickup').value;
+  const drop = document.getElementById('drop').value;
+  const driverSelect = document.getElementById('driverSelect');
+  const dPhone = driverSelect.value;
+  const dName = driverSelect.options[driverSelect.selectedIndex].text;
+
+  if (!name || !pickup || !drop) {
+    alert('કૃપા કરીને નામ અને બંને સ્થળ પસંદ કરો!');
+    return;
+  }
+
+  calculateFare();
+
+  const message =
+    '🛺 *નવી રિક્ષા બુકિંગ*\\n\\n' +
+    '👤 મુસાફર: ' + name + '\\n' +
+    '📍 પિકઅપ: ' + pickup + '\\n' +
+    '🏁 ડ્રોપ: ' + drop + '\\n' +
+    '📏 અંદાજિત અંતર: ' + totalDistanceKm.toFixed(1) + ' કિમી\\n' +
+    '💰 કુલ ભાડું: ₹' + totalFare + '\\n' +
+    '👤 ડ્રાઈવર: ' + dName;
+
+  const url = 'https://wa.me/' + dPhone + '?text=' + encodeURIComponent(message);
+  window.open(url, '_blank');
+}
+
+loadSettings();
+calculateFare();
 </script>
-
 </body>
 </html>
