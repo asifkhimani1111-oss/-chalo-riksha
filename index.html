@@ -11,6 +11,7 @@
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+        .fare-box { background: #fff3e0; padding: 10px; border-radius: 6px; text-align: center; font-size: 18px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
         .btn { background: #25d366; color: white; border: none; padding: 12px; width: 100%; font-size: 18px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         .btn:hover { background: #1ebe5d; }
         .btn-cancel { background: #e74c3c; margin-top: 8px; }
@@ -23,44 +24,22 @@
     <h2>🛺 ચાલો રિક્ષા બુકિંગ</h2>
     
     <div class="form-group">
-        <label>તમારું ગામ / સ્થળ પસંદ કરો:</label>
-        <select id="pickup">
-            <option value="ગઢડા બસ સ્ટેન્ડ">ગઢડા બસ સ્ટેન્ડ</option>
-            <option value="ગઢડા હોસ્પિટલ રોડ">ગઢડા હોસ્પિટલ રોડ</option>
-            <option value="સ્વામિનારાયણ મંદિર ગઢડા">સ્વામિનારાયણ મંદિર ગઢડા</option>
-            <option value="શાકમાર્કેટ ગઢડા">શાકમાર્કેટ ગઢડા</option>
-            <option value="માર્કેટિંગ યાર્ડ ગઢડા">માર્કેટિંગ યાર્ડ ગઢડા</option>
-            <option value="રોહશાળા રોડ">રોહશાળા રોડ</option>
-            <option value="ઢસા જંક્શન">ઢસા જંક્શન</option>
-            <option value="રાણપુર રોડ">રાણપુર રોડ</option>
-            <option value="બોટાદ રોડ">બોટાદ રોડ</option>
-            <option value="ઢસા રોડ">ઢસા રોડ</option>
-            <option value="રાંદરડા">રાંદરડા</option>
-            <option value="માલપરા">માલપરા</option>
-            <option value="રાયપર">રાયપર</option>
-            <option value="હરપુરા">હરપુરા</option>
-            <option value="પાટીયા">પાટીયા</option>
-            <option value="સુરગપરા">સુરગપરા</option>
-            <option value="સંગાણી">સંગાણી</option>
-            <option value="ભંડારીયા">ભંડારીયા</option>
-            <option value="બોવાળ">બોવાળ</option>
-            <option value="ગાંધીધામ ચોકડી">ગાંધીધામ ચોકડી</option>
-            <option value="પીપરડી">પીપરડી</option>
-            <option value="જનાળા">જનાળા</option>
-            <option value="માણસા">માણસા</option>
-            <option value="ચારોડીયા">ચારોડીયા</option>
-            <option value="સખપર">સખપર</option>
-        </select>
+        <label>ક્યાંથી બેસવું છે? (પીકઅપ લોકેશન):</label>
+        <input type="text" id="pickup" placeholder="ઉપાડવાનું સ્થળ જાતે લખો (દા.ત. બસ સ્ટેન્ડ)">
     </div>
 
     <div class="form-group">
-        <label>કયાં જવું છે? (ડ્રોપ લોકેશન):</label>
-        <input type="text" id="dropoff" placeholder="ડ્રોપ લોકેશન લખો">
+        <label>ક્યાં જવું છે? (ડ્રોપ લોકેશન):</label>
+        <input type="text" id="dropoff" placeholder="જવાનું સ્થળ જાતે લખો (દા.ત. હોસ્પિટલ)">
     </div>
 
     <div class="form-group">
-        <label>અંદાજિત અંતર (KM માં લખો):</label>
-        <input type="number" id="distanceKm" placeholder="દા.ત. 5 KM" value="3">
+        <label>અંદાજિત અંતર (KM):</label>
+        <input type="number" id="distanceKm" placeholder="KM લખો" value="3" oninput="calculateFare()">
+    </div>
+
+    <div class="fare-box">
+        અંદાજિત ભાડું: ₹ <span id="totalFare">60</span>
     </div>
 
     <div class="form-group">
@@ -75,6 +54,15 @@
 </div>
 
 <script>
+    // Prati KM bhadu (Tame ahiya rakam badli sako cho, data.t. 20 rupiya per KM)
+    const ratePerKm = 20;
+
+    function calculateFare() {
+        let km = document.getElementById('distanceKm').value;
+        let fare = km * ratePerKm;
+        document.getElementById('totalFare').textContent = fare > 0 ? fare : 0;
+    }
+
     function loadDrivers() {
         let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
         let select = document.getElementById('driverSelect');
@@ -97,8 +85,13 @@
         let pickup = document.getElementById('pickup').value;
         let dropoff = document.getElementById('dropoff').value;
         let km = document.getElementById('distanceKm').value;
+        let fare = document.getElementById('totalFare').textContent;
         let driverPhone = document.getElementById('driverSelect').value;
 
+        if (!pickup) {
+            alert('કૃપા કરીને પીકઅપ લોકેશન લખો!');
+            return;
+        }
         if (!dropoff) {
             alert('કૃપા કરીને ડ્રોપ લોકેશન લખો!');
             return;
@@ -108,19 +101,24 @@
             return;
         }
 
-        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 ઉપાડવાનું સ્થળ: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + " KM\nકૃપા કરીને રાઈડ સ્વીકારો.";
+        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 ઉપાડવાનું સ્થળ: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + " KM\n💰 અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
         let whatsappUrl = "https://wa.me/91" + driverPhone + "?text=" + encodeURIComponent(message);
         window.open(whatsappUrl, '_blank');
     }
 
     function cancelRide() {
+        document.getElementById('pickup').value = '';
         document.getElementById('dropoff').value = '';
         document.getElementById('distanceKm').value = '3';
+        calculateFare();
         document.getElementById('driverSelect').selectedIndex = 0;
-        alert('તમારું બુકિંગ રદ (Cancel) કરી દેવામાં આવ્યું છે.');
+        alert('બુકિંગ કેન્સલ કરી દેવામાં આવ્યું છે.');
     }
 
-    window.onload = loadDrivers;
+    window.onload = function() {
+        loadDrivers();
+        calculateFare();
+    };
 </script>
 
 </body>
