@@ -232,41 +232,41 @@
             <!-- પિકઅપ સ્થળ -->
             <div class="form-group">
                 <label>પિકઅપ સ્થળ:</label>
-                <input type="text" id="pickupInput" list="villageList" value="ગઢડા બસ સ્ટેન્ડ" placeholder="ક્યાંથી બેસવું છે?">
+                <input type="text" id="pickupInput" list="villageList" value="Gadhada bud stand" placeholder="ક્યાંથી બેસવું છે?">
             </div>
             
-            <!-- જવાનું સ્થળ (નેટિવ ડેટાલિસ્ટ સાથે) -->
+            <!-- જવાનું સ્થળ (ડ્રોપ) -->
             <div class="form-group">
                 <label>જવાનું સ્થળ (ડ્રોપ):</label>
-                <input type="text" id="dropInput" list="villageList" value="બોટાદ" placeholder="ગામ કે વિસ્તારનું નામ લખો..." oninput="calculateFare()">
+                <input type="text" id="dropInput" list="villageList" value="Botad" placeholder="ગામનું નામ લખો..." oninput="calculateFare()">
                 
-                <!-- મોબાઈલ ફ્રેન્ડલી નેટિવ ડેટાલિસ્ટ યાદી -->
+                <!-- सभे २५ गो गाँव के लिस्ट जवना के तू दिहले रहब्यू -->
                 <datalist id="villageList">
-                    <option value="ગઢડા બસ સ્ટેન્ડ">
-                    <option value="સામાકાંઠે">
-                    <option value="કોઠીવાડી">
-                    <option value="રાબિયા પાર્ક">
-                    <option value="નાગજીપરા">
-                    <option value="બોટાદ રોડ">
-                    <option value="બોટાદ">
-                    <option value="ગોરડીયા">
-                    <option value="તમારી">
-                    <option value="ભીંડા">
-                    <option value="ઉગામડી">
-                    <option value="નિંગાળા">
-                    <option value="રોહિસાલા">
-                    <option value="ભાડલી ગેટ">
-                    <option value="ધાડા રોડ">
-                    <option value="ઢસા ગામ">
-                    <option value="ગુંદાળા">
-                    <option value="માલપરા">
-                    <option value="ખોલમા">
-                    <option value="લખણકા">
-                    <option value="આટલા">
-                    <option value="માંડધર">
-                    <option value="ભાડલી">
-                    <option value="કેરાળા">
-                    <option value="રામપરા">
+                    <option value="Kothivadi">
+                    <option value="Rabiya park">
+                    <option value="Nagjipara">
+                    <option value="Botad raad">
+                    <option value="Botad">
+                    <option value="Gordia">
+                    <option value="Tamari">
+                    <option value="Bhinda">
+                    <option value="Ugaamedi">
+                    <option value="Ningala">
+                    <option value="Rohisala">
+                    <option value="Gadhada bud stand">
+                    <option value="Samakathe">
+                    <option value="Bhadli get">
+                    <option value="Dhada road">
+                    <option value="Dhasa gaam">
+                    <option value="Gundala">
+                    <option value="Malpara">
+                    <option value="Kholama">
+                    <option value="Lakhanka">
+                    <option value="Aatala">
+                    <option value="Mand dhar">
+                    <option value="Bhadli">
+                    <option value="Kerala">
+                    <option value="Raampara">
                 </datalist>
             </div>
 
@@ -304,7 +304,7 @@
             </div>
 
             <div class="rule-note">
-                ℹ️ બોક્સ પર ક્લિક કરતા જ ગામોની યાદી દેખાશે અથવા ટાઈપ કરતા ઓટોમેટિક ફિલ્ટર થશે.
+                ℹ️ बेस भाड़ू ₹40 आ प्रति किलोमीटर ₹10 के हिसाब से ऑटोमैटिक गड़ना.
             </div>
 
             <button class="book-btn" onclick="sendWhatsAppBooking()">💬 ડાયરેક્ટ વોટ્સએપ પર મોકલો</button>
@@ -372,32 +372,33 @@
             { name: "ડ્રાઈવર ૯", riksha: "GJ-14-9999", phone: "919876543215" }
         ];
 
+        // तवार दिहल सभे गाँव आ ओकर सही किलोमीटर के डेटाबेस
         const distanceDatabase = {
-            "ગઢડા બસ સ્ટેન્ડ": 1,
-            "સામાકાંઠે": 2.5,
-            "કોઠીવાડી": 2.5,
-            "રાબિયા પાર્ક": 3,
-            "નાગજીપરા": 1.5,
-            "બોટાદ રોડ": 4,
-            "બોટાદ": 25,
-            "ગોરડીયા": 7,
-            "તમારી": 6,
-            "ભીંડા": 11,
-            "ઉગામડી": 8,
-            "નિંગાળા": 12,
-            "રોહિસાલા": 15,
-            "ભાડલી ગેટ": 14,
-            "ધાડા રોડ": 16,
-            "ઢસા ગામ": 18,
-            "ગુંદાળા": 10,
-            "માલપરા": 13,
-            "ખોલમા": 4,
-            "લખણકા": 9,
-            "આટલા": 6,
-            "માંડધર": 10,
-            "ભાડલી": 15,
-            "કેરાળા": 14,
-            "રામપરા": 11
+            "gadhada bud stand": 1,
+            "samakathe": 2.5,
+            "kothivadi": 2.5,
+            "rabiya park": 3,
+            "nagjipura": 1.5,
+            "botad raad": 4,
+            "botad": 25,
+            "gordia": 7,
+            "tamari": 6,
+            "bhinda": 11,
+            "ugaamedi": 8,
+            "ningala": 12,
+            "rohisala": 15,
+            "bhadli get": 14,
+            "dhada road": 16,
+            "dhasa gaam": 18,
+            "gundala": 10,
+            "malpara": 13,
+            "kholama": 4,
+            "lakhanka": 9,
+            "aatala": 6,
+            "mand dhar": 10,
+            "bhadli": 15,
+            "kerala": 14,
+            "raampara": 11
         };
 
         function getDrivers() {
@@ -485,26 +486,26 @@
         }
 
         function calculateFare() {
-            let dropText = document.getElementById('dropInput').value.trim();
-            let km = 2; // ડિફોલ્ટ મિનિમમ 2 કિમી (₹60)
+            let dropText = document.getElementById('dropInput').value.trim().toLowerCase();
+            let km = 1.5; // डिफोल्ट मान
 
             for (let place in distanceDatabase) {
-                if (dropText === place || dropText.includes(place)) {
+                if (dropText === place.toLowerCase() || dropText.includes(place.toLowerCase())) {
                     km = distanceDatabase[place];
                     break;
                 }
             }
 
-            let baseFare = 40;
-            let perKmRate = 10;
-            let distanceFare = baseFare + (km * perKmRate);
+            let baseFare = 40; // बेस भाड़ा ₹40
+            let perKmRate = 10; // प्रति किलोमीटर ₹10
+            let totalFare = baseFare + (km * perKmRate);
             let subtext = `બેઝ ભાડું ₹40 + (${km} કિમી × ₹10)`;
 
             let paxCount = parseInt(document.getElementById('passengerCount').value) || 1;
             let extraPax = (paxCount > 4) ? (paxCount - 4) * 10 : 0;
             if (extraPax > 0) subtext += ` + ${paxCount} પેસેન્જર (₹${extraPax})`;
 
-            let subTotal = distanceFare + extraPax;
+            let subTotal = totalFare + extraPax;
             let isRound = document.getElementById('roundTripCheck').checked;
             let total = isRound ? subTotal * 2 : subTotal;
             if (isRound) subtext += ` + 🔄 રાઉન્ડ ટ્રીપ`;
@@ -515,8 +516,8 @@
 
         function sendWhatsAppBooking() {
             let name = document.getElementById('passengerName').value;
-            let pickup = document.getElementById('pickupInput').value || 'ગઢડા બસ સ્ટેન્ડ';
-            let drop = document.getElementById('dropInput').value || 'બોટાદ';
+            let pickup = document.getElementById('pickupInput').value || 'Gadhada bud stand';
+            let drop = document.getElementById('dropInput').value || 'Botad';
             let driverSelect = document.getElementById('selectedDriver');
             
             if (!driverSelect || driverSelect.options.length === 0) {
@@ -556,7 +557,7 @@
             let html = '', totalComm = 0;
             trips.slice().reverse().forEach(t => {
                 totalComm += t.commission;
-                html += `<div class="ledger-item"><b>${t.name}</b> ➡️ <b>${t.driver}</b><br>📍 ${t.pickup} ➔ 🏁 ${t.drop}<br>ભાડું: ₹${t.fare} | <b>કમિશન: ₹${t.commission.toFixed(2)}</b></div>`;
+                html += `<div class="ledger-item"><b>${t.name}</b> ➡️ <b>${t.driver}</b><br>📍 ${t.pickup} ➔ 🏁 ${t.drop}<br>ભાડું: ₹${t.fare} | <b>કમિશન: ₹${t.commission.getvalue ? t.commission.getvalue() : t.commission.toFixed(2)}</b></div>`;
             });
             list.innerHTML = html;
             totalBox.innerText = `કુલ જમા કમિશન (5%): ₹${totalComm.toFixed(2)}`;
