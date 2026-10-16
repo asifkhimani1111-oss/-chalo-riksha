@@ -249,7 +249,7 @@
                     <option value="ઉગામડી">ઉગામડી</option>
                     <option value="નિંગાળા">નિંગાળા</option>
                     <option value="લખણકા">લખણકા</option>
-                    <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)</option>
+                    <option value="અન્ય">અન્ય (જાતે લખો)</option>
                 </select>
                 <input type="text" id="pickupCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 8px; display: none;" oninput="calculateFare()">
             </div>
@@ -274,7 +274,7 @@
                     <option value="ઉગામડી">ઉગામડી</option>
                     <option value="નિંગાળા">નિંગાળા</option>
                     <option value="લખણકા">લખણકા</option>
-                    <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)</option>
+                    <option value="અન્ય">અન્ય (જાતે લખો)</option>
                 </select>
                 <input type="text" id="dropCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 8px; display: none;" oninput="calculateFare()">
             </div>
@@ -484,7 +484,7 @@
             let select = document.getElementById('pickupSelect');
             let custom = document.getElementById('pickupCustom');
             if (select && custom) {
-                if (select.value === 'અન્ય (જાતે લખો)') {
+                if (select.value === 'અન્ય') {
                     custom.style.display = 'block';
                     custom.focus();
                 } else {
@@ -499,7 +499,7 @@
             let select = document.getElementById('dropSelect');
             let custom = document.getElementById('dropCustom');
             if (select && custom) {
-                if (select.value === 'અન્ય (જાતે લખો)') {
+                if (select.value === 'અન્ય') {
                     custom.style.display = 'block';
                     custom.focus();
                 } else {
@@ -513,7 +513,7 @@
         function getPickupLocation() {
             let select = document.getElementById('pickupSelect');
             let custom = document.getElementById('pickupCustom');
-            if (select && select.value === 'અન્ય (જાતે લખો)' && custom && custom.value.trim() !== '') {
+            if (select && select.value === 'અન્ય' && custom && custom.value.trim() !== '') {
                 return custom.value.trim();
             }
             return select ? select.value : 'ગઢડા બસ સ્ટેન્ડ';
@@ -522,7 +522,7 @@
         function getDropLocation() {
             let select = document.getElementById('dropSelect');
             let custom = document.getElementById('dropCustom');
-            if (select && select.value === 'અન્ય (જાતે લખો)' && custom && custom.value.trim() !== '') {
+            if (select && select.value === 'અન્ય' && custom && custom.value.trim() !== '') {
                 return custom.value.trim();
             }
             return select ? select.value : 'માર્કેટિંગ યાર્ડ';
