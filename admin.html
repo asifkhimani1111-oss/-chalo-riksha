@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ચાલો રિક્ષા - ડ્રાઇવર અને એડમિન પેનલ</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f2f4f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            background: #e4e7eb;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 6px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .tab.active {
+            background: #0f3d24;
+            color: #ffffff;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .header-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1a2b3c;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd1d9;
+            border-radius: 8px;
+            font-size: 15px;
+            background-color: #f8fafc;
+        }
+        .book-btn {
+            width: 100%;
+            background-color: #00c853;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+            box-shadow: 0 2px 5px rgba(0,200,83,0.3);
+        }
+        .book-btn:hover { background-color: #00b047; }
+        .driver-card {
+            background: #ffffff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .ledger-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        .ledger-item {
+            padding: 8px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+            color: #334155;
+        }
+        .total-commission-box {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            border: 1px dashed #bfdbfe;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('drivers', event)">ડ્રાઇવર રજીસ્ટર</div>
+            <div class="tab" onclick="switchTab('admin', event)">એડમિન</div>
+            <div class="tab" onclick="switchTab('ledger', event)">હિસાબ</div>
+        </div>
+
+        <!-- 1. ડ્રાઇવરો Tab -->
+        <div id="drivers-tab" class="tab-content active">
+            <div class="header-title">🛺 ડ્રાઈવર જાતે રજીસ્ટ્રેશન કરો</div>
+            <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>તમારું નામ:</label>
+                    <input type="text" id="newDriverName" placeholder="દા.ત. રમેશભાઈ">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>રિક્ષા નંબર:</label>
+                    <input type="text" id="newDriverRiksha" placeholder="દા.ત. GJ-14-1234">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>WhatsApp નંબર (91 સાથે):</label>
+                    <input type="text" id="newDriverPhone" placeholder="91xxxxxxxxxx">
+                </div>
+                <button class="book-btn" style="padding: 10px; font-size: 14px;" onclick="registerNewDriver()">🚀 લિસ્ટમાં જોડાઓ (રજીસ્ટર કરો)</button>
+            </div>
+
+            <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #334155;">હાલમાં જોડાયેલા ડ્રાઇવરો:</div>
+            <div id="driverListContainer"></div>
+        </div>
+
+        <!-- 2. એડમિન Tab -->
+        <div id="admin-tab" class="tab-content">
+            <div class="header-title">એડમિન કંટ્રોલ પેનલ</div>
+            <div class="form-group">
+                <label>એડમિન WhatsApp નંબર:</label>
+                <input type="text" id="adminWhatsapp" value="919426852334">
+            </div>
+            <div class="form-group">
+                <label>કમિશન ટકાવારી (%):</label>
+                <input type="text" value="5% (ઓટોમેટિક ગણતરી)" readonly>
+            </div>
+            <button class="book-btn" onclick="saveAdminSettings()">સેટિંગ સેવ કરો</button>
+        </div>
+
+        <!-- 3. હિસાબ Tab -->
+        <div id="ledger-tab" class="tab-content">
+            <div class="header-title">📊 કમિશન અને ટ્રીપ હિસાબ</div>
+            <div class="total-commission-box" id="totalCommissionBox">કુલ જમા કમિશન (5%): ₹0</div>
+            <div style="font-size: 13px; font-weight: bold; margin: 15px 0 5px 0; color: #334155;">થયેલી ટ્રીપોનું લિસ્ટ:</div>
+            <div class="ledger-box" id="ledgerList">
+                <div style="text-align: center; color: #94a3b8; padding: 20px;">કોઈ ટ્રીપ નથી.</div>
+            </div>
+            <button class="book-btn" style="background-color: #ef4444; font-size: 14px; padding: 10px;" onclick="clearLedger()">બધો હિસાબ રીસેટ કરો</button>
+        </div>
+    </div>
+
+    <script>
+        const defaultDrivers = [
+            { name: "સિક્કા ભાઈ", riksha: "GJ-14-1111", phone: "917779085469" },
+            { name: "ચાવડા અલ્ફાઝ", riksha: "GJ-14-2222", phone: "917383940831" },
+            { name: "ચાવડા ફિદ", riksha: "GJ-14-3333", phone: "919327272466" }
+        ];
+
+        function getDrivers() {
+            try {
+                let saved = localStorage.getItem('appDriversWhatsApp');
+                if (saved) {
+                    let parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                }
+            } catch(e) {}
+            localStorage.setItem('appDriversWhatsApp', JSON.stringify(defaultDrivers));
+            return defaultDrivers;
+        }
+
+        function loadDriversToUI() {
+            let drivers = getDrivers();
+            let container = document.getElementById('driverListContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            drivers.forEach((d, index) => {
+                let card = document.createElement('div');
+                card.className = 'driver-card';
+                card.innerHTML = `
+                    <div style="font-size:14px;"><b>${d.name}</b> (${d.riksha})<br><span style="color:#00c853; font-size:12px;">💬 WhatsApp: ${d.phone}</span></div>
+                    <button onclick="removeDriver(${index})" style="background:#ef4444; color:white; border:none; padding:6px 10px; border-radius:6px; font-size:12px; cursor:pointer;">ડિલીટ</button>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function registerNewDriver() {
+            let name = document.getElementById('newDriverName').value.trim();
+            let riksha = document.getElementById('newDriverRiksha').value.trim();
+            let phone = document.getElementById('newDriverPhone').value.trim();
+
+            if (!name || !riksha || !phone) {
+                alert('કૃપા કરીને બધી માહિતી પૂરી ભરો!');
+                return;
+            }
+
+            let drivers = getDrivers();
+            drivers.push({ name, riksha, phone });
+            localStorage.setItem('appDriversWhatsApp', JSON.stringify(drivers));
+
+            document.getElementById('newDriverName').value = '';
+            document.getElementById('newDriverRiksha').value = '';
+            document.getElementById('newDriverPhone').value = '';
+
+            loadDriversToUI();
+            alert('અભિનંદન! તમે સફળતાપૂર્વક રિક્ષા ડ્રાઈવર તરીકે જોડાઈ ગયા છો!');
+        }
+
+        function removeDriver(index) {
+            let drivers = getDrivers();
+            if(confirm('શું તમે આ ડ્રાઈવરને હટાવવા માંગો છો?')) {
+                drivers.splice(index, 1);
+                localStorage.setItem('appDriversWhatsApp', JSON.stringify(drivers));
+                loadDriversToUI();
+            }
+        }
+
+        function switchTab(tabName, event) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            let target = document.getElementById(tabName + '-tab');
+            if(target) target.classList.add('active');
+            
+            if(tabName === 'ledger') loadLedger();
+            if(tabName === 'drivers') loadDriversToUI();
+        }
+
+        function loadLedger() {
+            let trips = JSON.parse(localStorage.getItem('rickshawTrips')) || [];
+            let list = document.getElementById('ledgerList');
+            let totalBox = document.getElementById('totalCommissionBox');
+            if (trips.length === 0) {
+                list.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 20px;">કોઈ ટ્રીપ નથી.</div>`;
+                totalBox.innerText = `કુલ જમા કમિશન (5%): ₹0`;
+                return;
+            }
+            let html = '', totalComm = 0;
+            trips.slice().reverse().forEach(t => {
+                totalComm += t.commission;
+                html += `<div class="ledger-item"><b>${t.name}</b> ➡️ <b>${t.driver}</b><br>📍 ${t.pickup} ➔ 🏁 ${t.drop}<br>ભાડું: ₹${t.fare} | <b>કમિશન: ₹${t.commission.toFixed(2)}</b></div>`;
+            });
+            list.innerHTML = html;
+            totalBox.innerText = `કુલ જમા કમિશન (5%): ₹${totalComm.toFixed(2)}`;
+        }
+
+        function clearLedger() {
+            if(confirm('બધો હિસાબ ડિલીટ કરવો છે?')) {
+                localStorage.removeItem('rickshawTrips');
+                loadLedger();
+            }
+        }
+
+        function saveAdminSettings() {
+            let adminNum = document.getElementById('adminWhatsapp').value.trim();
+            if(!adminNum) {
+                alert('કૃપા કરીને એડમિન નંબર ભરો!');
+                return;
+            }
+            localStorage.setItem('adminWhatsappNumber', adminNum);
+            alert('એડમિન સેટિંગ સફળતાપૂર્વક સેવ થઈ ગયું!');
+        }
+
+        window.onload = function() {
+            loadDriversToUI();
+            let savedAdmin = localStorage.getItem('adminWhatsappNumber');
+            if(savedAdmin) {
+                let adminInput = document.getElementById('adminWhatsapp');
+                if(adminInput) adminInput.value = savedAdmin;
+            }
+        };
+    </script>
+</body>
+</html>
