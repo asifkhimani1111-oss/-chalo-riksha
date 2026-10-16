@@ -10,7 +10,8 @@
         h2 { text-align: center; color: #ff9800; margin-bottom: 20px; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
-        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; background: #fff; }
+        input[readonly] { background: #e9ecef; color: #495057; font-weight: bold; }
         .fare-box { background: #fff3e0; padding: 12px; border-radius: 6px; text-align: center; font-size: 18px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
         .btn { background: #25d366; color: white; border: none; padding: 12px; width: 100%; font-size: 18px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         .btn:hover { background: #1ebe5d; }
@@ -25,17 +26,41 @@
     
     <div class="form-group">
         <label>ક્યાંથી બેસવું છે? (પીકઅપ લોકેશન):</label>
-        <input type="text" id="pickup" placeholder="ઉપાડવાનું સ્થળ જાતે લખો">
+        <input type="text" id="pickup" placeholder="ઉપાડવાનું સ્થળ લખો">
     </div>
 
     <div class="form-group">
-        <label>ક્યાં જવું છે? (ડ્રોપ લોકેશન):</label>
-        <input type="text" id="dropoff" placeholder="જવાનું સ્થળ જાતે લખો">
+        <label>ક્યાં જવું છે? (ડ્રોપ લોકેશન પસંદ કરો):</label>
+        <select id="dropoff" onchange="updateKmAndFare()">
+            <option value="" data-km="1">-- ડ્રોપ લોકેશન પસંદ કરો --</option>
+            <option value="ગઢડા બસ સ્ટેન્ડ" data-km="2">ગઢડા બસ સ્ટેન્ડ (2 KM)</option>
+            <option value="ગઢડા હોસ્પિટલ રોડ" data-km="3">ગઢડા હોસ્પિટલ રોડ (3 KM)</option>
+            <option value="સ્વામિનારાયણ મંદિર ગઢડા" data-km="2">સ્વામિનારાયણ મંદિર ગઢડા (2 KM)</option>
+            <option value="શાકમાર્કેટ ગઢડા" data-km="2">શાકમાર્કેટ ગઢડા (2 KM)</option>
+            <option value="માર્કેટિંગ યાર્ડ ગઢડા" data-km="4">માર્કેટિંગ યાર્ડ ગઢડા (4 KM)</option>
+            <option value="ઢસા જંક્શન" data-km="15">ઢસા જંક્શન (15 KM)</option>
+            <option value="રાણપુર રોડ" data-km="10">રાણપુર રોડ (10 KM)</option>
+            <option value="બોટાદ રોડ" data-km="12">બોટાદ રોડ (12 KM)</option>
+            <option value="રાંદરડા" data-km="8">રાંદરડા (8 KM)</option>
+            <option value="માલપરા" data-km="6">માલપરા (6 KM)</option>
+            <option value="રાયપર" data-km="7">રાયપર (7 KM)</option>
+            <option value="હરપુરા" data-km="5">હરપુરા (5 KM)</option>
+            <option value="પાટીયા" data-km="4">પાટીયા (4 KM)</option>
+            <option value="સુરગપરા" data-km="6">સુરગપરા (6 KM)</option>
+            <option value="સંગાણી" data-km="9">સંગાણી (9 KM)</option>
+            <option value="ભંડારીયા" data-km="11">ભંડારીયા (11 KM)</option>
+            <option value="બોવાળ" data-km="10">બોવાળ (10 KM)</option>
+            <option value="પીપરડી" data-km="14">પીપરડી (14 KM)</option>
+            <option value="જનાળા" data-km="13">જનાળા (13 KM)</option>
+            <option value="માણસા" data-km="8">માણસા (8 KM)</option>
+            <option value="ચારોડીયા" data-km="7">ચારોડીયા (7 KM)</option>
+            <option value="સખપર" data-km="9">સખપર (9 KM)</option>
+        </select>
     </div>
 
     <div class="form-group">
-        <label>અંદાજિત અંતર (KM):</label>
-        <input type="number" id="distanceKm" placeholder="KM લખો" value="1" min="1" oninput="calculateFare()">
+        <label>અંદાજિત અંતર (KM - ઓટોમેટિક):</label>
+        <input type="text" id="distanceKm" value="1" readonly>
     </div>
 
     <div class="form-group">
@@ -45,13 +70,13 @@
             <option value="2">2 પેસેન્જર</option>
             <option value="3">3 પેસેન્જર</option>
             <option value="4" selected>4 પેસેન્જર</option>
-            <option value="5">5 પેસેન્જર (+₹10)</option>
-            <option value="6">6 પેસેન્જર (+₹20)</option>
+            <option value="5">5 પેસેન્જર</option>
+            <option value="6">6 પેસેન્જર</option>
         </select>
     </div>
 
     <div class="fare-box">
-        અંદાજિત ભાડું: ₹ <span id="totalFare">45</span>
+        કુલ અંદાજિત ભાડું: ₹ <span id="totalFare">45</span>
     </div>
 
     <div class="form-group">
@@ -66,24 +91,27 @@
 </div>
 
 <script>
+    function updateKmAndFare() {
+        let selectDrop = document.getElementById('dropoff');
+        let selectedOption = selectDrop.options[selectDrop.selectedIndex];
+        let km = selectedOption.getAttribute('data-km') || 1;
+        
+        document.getElementById('distanceKm').value = km + " KM";
+        calculateFare();
+    }
+
     function calculateFare() {
-        let km = parseFloat(document.getElementById('distanceKm').value) || 1;
-        let passengers = parseInt(document.getElementById('passengerCount').value) || 1;
+        let selectDrop = document.getElementById('dropoff');
+        let selectedOption = selectDrop.options[selectDrop.selectedIndex];
+        let km = parseFloat(selectedOption.getAttribute('data-km')) || 1;
 
         // નિયમ: પહેલું 1 કિલોમીટરના ₹45, પછીના દરેક 1 KM ના ₹10 વત્તા
-        let baseFare = 45;
+        let fare = 45;
         if (km > 1) {
-            baseFare += (km - 1) * 10;
+            fare += (km - 1) * 10;
         }
 
-        // નિયમ: 4 પેસેન્જર સુધી કોઈ એક્સ્ટ્રા નહીં, 4 થી ઉપર દરેક પેસેન્જરના ₹10 એક્સ્ટ્રા
-        let extraPassengerFee = 0;
-        if (passengers > 4) {
-            extraPassengerFee = (passengers - 4) * 10;
-        }
-
-        let totalFare = baseFare + extraPassengerFee;
-        document.getElementById('totalFare').textContent = totalFare > 0 ? totalFare : 45;
+        document.getElementById('totalFare').textContent = fare > 0 ? fare : 45;
     }
 
     function loadDrivers() {
@@ -106,7 +134,8 @@
 
     function bookRide() {
         let pickup = document.getElementById('pickup').value;
-        let dropoff = document.getElementById('dropoff').value;
+        let dropoffSelect = document.getElementById('dropoff');
+        let dropoff = dropoffSelect.value;
         let km = document.getElementById('distanceKm').value;
         let passengers = document.getElementById('passengerCount').value;
         let fare = document.getElementById('totalFare').textContent;
@@ -117,7 +146,7 @@
             return;
         }
         if (!dropoff) {
-            alert('કૃપા કરીને ડ્રોપ લોકેશન લખો!');
+            alert('કૃપા કરીને ડ્રોપ લોકેશન પસંદ કરો!');
             return;
         }
         if (!driverPhone) {
@@ -125,15 +154,15 @@
             return;
         }
 
-        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 ઉપાડવાનું સ્થળ: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + " KM\n👥 પેસેન્જર: " + passengers + "\n💰 કુલ અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
+        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 ઉપાડવાનું સ્થળ: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + "\n👥 પેસેન્જર: " + passengers + "\n💰 કુલ અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
         let whatsappUrl = "https://wa.me/91" + driverPhone + "?text=" + encodeURIComponent(message);
         window.open(whatsappUrl, '_blank');
     }
 
     function cancelRide() {
         document.getElementById('pickup').value = '';
-        document.getElementById('dropoff').value = '';
-        document.getElementById('distanceKm').value = '1';
+        document.getElementById('dropoff').selectedIndex = 0;
+        document.getElementById('distanceKm').value = '1 KM';
         document.getElementById('passengerCount').selectedIndex = 3; // 4 passengers default
         calculateFare();
         document.getElementById('driverSelect').selectedIndex = 0;
