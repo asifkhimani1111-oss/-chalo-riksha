@@ -234,7 +234,7 @@
 
         <!-- 1. મુસાફર Tab -->
         <div id="musafir-tab" class="tab-content active">
-            <div class="header-title">🛺 ચાલો રિક્ષા બુકિંગ (પરફેક્ટ કિમી ભાડું)</div>
+            <div class="header-title">🛺 ચાલો રિક્ષા બુકિંગ (ગઢડા અને આજુબાજુ)</div>
             
             <div class="form-group">
                 <label>મુસાફરનું નામ:</label>
@@ -244,14 +244,14 @@
             <!-- પિકઅપ સ્થળ -->
             <div class="form-group">
                 <label>પિકઅપ સ્થળ:</label>
-                <input type="text" id="pickupInput" value="Nagjipura" placeholder="ક્યાંથી બેસવું છે?" oninput="calculateFare()">
+                <input type="text" id="pickupInput" value="ગઢડા બસ સ્ટેન્ડ" placeholder="ક્યાંથી બેસવું છે?" oninput="calculateFare()">
                 <button type="button" class="gps-btn" onclick="getCurrentLocation()">📍 મારું GPS લાઈવ લોકેશન લો</button>
             </div>
             
             <!-- જવાનું સ્થળ -->
             <div class="form-group">
                 <label>જવાનું સ્થળ (ડ્રોપ):</label>
-                <input type="text" id="dropInput" value="BAPS Swaminarayan" placeholder="ક્યાં જવું છે?" oninput="calculateFare()">
+                <input type="text" id="dropInput" value="બોટાદ" placeholder="ક્યાં જવું છે? (ગુજરાતી કે અંગ્રેજીમાં લખો)" oninput="calculateFare()">
             </div>
 
             <!-- મુસાફરોની સંખ્યા -->
@@ -283,8 +283,8 @@
             </div>
 
             <div class="fare-display-box" id="fareBox">
-                કુલ ભાડું: ₹55
-                <div class="fare-subtext" id="fareSubtext">બેઝ ભાડું ₹40 + (૧.૫ કિમી × ₹10)</div>
+                કુલ ભાડું: ₹290
+                <div class="fare-subtext" id="fareSubtext">બેઝ ભાડું ₹40 + (૨૫ કિમી × ₹10)</div>
             </div>
 
             <div class="otp-box" id="otpDisplayBox" style="display: none;">
@@ -292,7 +292,7 @@
             </div>
 
             <div class="rule-note">
-                ℹ️ દરેક કિલોમીટરના ₹10 લેખે ઓટોમેટિક સાચો હિસાબ (ડ્રાઇવરને પૂરા પૈસા).
+                ℹ️ મિનિમમ ૨ કિમી (₹60) થી લઈને ૨૫ કિમી સુધીના સાચા કિલોમીટર પ્રમાણે ઓટોમેટિક ભાડું.
             </div>
 
             <button class="book-btn" onclick="sendWhatsAppBooking()">💬 વોટ્સએપ પર બુક કરો</button>
@@ -371,26 +371,33 @@
             { name: "ડ્રાઈવર ૯", riksha: "GJ-14-9999", phone: "919876543215" }
         ];
 
-        // તમામ વિસ્તારો અને ગામોના કિલોમીટરનું ડેટાબેઝ
+        // ગુજરાતી અને અંગ્રેજી બંને નામો સાથેનું કિલોમીટર ડેટાબેઝ
         const distanceDatabase = {
-            "બોટાદ": 25,
-            "નિંગાળા": 12,
-            "ઉગામડી": 8,
-            "આટલા": 6,
-            "માંડધર": 10,
-            "ગોરડીયા": 7,
-            "લખણકા": 9,
-            "હરીપર": 5,
-            "ખોલમા": 4,
-            "નાગજીપરા": 1.5,
-            "baps swaminarayan": 1.5,
-            "કોઠીવાડી": 2,
-            "સામાકાંઠે": 2,
-            "રાબિયા પાર્ક": 2,
-            "હોસ્પિટલ રોડ": 1.5,
-            "માર્કેટિંગ યાર્ડ": 2,
-            "સ્વામિનારાયણ મંદિર": 1,
-            "બસ સ્ટેન્ડ": 1
+            "gadhada bud stand": 1, "ગઢડા બસ સ્ટેન્ડ": 1,
+            "samakathe": 2.5, "સામાકાંઠે": 2.5,
+            "kothivadi": 2.5, "કોઠીવાડી": 2.5,
+            "rabiya park": 3, "રાબિયા પાર્ક": 3,
+            "nagjipura": 1.5, "નાગજીપરા": 1.5,
+            "botad raad": 4, "બોટાદ રોડ": 4,
+            "botad": 25, "બોટાદ": 25,
+            "gordia": 7, "ગોરડીયા": 7,
+            "tamari": 6, "તમારી": 6,
+            "bhinda": 11, "ભીંડા": 11,
+            "ugaamedi": 8, "ઉગામડી": 8,
+            "ningala": 12, "નિંગાળા": 12,
+            "rohisala": 15, "રોહિસાલા": 15,
+            "bhadli get": 14, "ભાડલી ગેટ": 14,
+            "dhada road": 16, "ધાડા રોડ": 16,
+            "dhasa gaam": 18, "ઢસા ગામ": 18,
+            "gundala": 10, "ગુંદાળા": 10,
+            "malpara": 13, "માલપરા": 13,
+            "kholama": 4, "ખોલમા": 4,
+            "lakhanka": 9, "લખણકા": 9,
+            "aatala": 6, "આટલા": 6,
+            "mand dhar": 10, "માંડધર": 10,
+            "bhadli": 15, "ભાડલી": 15,
+            "kerala": 14, "કેરાળા": 14,
+            "raampara": 11, "રામપરા": 11
         };
 
         function getDrivers() {
@@ -496,10 +503,9 @@
             }
         }
 
-        // ઓટોમેટિક ચોક્કસ કિમી અને ભાડા ગણતરી (દરેક કિમીના ₹10 એડ થશે જ)
         function calculateFare() {
             let dropText = document.getElementById('dropInput').value.trim().toLowerCase();
-            let km = 2; // ડિફોલ્ટ મિનિમમ 2 કિમી જેથી ફ્લેટ ₹40 ન રહે, પણ km મુજબ વધે
+            let km = 2; // ડિફોલ્ટ મિનિમમ 2 કિમી (₹60)
 
             for (let place in distanceDatabase) {
                 if (dropText.includes(place.toLowerCase())) {
@@ -508,12 +514,12 @@
                 }
             }
 
-            let baseFare = 40; // મિનિમમ બેઝ ભાડું
-            let perKmRate = 10; // પ્રતિ કિલોમીટર ભાડું
+            let baseFare = 40;
+            let perKmRate = 10;
             let distanceFare = baseFare + (km * perKmRate);
             let subtext = `બેઝ ભાડું ₹40 + (${km} કિમી × ₹10)`;
 
-            let paxCount = parseInt(document.getElementById('passengerCount').value)하고자 1;
+            let paxCount = parseInt(document.getElementById('passengerCount').value) || 1;
             let extraPax = (paxCount > 4) ? (paxCount - 4) * 10 : 0;
             if (extraPax > 0) subtext += ` + ${paxCount} પેસેન્જર (₹${extraPax})`;
 
@@ -528,8 +534,8 @@
 
         function sendWhatsAppBooking() {
             let name = document.getElementById('passengerName').value;
-            let pickup = document.getElementById('pickupInput').value || 'Nagjipura';
-            let drop = document.getElementById('dropInput').value || 'BAPS Swaminarayan';
+            let pickup = document.getElementById('pickupInput').value || 'ગઢડા બસ સ્ટેન્ડ';
+            let drop = document.getElementById('dropInput').value || 'બોટાદ';
             let driverSelect = document.getElementById('selectedDriver');
             
             if (!driverSelect || driverSelect.options.length === 0) {
