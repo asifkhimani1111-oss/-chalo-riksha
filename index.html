@@ -303,7 +303,7 @@
             <div class="form-group">
                 <label>ડ્રાઇવર પસંદ કરો:</label>
                 <select id="selectedDriver">
-                    <!-- JavaScript દ્વારા લોડ થશે -->
+                    <!-- JavaScript દ્વારા ડ્રાઇવરો અહીં લોડ થશે -->
                 </select>
             </div>
 
@@ -365,7 +365,7 @@
                 <label>કમિશન ટકાવારી (%):</label>
                 <input type="text" value="5% (ઓટોમેટિક ગણતરી)" readonly>
             </div>
-            <button class="book-btn" onclick="alert('સેટિંગ સેવ થઈ ગયું!')">સેટિંગ સેવ કરો</button>
+            <button class="book-btn" onclick="saveAdminSettings()">સેટિંગ સેવ કરો</button>
         </div>
 
         <!-- 4. હિસાબ Tab -->
@@ -387,7 +387,13 @@
         const defaultDrivers = [
             { name: "સિક્કા ભાઈ", riksha: "GJ-14-1111", phone: "917779085469" },
             { name: "ચાવડા અલ્ફાઝ", riksha: "GJ-14-2222", phone: "917383940831" },
-            { name: "ચાવડા ફિદ", riksha: "GJ-14-3333", phone: "919327272466" }
+            { name: "ચાવડા ફિદ", riksha: "GJ-14-3333", phone: "919327272466" },
+            { name: "ડ્રાઈવર ૪", riksha: "GJ-14-4444", phone: "919876543210" },
+            { name: "ડ્રાઈવર ૫", riksha: "GJ-14-5555", phone: "919876543211" },
+            { name: "ડ્રાઈવર ૬", riksha: "GJ-14-6666", phone: "919876543212" },
+            { name: "ડ્રાઈવર ૭", riksha: "GJ-14-7777", phone: "919876543213" },
+            { name: "ડ્રાઈવર ૮", riksha: "GJ-14-8888", phone: "919876543214" },
+            { name: "ડ્રાઈવર ૯", riksha: "GJ-14-9999", phone: "919876543215" }
         ];
 
         function getDrivers() {
@@ -398,6 +404,7 @@
                     if (Array.isArray(parsed) && parsed.length > 0) return parsed;
                 }
             } catch(e) {}
+            localStorage.setItem('appDrivers', JSON.stringify(defaultDrivers));
             return defaultDrivers;
         }
 
@@ -638,8 +645,23 @@
             }
         }
 
+        function saveAdminSettings() {
+            let adminNum = document.getElementById('adminWhatsapp').value.trim();
+            if(!adminNum) {
+                alert('કૃપા કરીને એડમિન નંબર ભરો!');
+                return;
+            }
+            localStorage.setItem('adminWhatsappNumber', adminNum);
+            alert('એડમિન સેટિંગ સફળતાપૂર્વક સેવ થઈ ગયું!');
+        }
+
         window.onload = function() {
             loadDriversToUI();
+            let savedAdmin = localStorage.getItem('adminWhatsappNumber');
+            if(savedAdmin) {
+                let adminInput = document.getElementById('adminWhatsapp');
+                if(adminInput) adminInput.value = savedAdmin;
+            }
             calculateFare();
         };
     </script>
