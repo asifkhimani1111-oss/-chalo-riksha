@@ -82,8 +82,11 @@
             padding: 12px;
             border: 1px solid #ccd1d9;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 15px;
             background-color: #f8fafc;
+        }
+        .form-group select option {
+            padding: 10px;
         }
         .form-group select {
             margin-bottom: 6px;
@@ -123,12 +126,10 @@
             background-color: #ff3b30 !important;
             box-shadow: 0 2px 5px rgba(255,59,48,0.3);
         }
-        .cancel-btn:hover { background-color: #e02d22 !important; }
         .accept-btn {
             background-color: #0288d1 !important;
             box-shadow: 0 2px 5px rgba(2,136,209,0.3);
         }
-        .accept-btn:hover { background-color: #0277bd !important; }
         .note-text {
             font-size: 12px;
             color: #64748b;
@@ -236,7 +237,7 @@
                     <option value="લખણકા">લખણકા</option>
                     <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)...</option>
                 </select>
-                <input type="text" id="pickupCustom" placeholder="અથવા પિકઅપ એરિયાનું નામ લખો..." style="margin-top: 5px; display: none;">
+                <input type="text" id="pickupCustom" placeholder="અથવા પિકઅપ એરિયાનું નામ લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
             </div>
             
             <div class="form-group">
@@ -260,7 +261,7 @@
                     <option value="લખણકા">લખણકા</option>
                     <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)...</option>
                 </select>
-                <input type="text" id="dropCustom" placeholder="અથવા ડ્રોપ એરિયાનું નામ લખો..." style="margin-top: 5px; display: none;">
+                <input type="text" id="dropCustom" placeholder="અથવા ડ્રોપ એરિયાનું નામ લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
             </div>
 
             <div class="form-group">
@@ -278,20 +279,14 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>અંદાજિત ભાડું (₹):</label>
-                <input type="number" id="customFareInput" value="55" oninput="calculateFare()">
-            </div>
-
-            <!-- મુસાફરને માત્ર કુલ ભાડું જ દેખાશે, કમિશન નહીં -->
             <div class="fare-display-box" id="fareBox">
                 કુલ ભાડું: ₹55
-                <div class="fare-subtext" id="fareSubtext">સ્ટાર્ટિંગ ભાડું</div>
+                <div class="fare-subtext" id="fareSubtext">સ્થળ મુજબ ઓટોમેટિક ભાડું</div>
             </div>
 
             <button class="book-btn" onclick="sendWhatsAppBooking()">💬 વોટ્સએપ પર બુક કરો</button>
 
-            <!-- રાઇડ સ્ટેટસ (મુસાફર માટે કમિશન છુપાવેલું) -->
+            <!-- રાઇડ સ્ટેટસ અને એક્સેપ્ટ/કેન્સલ બટન્સ -->
             <div id="rideStatusBox" style="margin-top: 15px; display: none; background: #fffbeb; padding: 12px; border-radius: 8px; border: 1px solid #fef3c7;">
                 <p id="rideStatusText" style="font-size: 13px; font-weight: bold; color: #b45309; margin-bottom: 8px;">સ્થિતિ: ડ્રાઈવરની મંજૂરીની રાહ જોવાય છે...</p>
                 <div style="display: flex; gap: 8px;">
@@ -301,14 +296,14 @@
             </div>
 
             <div class="note-text">
-                ભાડું: શરૂઆત ₹55.
+                ભાડું: પિકઅપ અને ડ્રોપ એરિયા મુજબ ઓટોમેટિક નક્કી થશે. લિસ્ટમાં નામ ન હોય તો "અન્ય (જાતે લખો)" સિલેક્ટ કરો.
             </div>
         </div>
 
         <!-- 2. ડ્રાઇવરો Tab -->
         <div id="drivers-tab" class="tab-content">
             <div class="header-title">ઓનલાઇન રિક્ષા ડ્રાઇવરો (૯ ડ્રાઇવરો)</div>
-            <div style="font-size: 13px; color: #555; margin-bottom: 15px;">ગ્રાહક સીધો કોલ કરીને રિક્ષા બોલાવી શકે છે[span_1](start_span)[span_1](end_span):</div>
+            <div style="font-size: 13px; color: #555; margin-bottom: 15px;">ગ્રાહક સીધો કોલ કરીને રિક્ષા બોલાવી શકે છે[span_0](start_span)[span_0](end_span):</div>
 
             <div class="driver-card">
                 <div class="driver-info">
@@ -436,6 +431,7 @@
                 customInput.focus();
             } else {
                 customInput.style.display = 'none';
+                customInput.value = '';
             }
             calculateFare();
         }
@@ -448,6 +444,7 @@
                 customInput.focus();
             } else {
                 customInput.style.display = 'none';
+                customInput.value = '';
             }
             calculateFare();
         }
@@ -455,7 +452,8 @@
         function getPickupLocation() {
             let select = document.getElementById('pickupSelect').value;
             if (select === 'અન્ય (જાતે લખો)') {
-                return document.getElementById('pickupCustom').value || 'જાતે લખેલ પિકઅપ';
+                let customVal = document.getElementById('pickupCustom').value.trim();
+                return customVal !== '' ? customVal : 'જાતે લખેલ પિકઅપ';
             }
             return select;
         }
@@ -463,16 +461,28 @@
         function getDropLocation() {
             let select = document.getElementById('dropSelect').value;
             if (select === 'અન્ય (જાતે લખો)') {
-                return document.getElementById('dropCustom').value || 'જાતે લખેલ ડ્રોપ';
+                let customVal = document.getElementById('dropCustom').value.trim();
+                return customVal !== '' ? customVal : 'જાતે લખેલ ડ્રોપ';
             }
             return select;
         }
 
         function calculateFare() {
-            let inputFare = parseFloat(document.getElementById('customFareInput').value) || 55;
-            // મુસાફરને માત્ર કુલ ભાડું જ દેખાશે, કમિશનની રકમ અહીં બતાવાશે નહીં
-            document.getElementById('fareBox').innerHTML = `કુલ ભાડું: ₹${inputFare} <div class="fare-subtext">સ્ટાર્ટિંગ ભાડું</div>`;
-            return inputFare;
+            let pickup = getPickupLocation();
+            let drop = getDropLocation();
+            let fare = 55;
+            let subtext = "લોકલ ભાડું";
+
+            if (pickup === drop) {
+                fare = 55;
+                subtext = "એક જ એરિયા (બેઝ ભાડું)";
+            } else {
+                fare = 90;
+                subtext = "અલગ અલગ એરિયા (લાંબુ અંતર)";
+            }
+
+            document.getElementById('fareBox').innerHTML = `કુલ ભાડું: ₹${fare} <div class="fare-subtext">${subtext}</div>`;
+            return fare;
         }
 
         function sendWhatsAppBooking() {
@@ -483,7 +493,7 @@
             let driverPhone = driverSelect.value;
             let driverName = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-name');
             let fare = calculateFare();
-            let commission = fare * 0.05; // 5% કમિશન ઓટોમેટિક બેકગ્રાઉન્ડમાં ગણાશે
+            let commission = fare * 0.05; // 5% કમિશન
 
             currentTripData = {
                 name: name,
@@ -560,6 +570,10 @@
         function saveSettings() {
             alert('સેટિંગ સફળતાપૂર્વક સેવ થઈ ગયું!');
         }
+
+        window.onload = function() {
+            calculateFare();
+        };
     </script>
 </body>
 </html>
