@@ -32,11 +32,7 @@
             font-weight: bold;
             color: #1a2b3c;
             margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
             text-align: center;
-            justify-content: center;
         }
         .form-group {
             margin-bottom: 15px;
@@ -95,17 +91,6 @@
             margin-top: 4px;
             color: #15803d;
         }
-        .rule-note {
-            font-size: 12px;
-            color: #b45309;
-            background: #fffbeb;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #fef3c7;
-            margin-bottom: 15px;
-            text-align: center;
-            font-weight: bold;
-        }
         .book-btn {
             width: 100%;
             background-color: #00c853;
@@ -120,6 +105,31 @@
             box-shadow: 0 2px 5px rgba(0,200,83,0.3);
         }
         .book-btn:hover { background-color: #00b047; }
+        .cancel-btn {
+            width: 100%;
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            display: none;
+        }
+        .status-box {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            border: 1px dashed #bfdbfe;
+            display: none;
+        }
         .driver-list-box {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -154,99 +164,97 @@
     <div class="container">
         <div class="header-title">🛺 ચાલો રિક્ષા બુકિંગ (ગઢડા અને આજુબાજુ)</div>
         
-        <div class="form-group">
-            <label>મુસાફરનું નામ:</label>
-            <input type="text" id="passengerName" placeholder="તમારું નામ લખો...">
-        </div>
+        <div id="bookingFormSection">
+            <div class="form-group">
+                <label>મુસાફરનું નામ:</label>
+                <input type="text" id="passengerName" placeholder="તમારું નામ લખો...">
+            </div>
 
-        <!-- પિકઅપ સ્થળ -->
-        <div class="form-group">
-            <label>પિકઅપ સ્થળ:</label>
-            <input type="text" id="pickupInput" value="ગઢડા બસ સ્ટેન્ડ" placeholder="ક્યાંથી બેસવું છે?">
-        </div>
-        
-        <!-- જવાનું સ્થળ (ડ્રોપ) -->
-        <div class="form-group">
-            <label>જવાનું સ્થળ (ડ્રોપ) અથવા ગામ:</label>
-            <input type="text" id="dropInput" list="villageList" value="Botad raad" placeholder="ગામનું નામ લખો..." oninput="onVillageChange()">
+            <div class="form-group">
+                <label>પિકઅપ સ્થળ:</label>
+                <input type="text" id="pickupInput" value="ગઢડા બસ સ્ટેન્ડ" placeholder="ક્યાંથી બેસવું છે?">
+            </div>
             
-            <!-- ૨૫ ગામોની યાદી -->
-            <datalist id="villageList">
-                <option value="Kothivadi">
-                <option value="Rabiya park">
-                <option value="Nagjipara">
-                <option value="Botad raad">
-                <option value="Botad">
-                <option value="Gordia">
-                <option value="Tamari">
-                <option value="Bhinda">
-                <option value="Ugaamedi">
-                <option value="Ningala">
-                <option value="Rohisala">
-                <option value="Gadhada bud stand">
-                <option value="Samakathe">
-                <option value="Bhadli get">
-                <option value="Dhada road">
-                <option value="Dhasa gaam">
-                <option value="Gundala">
-                <option value="Malpara">
-                <option value="Kholama">
-                <option value="Lakhanka">
-                <option value="Aatala">
-                <option value="Mand dhar">
-                <option value="Bhadli">
-                <option value="Kerala">
-                <option value="Raampara">
-            </datalist>
+            <div class="form-group">
+                <label>જવાનું સ્થળ (ડ્રોપ) અથવા ગામ:</label>
+                <input type="text" id="dropInput" list="villageList" placeholder="ગામનું નામ લખો કે સિલેક્ટ કરો..." oninput="onVillageChange()" autocomplete="off">
+                
+                <datalist id="villageList">
+                    <option value="Kothivadi">
+                    <option value="Rabiya park">
+                    <option value="Nagjipara">
+                    <option value="Botad raad">
+                    <option value="Botad">
+                    <option value="Gordia">
+                    <option value="Tamari">
+                    <option value="Bhinda">
+                    <option value="Ugaamedi">
+                    <option value="Ningala">
+                    <option value="Rohisala">
+                    <option value="Gadhada bud stand">
+                    <option value="Samakathe">
+                    <option value="Bhadli get">
+                    <option value="Dhada road">
+                    <option value="Dhasa gaam">
+                    <option value="Gundala">
+                    <option value="Malpara">
+                    <option value="Kholama">
+                    <option value="Lakhanka">
+                    <option value="Aatala">
+                    <option value="Mand dhar">
+                    <option value="Bhadli">
+                    <option value="Kerala">
+                    <option value="Raampara">
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label>અંદાજિત અંતર (કિલોમીટર):</label>
+                <input type="number" id="kmInput" value="1" step="0.5" min="0.5" oninput="calculateFare()">
+            </div>
+
+            <div class="form-group">
+                <label>મુસાફરોની સંખ્યા (સીટ):</label>
+                <select id="passengerCount" onchange="calculateFare()">
+                    <option value="1">૧ પેસેન્જર</option>
+                    <option value="2">૨ પેસેન્જર</option>
+                    <option value="3">૩ પેસેન્જર</option>
+                    <option value="4" selected>૪ પેસેન્જર (સ્ટાન્ડર્ડ)</option>
+                    <option value="5">૫ પેસેન્જર (મોટી રિક્ષા)</option>
+                    <option value="6">૬ પેસેન્જર (મોટી રિક્ષા)</option>
+                    <option value="7">૭ પેસેન્જર (મોટી રિક્ષા)</option>
+                </select>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="roundTripCheck" onchange="calculateFare()">
+                <label for="roundTripCheck">🔄 રાઉન્ડ ટ્રીપ / ખાલી ફેરી વળતર (આવા-જવાનું)</label>
+            </div>
+
+            <div class="form-group">
+                <label>ડ્રાઇવર પસંદ કરો (WhatsApp):</label>
+                <select id="selectedDriver">
+                    <!-- ડ્રાઇવરો લોડ થશે -->
+                </select>
+            </div>
+
+            <div class="fare-display-box" id="fareBox">
+                કુલ ભાડું: ₹50
+                <div class="fare-subtext" id="fareSubtext">બેઝ ભાડું ₹40 + (૧ કિમી × ₹10)</div>
+            </div>
+
+            <button class="book-btn" onclick="sendWhatsAppBooking()">💬 WhatsApp પર બુકિંગ મોકલો</button>
         </div>
 
-        <!-- કિલોમીટર જાતે બદલવા માટેનું બોક્સ -->
-        <div class="form-group">
-            <label>અંદાજિત અંતર (કિલોમીટર):</label>
-            <input type="number" id="kmInput" value="1" step="0.5" min="0.5" oninput="calculateFare()">
+        <!-- બુકિંગ થયા પછી દેખાશે (Status & Cancel) -->
+        <div id="bookingStatusSection" class="status-box">
+            ⏳ ડ્રાઈવરના જવાબની રાહ જોવાય છે...<br>
+            <span id="bookedDriverInfo" style="font-size: 12px; color: #1e3a8a;"></span>
+            <button class="cancel-btn" id="cancelBookingBtn" style="display: block;" onclick="cancelBooking()">❌ બુકિંગ કેન્સલ કરો</button>
         </div>
-
-        <!-- મુસાફરોની સંખ્યા -->
-        <div class="form-group">
-            <label>મુસાફરોની સંખ્યા (સીટ):</label>
-            <select id="passengerCount" onchange="calculateFare()">
-                <option value="1">૧ પેસેન્જર</option>
-                <option value="2">૨ પેસેન્જર</option>
-                <option value="3">૩ પેસેન્જર</option>
-                <option value="4" selected>૪ પેસેન્જર (સ્ટાન્ડર્ડ)</option>
-                <option value="5">૫ પેસેન્જર (મોટી રિક્ષા)</option>
-                <option value="6">૬ પેસેન્જર (મોટી રિક્ષા)</option>
-                <option value="7">૭ પેસેન્જર (મોટી રિક્ષા)</option>
-            </select>
-        </div>
-
-        <!-- રાઉન્ડ ટ્રીપ -->
-        <div class="checkbox-group">
-            <input type="checkbox" id="roundTripCheck" onchange="calculateFare()">
-            <label for="roundTripCheck">🔄 રાઉન્ડ ટ્રીપ / ખાલી ફેરી વળતર (આવા-જવાનું)</label>
-        </div>
-
-        <!-- ડ્રાઇવર પસંદ કરો -->
-        <div class="form-group">
-            <label>ડ્રાઇવર પસંદ કરો (WhatsApp):</label>
-            <select id="selectedDriver">
-                <!-- ડ્રાઇવરો અહીં લોડ થશે -->
-            </select>
-        </div>
-
-        <div class="fare-display-box" id="fareBox">
-            કુલ ભાડું: ₹50
-            <div class="fare-subtext" id="fareSubtext">બેઝ ભાડું ₹40 + (૧ કિમી × ₹10)</div>
-        </div>
-
-        <div class="rule-note">
-            ℹ️ બેઝ ભાડું ₹40 + પ્રતિ કિમી ₹10. સીધું WhatsApp પર બુકિંગ મોકલો.
-        </div>
-
-        <button class="book-btn" onclick="sendWhatsAppBooking()">💬 WhatsApp પર બુકિંગ મોકલો</button>
 
         <!-- ઉપલબ્ધ ડ્રાઇવરો અને કોલ લિસ્ટ -->
-        <div style="margin-top: 20px;">
+        <div style="margin-top: 20px;" id="driverListSection">
             <div style="font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #334155;">ઉપલબ્ધ ડ્રાઇવરો (કોલ કરવા માટે):</div>
             <div class="driver-list-box" id="publicDriverList"></div>
         </div>
@@ -260,31 +268,12 @@
         ];
 
         const distanceDatabase = {
-            "kothivadi": 2.5,
-            "rabiya park": 3,
-            "nagjipara": 1.5,
-            "botad raad": 1, 
-            "botad": 25,
-            "gordia": 7,
-            "tamari": 6,
-            "bhinda": 11,
-            "ugaamedi": 8,
-            "ningala": 12,
-            "rohisala": 15,
-            "gadhada bud stand": 1,
-            "samakathe": 2.5,
-            "bhadli get": 14,
-            "dhada road": 16,
-            "dhasa gaam": 18,
-            "gundala": 10,
-            "malpara": 13,
-            "kholama": 4,
-            "lakhanka": 9,
-            "aatala": 6,
-            "mand dhar": 10,
-            "bhadli": 15,
-            "kerala": 14,
-            "raampara": 11
+            "kothivadi": 2.5, "rabiya park": 3, "nagjipara": 1.5, "botad raad": 1, 
+            "botad": 25, "gordia": 7, "tamari": 6, "bhinda": 11, "ugaamedi": 8, 
+            "ningala": 12, "rohisala": 15, "gadhada bud stand": 1, "samakathe": 2.5, 
+            "bhadli get": 14, "dhada road": 16, "dhasa gaam": 18, "gundala": 10, 
+            "malpara": 13, "kholama": 4, "lakhanka": 9, "aatala": 6, "mand dhar": 10, 
+            "bhadli": 15, "kerala": 14, "raampara": 11
         };
 
         function getDrivers() {
@@ -366,33 +355,37 @@
                 return;
             }
 
-            let pickup = document.getElementById('pickupInput').value || 'ગઢડા બસ સ્ટેન્ડ';
-            let drop = document.getElementById('dropInput').value || 'Botad raad';
-            let driverSelect = document.getElementById('selectedDriver');
-            
-            if (!driverSelect || driverSelect.options.length === 0) {
-                alert("કોઈ WhatsApp ડ્રાઈવર ઉપલબ્ધ નથી!");
+            let drop = document.getElementById('dropInput').value.trim();
+            if(!drop) {
+                alert('કૃપા કરીને જવાનું સ્થળ (ગામ) પસંદ કરો કે લખો!');
                 return;
             }
 
+            let driverSelect = document.getElementById('selectedDriver');
             let driverPhone = driverSelect.value;
             let driverName = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-name');
             let fareData = calculateFare();
-            let commission = fareData.total * 0.05;
+            let pickup = document.getElementById('pickupInput').value || 'ગઢડા બસ સ્ટેન્ડ';
 
-            let tripData = {
-                name, driver: driverName, pickup, drop, 
-                pax: fareData.paxCount, roundTrip: fareData.isRound, 
-                fare: fareData.total, commission, 
-                date: new Date().toLocaleDateString('gu-IN')
-            };
+            // સ્ક્રીન પર સ્ટેટસ બતાવવું અને કેન્સલ બટન ઓપન કરવું
+            document.getElementById('bookingFormSection').style.display = 'none';
+            document.getElementById('driverListSection').style.display = 'none';
+            let statusBox = document.getElementById('bookingStatusSection');
+            statusBox.style.display = 'block';
+            document.getElementById('bookedDriverInfo').innerText = `ਡ्रાઈવર: ${driverName}`;
 
-            let trips = JSON.parse(localStorage.getItem('rickshawTrips')) || [];
-            trips.push(tripData);
-            localStorage.setItem('rickshawTrips', JSON.stringify(trips));
-
-            let msg = `नमस्ते, મારે રિક્ષા જોઇએ છે.\n👤 નામ: ${name}\n👥 પેસેન્જર: ${fareData.paxCount}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop} (${fareData.km} કિમી)\n💰 ભાડું: ₹${fareData.total}`;
+            let msg = `🛺 *નવું રિક્ષા બુકિંગ*\n\n👤 નામ: ${name}\n👥 પેસેન્જર: ${fareData.paxCount}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop} (${fareData.km} કિમી)\n💰 કુલ ભાડું: ₹${fareData.total}\n\n👉 *ડ્રાઈવર ભાઈ જવાબ આપો:*\n✅ સ્વીકારો (Accept) માટે રીપ્લાય કરો: "OK / આવું છું"\n❌ કેન્સલ (Cancel) માટે રીપ્લાય કરો: "બિઝી છું / કેન્સલ"`;
+            
             window.open(`https://wa.me/${driverPhone}?text=` + encodeURIComponent(msg), '_blank');
+        }
+
+        function cancelBooking() {
+            if(confirm('શું તમે આ બુકિંગ કેન્સલ કરવા માંગો છો?')) {
+                document.getElementById('bookingStatusSection').style.display = 'none';
+                document.getElementById('bookingFormSection').style.display = 'block';
+                document.getElementById('driverListSection').style.display = 'block';
+                alert('બુકિંગ કેન્સલ કરવામાં આવ્યું છે.');
+            }
         }
 
         window.onload = function() {
