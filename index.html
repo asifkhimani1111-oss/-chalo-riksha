@@ -85,12 +85,6 @@
             font-size: 15px;
             background-color: #f8fafc;
         }
-        .form-group select option {
-            padding: 10px;
-        }
-        .form-group select {
-            margin-bottom: 6px;
-        }
         .checkbox-group {
             display: flex;
             align-items: center;
@@ -168,11 +162,9 @@
         .book-btn:hover { background-color: #00b047; }
         .cancel-btn {
             background-color: #ff3b30 !important;
-            box-shadow: 0 2px 5px rgba(255,59,48,0.3);
         }
         .accept-btn {
             background-color: #0288d1 !important;
-            box-shadow: 0 2px 5px rgba(2,136,209,0.3);
         }
         .note-text {
             font-size: 12px;
@@ -189,16 +181,6 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .driver-info h3 {
-            font-size: 16px;
-            color: #222;
-            margin-bottom: 3px;
-        }
-        .driver-info p {
-            font-size: 13px;
-            color: #666;
         }
         .call-btn {
             background-color: #00c853;
@@ -208,7 +190,6 @@
             border-radius: 6px;
             font-size: 13px;
             font-weight: bold;
-            cursor: pointer;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -261,6 +242,7 @@
                 <input type="text" id="passengerName" value="Asif Khimani">
             </div>
 
+            <!-- પિકઅપ સ્થળ -->
             <div class="form-group">
                 <label>પિકઅપ સ્થળ:</label>
                 <select id="pickupSelect" onchange="updatePickupInput()">
@@ -284,6 +266,7 @@
                 <input type="text" id="pickupCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
             </div>
             
+            <!-- જવાનું સ્થળ (ડ્રોપ) -->
             <div class="form-group">
                 <label>જવાનું સ્થળ (ડ્રોપ):</label>
                 <select id="dropSelect" onchange="updateDropInput()">
@@ -308,6 +291,7 @@
                 <input type="text" id="dropCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
             </div>
 
+            <!-- મુસાફરોની સંખ્યા -->
             <div class="form-group">
                 <label>મુસાફરોની સંખ્યા (સીટ):</label>
                 <select id="passengerCount" onchange="calculateFare()">
@@ -321,15 +305,17 @@
                 </select>
             </div>
 
+            <!-- રાઉન્ડ ટ્રીપ -->
             <div class="checkbox-group">
                 <input type="checkbox" id="roundTripCheck" onchange="calculateFare()">
                 <label for="roundTripCheck">🔄 રાઉન્ડ ટ્રીપ / ખાલી ફેરી વળતર (આવા-જવાનું)</label>
             </div>
 
+            <!-- ડ્રાઇવર પસંદ કરો -->
             <div class="form-group">
                 <label>ડ્રાઇવર પસંદ કરો:</label>
                 <select id="selectedDriver">
-                    <!-- ઓટોમેટિક લોડ થશે -->
+                    <!-- JavaScript દ્વારા ડ્રાઇવરો અહીં લોડ થશે -->
                 </select>
             </div>
 
@@ -355,24 +341,18 @@
                     <button class="book-btn cancel-btn" style="margin-top:0; padding:8px; font-size:13px;" onclick="cancelRideByPassenger()">મુસાફર: Cancel</button>
                 </div>
             </div>
-
-            <div class="note-text">
-                ભાડું: એરિયા, મુસાફરોની સંખ્યા અને રાઉન્ડ ટ્રીપ મુજબ ઓટોમેટિક ગણાશે.
-            </div>
         </div>
 
-        <!-- 2. ડ્રાઇવરો Tab -->
+        <!-- 2. ડ્રાઇવરો Tab (જાતે ડ્રાઇવર ઉમેરવાનું ફોર્મ) -->
         <div id="drivers-tab" class="tab-content">
-            <div class="header-title">🛺 રિક્ષા ડ્રાઇવર રજિસ્ટ્રેશન</div>
-            <div style="font-size: 13px; color: #555; margin-bottom: 15px;">ડ્રાઈવર પોતાનું નામ અને નંબર અહીં ઉમેરી શકે છે:</div>
-
+            <div class="header-title">🛺 ડ્રાઈવર રજિસ્ટ્રેશન (જાતે એડ થાઓ)</div>
             <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
                 <div class="form-group" style="margin-bottom: 10px;">
-                    <label>ડ્રાઈવરનું પૂરું નામ:</label>
+                    <label>ડ્રાઈવરનું નામ:</label>
                     <input type="text" id="newDriverName" placeholder="દા.ત. રમેશભાઈ">
                 </div>
                 <div class="form-group" style="margin-bottom: 10px;">
-                    <label>રિક્ષા નંબર (ગાડી નંબર):</label>
+                    <label>રિક્ષા નંબર:</label>
                     <input type="text" id="newDriverRiksha" placeholder="દા.ત. GJ-14-1234">
                 </div>
                 <div class="form-group" style="margin-bottom: 10px;">
@@ -382,46 +362,32 @@
                 <button class="book-btn" style="padding: 10px; font-size: 14px;" onclick="registerNewDriver()">➕ ડ્રાઈવર તરીકે જોડაઓ</button>
             </div>
 
-            <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #334155;">ઉપલબ્ધ ડ્રાઇવરોનું લિસ્ટ:</div>
-            <div id="driverListContainer">
-                <!-- કાર્ડ્સ અહીં આવશે -->
-            </div>
+            <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #334155;">રજીસ્ટર્ડ ડ્રાઇવરોનું લિસ્ટ:</div>
+            <div id="driverListContainer"></div>
         </div>
 
         <!-- 3. એડમિન Tab -->
         <div id="admin-tab" class="tab-content">
             <div class="header-title">એડમિન કંટ્રોલ પેનલ</div>
-            
             <div class="form-group">
                 <label>એડમિન WhatsApp નંબર:</label>
                 <input type="text" id="adminWhatsapp" value="919426852334">
             </div>
-
             <div class="form-group">
                 <label>કમિશન ટકાવારી (%):</label>
                 <input type="text" value="5% (ઓટોમેટિક ગણતરી)" readonly>
             </div>
-
-            <button class="book-btn" onclick="saveSettings()">સેટિંગ સેવ કરો</button>
-
-            <div class="note-text">
-                કમિશન માત્ર એડમિન અને હિસાબ પેજ પર જ દેખાશે.
-            </div>
+            <button class="book-btn" onclick="alert('સેટિંગ સેવ થઈ ગયું!')">સેટિંગ સેવ કરો</button>
         </div>
 
         <!-- 4. હિસાબ Tab -->
         <div id="ledger-tab" class="tab-content">
             <div class="header-title">📊 કમિશન અને ટ્રીપ હિસાબ</div>
-            
-            <div class="total-commission-box" id="totalCommissionBox">
-                કુલ જમા કમિશન (5%): ₹0
-            </div>
-
-            <div style="font-size: 13px; font-weight: bold; margin: 15px 0 5px 0; color: #334155;">તમામ ટ્રીપનું લિસ્ટ:</div>
+            <div class="total-commission-box" id="totalCommissionBox">કુલ જમા કમિશન (5%): ₹0</div>
+            <div style="font-size: 13px; font-weight: bold; margin: 15px 0 5px 0; color: #334155;">ટ્રીપનું લિસ્ટ:</div>
             <div class="ledger-box" id="ledgerList">
-                <div style="text-align: center; color: #94a3b8; padding: 20px; font-size: 13px;">હજી સુધી કોઈ ટ્રીપ નોંધાઈ નથી.</div>
+                <div style="text-align: center; color: #94a3b8; padding: 20px; font-size: 13px;">કોઈ ટ્રીપ નથી.</div>
             </div>
-
             <button class="book-btn" style="background-color: #ef4444; font-size: 14px; padding: 10px;" onclick="clearLedger()">બધો હિસાબ રીસેટ કરો</button>
         </div>
     </div>
@@ -430,6 +396,7 @@
         let currentTripData = null;
         let currentOtp = "";
 
+        // ડિફોલ્ટ ડ્રાઇવરો
         const defaultDrivers = [
             { name: "સિક્કા ભાઈ", riksha: "GJ-14-1111", phone: "917779085469" },
             { name: "ચાવડા અલ્ફાઝ", riksha: "GJ-14-2222", phone: "917383940831" },
@@ -437,12 +404,14 @@
         ];
 
         function getDrivers() {
-            let drivers = JSON.parse(localStorage.getItem('appDrivers'));
-            if (!drivers || drivers.length === 0) {
-                drivers = defaultDrivers;
-                localStorage.setItem('appDrivers', JSON.stringify(drivers));
-            }
-            return drivers;
+            try {
+                let saved = localStorage.getItem('appDrivers');
+                if (saved) {
+                    let parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                }
+            } catch(e) {}
+            return defaultDrivers;
         }
 
         function loadDriversToUI() {
@@ -450,6 +419,7 @@
             let select = document.getElementById('selectedDriver');
             let container = document.getElementById('driverListContainer');
             
+            if (!select || !container) return;
             select.innerHTML = '';
             container.innerHTML = '';
 
@@ -463,13 +433,10 @@
                 let card = document.createElement('div');
                 card.className = 'driver-card';
                 card.innerHTML = `
-                    <div class="driver-info">
-                        <h3>${d.name} (${d.riksha})</h3>
-                        <p>મોબાઇલ: ${d.phone}</p>
-                    </div>
+                    <div style="font-size:14px;"><b>${d.name}</b> (${d.riksha})<br><span style="color:#666; font-size:12px;">📞 ${d.phone}</span></div>
                     <div style="display:flex; gap:5px;">
-                        <a href="tel:${d.phone}" class="call-btn">📞 કોલ</a>
-                        <button onclick="removeDriver(${index})" style="background:#ef4444; color:white; border:none; padding:6px 10px; border-radius:6px; font-size:12px; cursor:pointer;">ડિલીટ</button>
+                        <a href="tel:${d.phone}" class="call-btn">કોલ</a>
+                        <button onclick="removeDriver(${index})" style="background:#ef4444; color:white; border:none; padding:6px 8px; border-radius:6px; font-size:12px; cursor:pointer;">ડિલીટ</button>
                     </div>
                 `;
                 container.appendChild(card);
@@ -482,7 +449,7 @@
             let phone = document.getElementById('newDriverPhone').value.trim();
 
             if (!name || !riksha || !phone) {
-                alert('કૃપા કરીને ડ્રાઈવરનું નામ, રિક્ષા નંબર અને ફોન નંબર પૂરો ભરો!');
+                alert('બધી માહિતી પૂરી ભરો!');
                 return;
             }
 
@@ -500,7 +467,7 @@
 
         function removeDriver(index) {
             let drivers = getDrivers();
-            if(confirm(`શું તમે આ ડ્રાઈવરને હટાવવા માંગો છો?`)) {
+            if(confirm('શું તમે આ ડ્રાઈવરને હટાવવા માંગો છો?')) {
                 drivers.splice(index, 1);
                 localStorage.setItem('appDrivers', JSON.stringify(drivers));
                 loadDriversToUI();
@@ -512,58 +479,49 @@
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             
             event.target.classList.add('active');
-            document.getElementById(tabName + '-tab').classList.add('active');
+            let target = document.getElementById(tabName + '-tab');
+            if(target) target.classList.add('active');
             
-            if(tabName === 'ledger') {
-                loadLedger();
-            }
-            if(tabName === 'drivers') {
-                loadDriversToUI();
-            }
+            if(tabName === 'ledger') loadLedger();
+            if(tabName === 'drivers') loadDriversToUI();
         }
 
         function updatePickupInput() {
             let select = document.getElementById('pickupSelect');
-            let customInput = document.getElementById('pickupCustom');
-            if (select.value === 'અન્ય (જાતે લખો)') {
-                customInput.style.display = 'block';
-                customInput.focus();
-            } else {
-                customInput.style.display = 'none';
-                customInput.value = '';
+            let custom = document.getElementById('pickupCustom');
+            if (select && custom) {
+                custom.style.display = (select.value === 'અન્ય (જાતે લખો)') ? 'block' : 'none';
+                if(select.value === 'અન્ય (જાતે લખો)') custom.focus();
             }
             calculateFare();
         }
 
         function updateDropInput() {
             let select = document.getElementById('dropSelect');
-            let customInput = document.getElementById('dropCustom');
-            if (select.value === 'અન્ય (જાતે લખો)') {
-                customInput.style.display = 'block';
-                customInput.focus();
-            } else {
-                customInput.style.display = 'none';
-                customInput.value = '';
+            let custom = document.getElementById('dropCustom');
+            if (select && custom) {
+                custom.style.display = (select.value === 'અન્ય (જાતે લખો)') ? 'block' : 'none';
+                if(select.value === 'અન્ય (જાતે લખો)') custom.focus();
             }
             calculateFare();
         }
 
         function getPickupLocation() {
-            let select = document.getElementById('pickupSelect').value;
-            if (select === 'અન્ય (જાતે લખો)') {
-                let customVal = document.getElementById('pickupCustom').value.trim();
-                return customVal !== '' ? customVal : 'જાતે લખેલ પિકઅપ';
+            let select = document.getElementById('pickupSelect');
+            let custom = document.getElementById('pickupCustom');
+            if (select && select.value === 'અન્ય (જાતે લખો)' && custom && custom.value.trim() !== '') {
+                return custom.value.trim();
             }
-            return select;
+            return select ? select.value : 'ગઢડા બસ સ્ટેન્ડ';
         }
 
         function getDropLocation() {
-            let select = document.getElementById('dropSelect').value;
-            if (select === 'અન્ય (જાતે લખો)') {
-                let customVal = document.getElementById('dropCustom').value.trim();
-                return customVal !== '' ? customVal : 'જાતે લખેલ ડ્રોપ';
+            let select = document.getElementById('dropSelect');
+            let custom = document.getElementById('dropCustom');
+            if (select && select.value === 'અન્ય (જાતે લખો)' && custom && custom.value.trim() !== '') {
+                return custom.value.trim();
             }
-            return select;
+            return select ? select.value : 'માર્કેટિંગ યાર્ડ';
         }
 
         function calculateFare() {
@@ -575,15 +533,11 @@
 
             let localAreas = ["ગઢડા બસ સ્ટેન્ડ", "સ્વામિનારાયણ મંદિર", "માર્કેટિંગ યાર્ડ", "હોસ્પિટલ રોડ", "સામાકાંઠે"];
 
-            if (pickup === drop) {
-                extraFare = 0;
-                subtext = "એક જ એરિયા (મિનિમમ ₹55)";
-            } else if (localAreas.includes(pickup) && localAreas.includes(drop)) {
+            if (pickup === drop || (localAreas.includes(pickup) && localAreas.includes(drop))) {
                 extraFare = 0;
                 subtext = "ગઢડા લોકલ એરિયા (મિનિમમ ₹55)";
             } else {
                 extraFare = 20;
-
                 if (pickup.includes("ઉગામડી") || drop.includes("ઉગામડી") || pickup.includes("નિંગાળા") || drop.includes("નિંગાળા")) {
                     extraFare = 35;
                 } else if (pickup.includes("રાબિયા પાર્ક") || drop.includes("રાબિયા પાર્ક") || pickup.includes("કોઠીવાડી") || drop.includes("કોઠીવાડી")) {
@@ -591,30 +545,21 @@
                 } else {
                     extraFare = 40;
                 }
-
                 subtext = `મિનિમમ ₹55 + વધારાના ₹${extraFare}`;
             }
 
             let standardFare = baseFare + extraFare;
-
             let paxCount = parseInt(document.getElementById('passengerCount').value) || 1;
-            let extraPaxCharge = 0;
-            if (paxCount > 4) {
-                extraPaxCharge = (paxCount - 4) * 10;
-                subtext += ` + ${paxCount} મુસાફર માટે (₹${extraPaxCharge})`;
-            }
+            let extraPax = (paxCount > 4) ? (paxCount - 4) * 10 : 0;
+            if (extraPax > 0) subtext += ` + ${paxCount} પેસેન્જર (₹${extraPax})`;
 
-            let subTotal = standardFare + extraPaxCharge;
+            let subTotal = standardFare + extraPax;
+            let isRound = document.getElementById('roundTripCheck').checked;
+            let total = isRound ? subTotal * 2 : subTotal;
+            if (isRound) subtext += ` + 🔄 રાઉન્ડ ટ્રીપ`;
 
-            let isRoundTrip = document.getElementById('roundTripCheck').checked;
-            let totalFare = subTotal;
-            if (isRoundTrip) {
-                totalFare = subTotal * 2;
-                subtext += ` + 🔄 રાઉન્ડ ટ્રીપ (ખાલી ફેરી સહિત)`;
-            }
-
-            document.getElementById('fareBox').innerHTML = `કુલ ભાડું: ₹${totalFare} <div class="fare-subtext">${subtext}</div>`;
-            return { totalFare, paxCount, isRoundTrip };
+            document.getElementById('fareBox').innerHTML = `કુલ ભાડું: ₹${total} <div class="fare-subtext">${subtext}</div>`;
+            return { total, paxCount, isRound };
         }
 
         function sendWhatsAppBooking() {
@@ -624,7 +569,7 @@
             let driverSelect = document.getElementById('selectedDriver');
             
             if (!driverSelect || driverSelect.options.length === 0) {
-                alert("કોઈ ડ્રાઈવર ઉપલબ્ધ નથી! કૃપા કરીને 'ડ્રાઇવરો' ટેબમાં જઈને ડ્રાઈવર ઉમેરો.");
+                alert("કોઈ ડ્રાઈવર ઉપલબ્ધ નથી! પ્લીઝ 'ડ્રાઇવરો' ટેબમાં જઈને ડ્રાઈવર ઉમેરો.");
                 return;
             }
 
@@ -636,99 +581,64 @@
             document.getElementById('otpDisplayBox').style.display = 'block';
 
             let fareData = calculateFare();
-            let fare = fareData.totalFare;
-            let paxCount = fareData.paxCount;
-            let isRoundTrip = fareData.isRoundTrip;
-            let commission = fare * 0.05;
+            let commission = fareData.total * 0.05;
 
             currentTripData = {
-                name: name,
-                driver: driverName,
-                pickup: pickup,
-                drop: drop,
-                pax: paxCount,
-                roundTrip: isRoundTrip,
-                fare: fare,
-                commission: commission,
-                otp: currentOtp,
+                name, driver: driverName, pickup, drop, 
+                pax: fareData.paxCount, roundTrip: fareData.isRound, 
+                fare: fareData.total, commission, otp: currentOtp, 
                 date: new Date().toLocaleDateString('gu-IN')
             };
 
             document.getElementById('rideStatusBox').style.display = 'block';
-            document.getElementById('rideStatusText').innerHTML = "સ્થિતિ: રાઇડ મોકલવામાં આવી છે. ડ્રાઈવર OTP પૂછીને એક્સેપ્ટ કરશે.";
-
-            let tripTypeMsg = isRoundTrip ? "🔄 રાઉન્ડ ટ્રીપ (આવા-જવાનું)" : "➡️ વન-વે";
-            let msg = `नमस्ते, મારે રિક્ષા જોઇએ છે.\n👤 નામ: ${name}\n👥 મુસાફરો: ${paxCount} જણા\n📌 પ્રવાસ: ${tripTypeMsg}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop}\n💰 કુલ ભાડું: ₹${fare}\n🔑 સુરક્ષા OTP: ${currentOtp} (આ OTP ડ્રાઈવરે પૂછવો)`;
-            let url = `https://wa.me/${driverPhone}?text=` + encodeURIComponent(msg);
-            window.open(url, '_blank');
+            let msg = `नमस्ते, મારે રિક્ષા જોઇએ છે.\n👤 નામ: ${name}\n👥 પેસેન્જર: ${fareData.paxCount}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop}\n💰 ભાડું: ₹${fareData.total}\n🔑 OTP: ${currentOtp}`;
+            window.open(`https://wa.me/${driverPhone}?text=` + encodeURIComponent(msg), '_blank');
         }
 
         function acceptRideByDriver() {
             if (!currentTripData) return;
-
-            let enteredOtp = prompt("ડ્રાઈવર માટે વેરિફિકેશન: મુસાફરે આપેલો 4 આંકડાનો OTP અહીં દાખલ કરો:");
-            if (enteredOtp !== currentOtp) {
-                alert("❌ ખોટો OTP! ડ્રાઈવર રાઇડ એક્સેપ્ટ કરી શકશે નહીં.");
+            let otp = prompt("ડ્રાઈવર વેરિફિકેશન: મુસાફરે આપેલો 4 આંકડાનો OTP દાખલ કરો:");
+            if (otp !== currentOtp) {
+                alert("❌ ખોટો OTP!");
                 return;
             }
-
             let trips = JSON.parse(localStorage.getItem('rickshawTrips')) || [];
             trips.push(currentTripData);
             localStorage.setItem('rickshawTrips', JSON.stringify(trips));
-
-            document.getElementById('rideStatusText').innerHTML = "✅ OTP વેરિફાઈડ! ડ્રાઈવરે રાઇડ એક્સેપ્ટ કરી લીધી (હિસાબમાં કમિશન જમા થઈ ગયું)";
-            document.getElementById('rideStatusBox').style.background = '#f0fdf4';
-            document.getElementById('rideStatusBox').style.borderColor = '#bbf7d0';
+            document.getElementById('rideStatusText').innerHTML = "✅ OTP વેરિફાઈડ! રાઇડ સ્વીકારાઈ ગઈ.";
             currentTripData = null;
         }
 
         function cancelRideByPassenger() {
             currentTripData = null;
             document.getElementById('otpDisplayBox').style.display = 'none';
-            document.getElementById('rideStatusText').innerHTML = "❌ રાઇડ કેન્સલ કરવામાં આવી છે. કમિશન ઝીરો (0) ગણવામાં આવશે.";
-            document.getElementById('rideStatusBox').style.background = '#fef2f2';
-            document.getElementById('rideStatusBox').style.borderColor = '#fecaca';
+            document.getElementById('rideStatusBox').style.display = 'none';
+            alert("રાઇડ કેન્સલ કરવામાં આવી.");
         }
 
         function loadLedger() {
             let trips = JSON.parse(localStorage.getItem('rickshawTrips')) || [];
-            let ledgerList = document.getElementById('ledgerList');
+            let list = document.getElementById('ledgerList');
             let totalBox = document.getElementById('totalCommissionBox');
-            
-            if(trips.length === 0) {
-                ledgerList.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 20px; font-size: 13px;">હજી સુધી કોઈ ટ્રીપ નોંધાઈ નથી.</div>`;
+            if (trips.length === 0) {
+                list.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 20px;">કોઈ ટ્રીપ નથી.</div>`;
                 totalBox.innerText = `કુલ જમા કમિશન (5%): ₹0`;
                 return;
             }
-
-            let html = '';
-            let totalComm = 0;
-            trips.slice().reverse().forEach((t) => {
+            let html = '', totalComm = 0;
+            trips.slice().reverse().forEach(t => {
                 totalComm += t.commission;
-                let paxInfo = t.pax ? ` | 👥 ${t.pax} પેસેન્જર` : '';
-                let rtTag = t.roundTrip ? ` <span style="color:#b45309; font-weight:bold;">(રાઉન્ડ ટ્રીપ)</span>` : '';
-                let otpTag = t.otp ? ` | <span style="color:#0288d1; font-weight:bold;">OTP: ${t.otp}</span>` : '';
-                html += `<div class="ledger-item">
-                    <b>${t.name}</b> ➡️ <b>${t.driver}</b>${paxInfo}${rtTag}${otpTag}<br>
-                    📍 ${t.pickup} ➔ 🏁 ${t.drop}<br>
-                    ભાડું: ₹${t.fare} | <b>કમિશન (5%): ₹${t.commission.toFixed(2)}</b><br>
-                    <span style="font-size: 11px; color: #64748b;">તારીખ: ${t.date}</span>
-                </div>`;
+                html += `<div class="ledger-item"><b>${t.name}</b> ➡️ <b>${t.driver}</b><br>📍 ${t.pickup} ➔ 🏁 ${t.drop}<br>ભાડું: ₹${t.fare} | <b>કમિશન: ₹${t.commission.toFixed(2)}</b></div>`;
             });
-
-            ledgerList.innerHTML = html;
+            list.innerHTML = html;
             totalBox.innerText = `કુલ જમા કમિશન (5%): ₹${totalComm.toFixed(2)}`;
         }
 
         function clearLedger() {
-            if(confirm('શું તમે ખરેખર બધો હિસાબ ડિલીટ કરવા માંગો છો?')) {
+            if(confirm('બધો હિસાબ ડિલીટ કરવો છે?')) {
                 localStorage.removeItem('rickshawTrips');
                 loadLedger();
             }
-        }
-
-        function saveSettings() {
-            alert('સેટિંગ સફળતાપૂર્વક સેવ થઈ ગયું!');
         }
 
         window.onload = function() {
