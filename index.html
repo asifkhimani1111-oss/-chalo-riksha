@@ -33,34 +33,106 @@
         <label>ક્યાં જવું છે? (ડ્રોપ લોકેશન પસંદ કરો):</label>
         <select id="dropoff" onchange="updateKmAndFare()">
             <option value="" data-km="1">-- ડ્રોપ લોકેશન પસંદ કરો --</option>
-            <option value="ગઢડા બસ સ્ટેન્ડ" data-km="2">ગઢડા બસ સ્ટેન્ડ (2 KM)</option>
-            <option value="ગઢડા હોસ્પિટલ રોડ" data-km="3">ગઢડા હોસ્પિટલ રોડ (3 KM)</option>
-            <option value="સ્વામિનારાયણ મંદિર ગઢડા" data-km="2">સ્વામિનારાયણ મંદિર ગઢડા (2 KM)</option>
-            <option value="શાકમાર્કેટ ગઢડા" data-km="2">શાકમાર્કેટ ગઢડા (2 KM)</option>
-            <option value="માર્કેટિંગ યાર્ડ ગઢડા" data-km="4">માર્કેટિંગ યાર્ડ ગઢડા (4 KM)</option>
-            <option value="ઢસા જંક્શન" data-km="15">ઢસા જંક્શન (15 KM)</option>
-            <option value="રાણપુર રોડ" data-km="10">રાણપુર રોડ (10 KM)</option>
-            <option value="બોટાદ રોડ" data-km="12">બોટાદ રોડ (12 KM)</option>
-            <option value="રાંદરડા" data-km="8">રાંદરડા (8 KM)</option>
-            <option value="માલપરા" data-km="6">માલપરા (6 KM)</option>
-            <option value="રાયપર" data-km="7">રાયપર (7 KM)</option>
-            <option value="હરપુરા" data-km="5">હરપુરા (5 KM)</option>
-            <option value="પાટીયા" data-km="4">પાટીયા (4 KM)</option>
-            <option value="સુરગપરા" data-km="6">સુરગપરા (6 KM)</option>
-            <option value="સંગાણી" data-km="9">સંગાણી (9 KM)</option>
-            <option value="ભંડારીયા" data-km="11">ભંડારીયા (11 KM)</option>
-            <option value="બોવાળ" data-km="10">બોવાળ (10 KM)</option>
-            <option value="પીપરડી" data-km="14">પીપરડી (14 KM)</option>
-            <option value="જનાળા" data-km="13">જનાળા (13 KM)</option>
-            <option value="માણસા" data-km="8">માણસા (8 KM)</option>
-            <option value="ચારોડીયા" data-km="7">ચારોડીયા (7 KM)</option>
-            <option value="સખપર" data-km="9">સખપર (9 KM)</option>
+            
+            <optgroup label="ગઢડા શહેરના અંદરના વિસ્તારો અને સોસાયટીઓ">
+                <option value="સ્વામિનારાયણ ચોક / મંદિર વિસ્તાર" data-km="2">સ્વામિનારાયણ ચોક / મંદિર વિસ્તાર (2 KM)</option>
+                <option value="બજાર લાઇન / મેઈન બજાર" data-km="2">બજાર લાઇન / મેઈન બજાર (2 KM)</option>
+                <option value="બસ સ્ટેશન રોડ" data-km="1">બસ સ્ટેશન રોડ (1 KM)</option>
+                <option value="હોસ્પિટલ રોડ" data-km="2">હોસ્પિટલ રોડ (2 KM)</option>
+                <option value="સ્ટેશન રોડ" data-km="3">સ્ટેશન રોડ (3 KM)</option>
+                <option value="છાસિયા તળાવ વિસ્તાર" data-km="3">છાસિયા તળાવ વિસ્તાર (3 KM)</option>
+                <option value="ગાયત્રીનગર" data-km="4">ગાયત્રીનગર (4 KM)</option>
+                <option value="સોમનાથ સોસાયટી" data-km="4">સોમનાથ સોસાયટી (4 KM)</option>
+                <option value="મારુતિ નગર" data-km="3">મારુતિ નગર (3 KM)</option>
+                <option value="સરદાર પટેલ સોસાયટી" data-km="4">સરદાર પટેલ સોસાયટી (4 KM)</option>
+                <option value="જલારામ નગર" data-km="3">જલારામ નગર (3 KM)</option>
+                <option value="કૃષ્ણનગર" data-km="4">કૃષ્ણનગર (4 KM)</option>
+                <option value="રામનગર" data-km="5">રામનગર (5 KM)</option>
+                <option value="ઘનશ્યામ નગર" data-km="3">ઘનશ્યામ નગર (3 KM)</option>
+                <option value="હરિદર્શન સોસાયટી" data-km="4">હરિદર્શન સોસાયટી (4 KM)</option>
+                <option value="શિવ શક્તિ સોસાયટી" data-km="4">શિવ શક્તિ સોસાયટી (4 KM)</option>
+                <option value="અક્ષરધામ સોસાયટી" data-km="5">અક્ષરધામ સોસાયટી (5 KM)</option>
+                <option value="કોલેજ રોડ વિસ્તાર" data-km="4">કોલેજ રોડ વિસ્તાર (4 KM)</option>
+                <option value="જુની પોલીસ ચોકી વિસ્તાર" data-km="2">જુની પોલીસ ચોકી વિસ્તાર (2 KM)</option>
+                <option value="ગઢડા નગરપાલિકા આસપાસનો વિસ્તાર" data-km="3">ગઢડા નગરપાલિકા આસપાસનો વિસ્તાર (3 KM)</option>
+            </optgroup>
+
+            <optgroup label="ગઢડા પિન કોડ (364750) અંતર્ગત આવતા ગામો">
+                <option value="બોડકી" data-km="12">બોડકી (12 KM)</option>
+                <option value="ચિરોડા" data-km="10">ચિરોડા (10 KM)</option>
+                <option value="ડેરાળા" data-km="14">ડેરાળા (14 KM)</option>
+                <option value="ધ્રુફણીયા" data-km="8">ધ્રુફણીયા (8 KM)</option>
+                <option value="ગઢાળી" data-km="11">ગઢાળી (11 KM)</option>
+                <option value="ગળા" data-km="16">ગળા (16 KM)</option>
+                <option value="હમાપર" data-km="9">હમાપર (9 KM)</option>
+                <option value="હરિપર" data-km="13">હરિપર (13 KM)</option>
+                <option value="હોલાયા" data-km="11">હોલાયા (11 KM)</option>
+                <option value="ઈટારીયા" data-km="15">ઈટારીયા (15 KM)</option>
+                <option value="કેરળા" data-km="12">કેરળા (12 KM)</option>
+                <option value="લીંબાળી" data-km="16">લીંબાળી (16 KM)</option>
+                <option value="માંડવધાર" data-km="10">માંડવધાર (10 KM)</option>
+                <option value="મેઘવડીયા" data-km="14">મેઘવડીયા (14 KM)</option>
+                <option value="રાજપીપળા" data-km="15">રાજપીપળા (15 KM)</option>
+                <option value="રામપરા" data-km="12">રામપરા (12 KM)</option>
+                <option value="રળિયાણા" data-km="7">રળિયાણા (7 KM)</option>
+                <option value="રતનપર" data-km="11">રતનપર (11 KM)</option>
+                <option value="રતનવવ" data-km="14">રતનવવ (14 KM)</option>
+                <option value="રાયપર" data-km="13">રાયપર (13 KM)</option>
+                <option value="રોજમલ" data-km="18">રોજમલ (18 KM)</option>
+                <option value="સાખપર મોટા" data-km="12">સાખપર મોટા (12 KM)</option>
+                <option value="સાખપર નાના" data-km="14">સાખપર નાના (14 KM)</option>
+                <option value="સાળંગપુર" data-km="22">સાળંગપુર (22 KM)</option>
+                <option value="સમાઢિયાળા" data-km="13">સમાઢિયાળા (13 KM)</option>
+                <option value="વનાળી" data-km="16">વનાળી (16 KM)</option>
+                <option value="વાવડી" data-km="10">વાવડી (10 KM)</option>
+                <option value="વિરવાડી" data-km="14">વિરવાડી (14 KM)</option>
+            </optgroup>
+
+            <optgroup label="ગઢડા તાલુકાના અન્ય મુખ્ય ગામો">
+                <option value="અડતાળા" data-km="15">અડતાળા (15 KM)</option>
+                <option value="અણીડા" data-km="18">અણીડા (18 KM)</option>
+                <option value="અંકડીયા" data-km="22">અંકડીયા (22 KM)</option>
+                <option value="ભીમદાદ" data-km="25">ભીમદાદ (25 KM)</option>
+                <option value="ચબડીયા" data-km="16">ચબડીયા (16 KM)</option>
+                <option value="ચોસલા" data-km="20">ચોસલા (20 KM)</option>
+                <option value="ગોરડકા" data-km="18">ગોરડકા (18 KM)</option>
+                <option value="ગુንዳલા" data-km="14">ગુንዳલા (14 KM)</option>
+                <option value="ઇંગોરાળા" data-km="16">ઇંગોરાળા (16 KM)</option>
+                <option value="જલાલપુર" data-km="24">જલાલપુર (24 KM)</option>
+                <option value="જૂનાવદર" data-km="22">જૂનાવદર (22 KM)</option>
+                <option value="કપરડી" data-km="17">કપરડી (17 KM)</option>
+                <option value="ખીજડીયા" data-km="19">ખીજડીયા (19 KM)</option>
+                <option value="ખોપાળા" data-km="15">ખોપાળા (15 KM)</option>
+                <option value="લાખાંકા" data-km="13">લાખાંકા (13 KM)</option>
+                <option value="લીંબાળા" data-km="15">લીંબાળા (15 KM)</option>
+                <option value="મોટા ઉમરડા" data-km="26">મોટા ઉમરડા (26 KM)</option>
+                <option value="મોટી કુંદલ" data-km="16">મોટી કુંદલ (16 KM)</option>
+                <option value="નાના ઉમરડા" data-km="24">નાના ઉમરડા (24 KM)</option>
+                <option value="નીંગાળા" data-km="25">નીંગાળા (25 KM)</option>
+                <option value="પડાપણ" data-km="19">પડાપણ (19 KM)</option>
+                <option value="પદવદર" data-km="14">પદવદર (14 KM)</option>
+                <option value="પાટણા" data-km="21">પાટણા (21 KM)</option>
+                <option value="પીપળ" data-km="11">પીપળ (11 KM)</option>
+                <option value="પીપળીયા" data-km="15">પીપળીયા (15 KM)</option>
+                <option value="પીપર્ડી" data-km="16">પીપર્ડી (16 KM)</option>
+                <option value="રાસનાળ" data-km="20">રાસનાળ (20 KM)</option>
+                <option value="સંજણાવદર" data-km="17">સંજણાવદર (17 KM)</option>
+                <option value="શિયાનગર" data-km="21">શિયાનગર (21 KM)</option>
+                <option value="સીતાપર" data-km="18">સીતાપર (18 KM)</option>
+                <option value="સુરકા" data-km="12">સુરકા (12 KM)</option>
+                <option value="ટાટમ" data-km="10">ટાટમ (10 KM)</option>
+                <option value="ટાટાણા" data-km="14">ટાટાણા (14 KM)</option>
+                <option value="ઉગમેડી" data-km="15">ઉગમેડી (15 KM)</option>
+                <option value="વીકળીયા" data-km="27">વીકળીયા (27 KM)</option>
+                <option value="વીરડી" data-km="16">વીરડી (16 KM)</option>
+                <option value="જીંઝાવદર" data-km="23">જીંઝાવદર (23 KM)</option>
+            </optgroup>
         </select>
     </div>
 
     <div class="form-group">
         <label>અંદાજિત અંતર (KM - ઓટોમેટિક):</label>
-        <input type="text" id="distanceKm" value="1" readonly>
+        <input type="text" id="distanceKm" value="1 KM" readonly>
     </div>
 
     <div class="form-group">
@@ -70,8 +142,8 @@
             <option value="2">2 પેસેન્જર</option>
             <option value="3">3 પેસેન્જર</option>
             <option value="4" selected>4 પેસેન્જર</option>
-            <option value="5">5 પેસેન્જર</option>
-            <option value="6">6 પેસેન્જર</option>
+            <option value="5">5 પેસેન્જર (+₹10)</option>
+            <option value="6">6 પેસેન્જર (+₹20)</option>
         </select>
     </div>
 
@@ -94,7 +166,7 @@
     function updateKmAndFare() {
         let selectDrop = document.getElementById('dropoff');
         let selectedOption = selectDrop.options[selectDrop.selectedIndex];
-        let km = selectedOption.getAttribute('data-km') || 1;
+        let km = parseFloat(selectedOption.getAttribute('data-km')) || 1;
         
         document.getElementById('distanceKm').value = km + " KM";
         calculateFare();
@@ -104,15 +176,25 @@
         let selectDrop = document.getElementById('dropoff');
         let selectedOption = selectDrop.options[selectDrop.selectedIndex];
         let km = parseFloat(selectedOption.getAttribute('data-km')) || 1;
+        let passengers = parseInt(document.getElementById('passengerCount').value) || 1;
 
         // નિયમ: પહેલું 1 કિલોમીટરના ₹45, પછીના દરેક 1 KM ના ₹10 વત્તા
-        let fare = 45;
+        let baseFare = 45;
         if (km > 1) {
-            fare += (km - 1) * 10;
+            baseFare += (km - 1) * 10;
         }
 
-        document.getElementById('totalFare').textContent = fare > 0 ? fare : 45;
+        // નિયમ: 4 પેસેન્જર સુધી કોઈ વધારો નહીં, 4 થી ઉપર પ્રતિ પેસેન્જર ₹10 એક્સ્ટ્રા
+        let extraPassengerFee = 0;
+        if (passengers > 4) {
+            extraPassengerFee = (passengers - 4) * 10;
+        }
+
+        let totalFare = baseFare + extraPassengerFee;
+        document.getElementById('totalFare').textContent = totalFare > 0 ? totalFare : 45;
     }
+
+    document.getElementById('passengerCount').addEventListener('change', calculateFare);
 
     function loadDrivers() {
         let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
