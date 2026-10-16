@@ -270,7 +270,7 @@
                     <option value="લખણકા">લખણકા</option>
                     <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)...</option>
                 </select>
-                <input type="text" id="pickupCustom" placeholder="અથવા પિકઅપ એરિયાનું નામ લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
+                <input type="text" id="pickupCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
             </div>
             
             <div class="form-group">
@@ -294,7 +294,7 @@
                     <option value="લખણકા">લખણકા</option>
                     <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)...</option>
                 </select>
-                <input type="text" id="dropCustom" placeholder="અથવા ડ્રોપ એરિયાનું નામ લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
+                <input type="text" id="dropCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
             </div>
 
             <!-- મુસાફરોની સંખ્યા પસંદ કરવા માટેનું ઓપ્શન -->
@@ -548,6 +548,9 @@
                     extraFare = 35;
                 } else if (pickup.includes("રાબિયા પાર્ક") || drop.includes("રાબિયા પાર્ક") || pickup.includes("કોઠીવાડી") || drop.includes("કોઠીવાડી")) {
                     extraFare = 15;
+                } else {
+                    // જો લિસ્ટ બહારનું બહારગામ કે બીજું નામ લખ્યું હોય તો બહારગામનું સ્ટાન્ડર્ડ એક્સ્ટ્રા ભાડું
+                    extraFare = 40;
                 }
 
                 subtext = `મિનિમમ ₹55 + વધારાના ₹${extraFare}`;
