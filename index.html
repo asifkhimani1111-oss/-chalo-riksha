@@ -13,6 +13,8 @@
         select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
         .btn { background: #25d366; color: white; border: none; padding: 12px; width: 100%; font-size: 18px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         .btn:hover { background: #1ebe5d; }
+        .btn-cancel { background: #e74c3c; margin-top: 8px; }
+        .btn-cancel:hover { background: #c0392b; }
     </style>
 </head>
 <body>
@@ -26,14 +28,39 @@
             <option value="ગઢડા બસ સ્ટેન્ડ">ગઢડા બસ સ્ટેન્ડ</option>
             <option value="ગઢડા હોસ્પિટલ રોડ">ગઢડા હોસ્પિટલ રોડ</option>
             <option value="સ્વામિનારાયણ મંદિર ગઢડા">સ્વામિનારાયણ મંદિર ગઢડા</option>
+            <option value="શાકમાર્કેટ ગઢડા">શાકમાર્કેટ ગઢડા</option>
+            <option value="માર્કેટિંગ યાર્ડ ગઢડા">માર્કેટિંગ યાર્ડ ગઢડા</option>
+            <option value="રોહશાળા રોડ">રોહશાળા રોડ</option>
             <option value="ઢસા જંક્શન">ઢસા જંક્શન</option>
             <option value="રાણપુર રોડ">રાણપુર રોડ</option>
+            <option value="બોટાદ રોડ">બોટાદ રોડ</option>
+            <option value="ઢસા રોડ">ઢસા રોડ</option>
+            <option value="રાંદરડા">રાંદરડા</option>
+            <option value="માલપરા">માલપરા</option>
+            <option value="રાયપર">રાયપર</option>
+            <option value="હરપુરા">હરપુરા</option>
+            <option value="પાટીયા">પાટીયા</option>
+            <option value="સુરગપરા">સુરગપરા</option>
+            <option value="સંગાણી">સંગાણી</option>
+            <option value="ભંડારીયા">ભંડારીયા</option>
+            <option value="બોવાળ">બોવાળ</option>
+            <option value="ગાંધીધામ ચોકડી">ગાંધીધામ ચોકડી</option>
+            <option value="પીપરડી">પીપરડી</option>
+            <option value="જનાળા">જનાળા</option>
+            <option value="માણસા">માણસા</option>
+            <option value="ચારોડીયા">ચારોડીયા</option>
+            <option value="સખપર">સખપર</option>
         </select>
     </div>
 
     <div class="form-group">
         <label>કયાં જવું છે? (ડ્રોપ લોકેશન):</label>
-        <input type="text" id="dropoff" placeholder="ડ્રોપ લોકેશન લખો (દા.ત. રેલવે સ્ટેશન)">
+        <input type="text" id="dropoff" placeholder="ડ્રોપ લોકેશન લખો">
+    </div>
+
+    <div class="form-group">
+        <label>અંદાજિત અંતર (KM માં લખો):</label>
+        <input type="number" id="distanceKm" placeholder="દા.ત. 5 KM" value="3">
     </div>
 
     <div class="form-group">
@@ -44,10 +71,10 @@
     </div>
 
     <button class="btn" onclick="bookRide()">WhatsApp પર બુકિંગ મોકલો</button>
+    <button class="btn btn-cancel" onclick="cancelRide()">બુકિંગ કેન્સલ કરો</button>
 </div>
 
 <script>
-    // ડ્રાઇવરની યાદી લોડ કરવી
     function loadDrivers() {
         let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
         let select = document.getElementById('driverSelect');
@@ -58,7 +85,7 @@
             return;
         }
 
-        drivers.forEach(function(driver, index) {
+        drivers.forEach(function(driver) {
             let opt = document.createElement('option');
             opt.value = driver.phone;
             opt.textContent = driver.name + ' (' + driver.ricshaNo + ')';
@@ -69,6 +96,7 @@
     function bookRide() {
         let pickup = document.getElementById('pickup').value;
         let dropoff = document.getElementById('dropoff').value;
+        let km = document.getElementById('distanceKm').value;
         let driverPhone = document.getElementById('driverSelect').value;
 
         if (!dropoff) {
@@ -80,9 +108,16 @@
             return;
         }
 
-        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 ઉપાડવાનું સ્થળ: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
+        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 ઉપાડવાનું સ્થળ: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + " KM\nકૃપા કરીને રાઈડ સ્વીકારો.";
         let whatsappUrl = "https://wa.me/91" + driverPhone + "?text=" + encodeURIComponent(message);
         window.open(whatsappUrl, '_blank');
+    }
+
+    function cancelRide() {
+        document.getElementById('dropoff').value = '';
+        document.getElementById('distanceKm').value = '3';
+        document.getElementById('driverSelect').selectedIndex = 0;
+        alert('તમારું બુકિંગ રદ (Cancel) કરી દેવામાં આવ્યું છે.');
     }
 
     window.onload = loadDrivers;
