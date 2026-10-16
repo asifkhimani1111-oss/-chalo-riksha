@@ -329,7 +329,7 @@
             <div class="form-group">
                 <label>ડ્રાઇવર પસંદ કરો:</label>
                 <select id="selectedDriver">
-                    <!-- ડ્રાઇવરો જાતે ઉમેરશે તે અહીં લોડ થશે -->
+                    <!-- ઓટોમેટિક લોડ થશે -->
                 </select>
             </div>
 
@@ -376,7 +376,7 @@
                     <input type="text" id="newDriverRiksha" placeholder="દા.ત. GJ-14-1234">
                 </div>
                 <div class="form-group" style="margin-bottom: 10px;">
-                    <label>WhatsApp / કોલ નંબર:</label>
+                    <label>કોલ કે વોટ્સએપ નંબર:</label>
                     <input type="text" id="newDriverPhone" placeholder="દા.ત. 919876543210">
                 </div>
                 <button class="book-btn" style="padding: 10px; font-size: 14px;" onclick="registerNewDriver()">➕ ડ્રાઈવર તરીકે જોડაઓ</button>
@@ -384,7 +384,7 @@
 
             <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #334155;">ઉપલબ્ધ ડ્રાઇવરોનું લિસ્ટ:</div>
             <div id="driverListContainer">
-                <!-- ડ્રાઇવર કાર્ડ્સ અહીં આવશે -->
+                <!-- કાર્ડ્સ અહીં આવશે -->
             </div>
         </div>
 
@@ -430,7 +430,6 @@
         let currentTripData = null;
         let currentOtp = "";
 
-        // ડિફોલ્ટ ડ્રાઇવરો જો લોકલસ્ટોરેજ ખાલી હોય તો
         const defaultDrivers = [
             { name: "સિક્કા ભાઈ", riksha: "GJ-14-1111", phone: "917779085469" },
             { name: "ચાવડા અલ્ફાઝ", riksha: "GJ-14-2222", phone: "917383940831" },
@@ -455,14 +454,12 @@
             container.innerHTML = '';
 
             drivers.forEach((d, index) => {
-                // Dropdown options
                 let opt = document.createElement('option');
                 opt.value = d.phone;
                 opt.setAttribute('data-name', `${d.name} (${d.riksha})`);
-                opt.innerText = `${d.name} (${d.riksha})`;
+                opt.innerText = `${d.name} (${d.riksha}) - ${d.phone}`;
                 select.appendChild(opt);
 
-                // Driver tab cards
                 let card = document.createElement('div');
                 card.className = 'driver-card';
                 card.innerHTML = `
@@ -503,7 +500,7 @@
 
         function removeDriver(index) {
             let drivers = getDrivers();
-            if(confirm(`શું તમે ${drivers[index].name} ને હટાવવા માંગો છો?`)) {
+            if(confirm(`શું તમે આ ડ્રાઈવરને હટાવવા માંગો છો?`)) {
                 drivers.splice(index, 1);
                 localStorage.setItem('appDrivers', JSON.stringify(drivers));
                 loadDriversToUI();
@@ -625,10 +622,15 @@
             let pickup = getPickupLocation();
             let drop = getDropLocation();
             let driverSelect = document.getElementById('selectedDriver');
+            
+            if (!driverSelect || driverSelect.options.length === 0) {
+                alert("કોઈ ડ્રાઈવર ઉપલબ્ધ નથી! કૃપા કરીને 'ડ્રાઇવરો' ટેબમાં જઈને ડ્રાઈવર ઉમેરો.");
+                return;
+            }
+
             let driverPhone = driverSelect.value;
             let driverName = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-name');
             
-            // રેન્ડમ 4 આંકડાનો OTP જનરેટ કરવો
             currentOtp = Math.floor(1000 + Math.random() * 9000).toString();
             document.getElementById('generatedOtpCode').innerText = currentOtp;
             document.getElementById('otpDisplayBox').style.display = 'block';
@@ -656,7 +658,7 @@
             document.getElementById('rideStatusText').innerHTML = "સ્થિતિ: રાઇડ મોકલવામાં આવી છે. ડ્રાઈવર OTP પૂછીને એક્સેપ્ટ કરશે.";
 
             let tripTypeMsg = isRoundTrip ? "🔄 રાઉન્ડ ટ્રીપ (આવા-જવાનું)" : "➡️ વન-વે";
-            let msg = `नमस्ते, મારે રિક્ષા જોઇએ છે.\n👤 નામ: ${name}\n👥 મુસાફરો: ${paxCount} જણા\n📌 પ્રવાસ: ${tripTypeMsg}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop}\n💰 કુલ ભાડું: ₹${fare}\n🔑 સુરક્ષા OTP: ${currentOtp} (આ OTP ડ્રાઈવરે પૂછવો)";
+            let msg = `नमस्ते, મારે રિક્ષા જોઇએ છે.\n👤 નામ: ${name}\n👥 મુસાફરો: ${paxCount} જણા\n📌 પ્રવાસ: ${tripTypeMsg}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop}\n💰 કુલ ભાડું: ₹${fare}\n🔑 સુરક્ષા OTP: ${currentOtp} (આ OTP ડ્રાઈવરે પૂછવો)`;
             let url = `https://wa.me/${driverPhone}?text=` + encodeURIComponent(msg);
             window.open(url, '_blank');
         }
