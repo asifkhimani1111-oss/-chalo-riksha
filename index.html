@@ -85,6 +85,17 @@
             font-size: 15px;
             background-color: #f8fafc;
         }
+        .gps-btn {
+            background-color: #0288d1;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+        }
         .checkbox-group {
             display: flex;
             align-items: center;
@@ -223,7 +234,7 @@
 
         <!-- 1. મુસાફર Tab -->
         <div id="musafir-tab" class="tab-content active">
-            <div class="header-title">🛺 ચાલો રિક્ષા બુકિંગ (ઓટોમેટિક)</div>
+            <div class="header-title">🛺 ચાલો રિક્ષા બુકિંગ (૨૫ કિમી મર્યાદા)</div>
             
             <div class="form-group">
                 <label>મુસાફરનું નામ:</label>
@@ -233,12 +244,13 @@
             <!-- પિકઅપ સ્થળ -->
             <div class="form-group">
                 <label>પિકઅપ સ્થળ:</label>
-                <input type="text" id="pickupInput" value="ગઢડા બસ સ્ટેન્ડ" placeholder="ક્યાંથી બેસવું છે?" oninput="calculateFare()">
+                <input type="text" id="pickupInput" value="ગઢડા બસ સ્ટેન્ડ" placeholder="ક્યાંથી બેસવું છે?">
+                <button type="button" class="gps-btn" onclick="getCurrentLocation()">📍 મારું GPS લાઈવ લોકેશન લો</button>
             </div>
             
             <!-- જવાનું સ્થળ -->
             <div class="form-group">
-                <label>જવાનું સ્થળ (ડ્રોપ):</label>
+                <label>જવાનું સ્થળ (ડ્રોપ - મહત્તમ ૨૫ કિમી):</label>
                 <input type="text" id="dropInput" value="બોટાદ" placeholder="ક્યાં જવું છે? (દા.ત. બોટાદ, નિંગાળા)" oninput="calculateFare()">
             </div>
 
@@ -280,7 +292,7 @@
             </div>
 
             <div class="rule-note">
-                ℹ️ એપ સ્થળનું નામ વાંચીને કિમી અને ભાડું ઓટોમેટિક નક્કી કરશે.
+                ℹ️ મહત્તમ ૨૫ કિમી મર્યાદા (બેઝ ભાડું ₹40 + પ્રતિ કિમી ₹10 ઓટોમેટિક).
             </div>
 
             <button class="book-btn" onclick="sendWhatsAppBooking()">💬 વોટ્સએપ પર બુક કરો</button>
@@ -310,7 +322,7 @@
                     <label>કોલ કે વોટ્સએપ નંબર:</label>
                     <input type="text" id="newDriverPhone" placeholder="દા.ત. 919876543210">
                 </div>
-                <button class="book-btn" style="padding: 10px; font-size: 14px;" onclick="registerNewDriver()">➕ ડ્રાઈવર તરીકે જોડაઓ</button>
+                <button class="book-btn" style="padding: 10px; font-size: 14px;" onclick="registerNewDriver()">➕ ડ્રાઈવર તરીકે જોડાઓ</button>
             </div>
 
             <div style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #334155;">રજીસ્ટર્ડ ડ્રાઇવરોનું લિસ્ટ:</div>
@@ -359,7 +371,7 @@
             { name: "ડ્રાઈવર ૯", riksha: "GJ-14-9999", phone: "919876543215" }
         ];
 
-        // જાણીતા ગામો અને એના કિલોમીટરનું ડેટાબેઝ
+        // ૨૫ કિમી સુધીના જાણીતા ગામો અને એના કિલોમીટરનું ડેટાબેઝ
         const distanceDatabase = {
             "બોટાદ": 25,
             "નિંગાળા": 12,
@@ -370,8 +382,13 @@
             "લખણકા": 9,
             "હરીપર": 5,
             "ખોલમા": 4,
-            "કોઠીવાડી": 3,
-            "રાબિયા પાર્ક": 2
+            "કોઠીવાડી": 2.5,
+            "સામાકાંઠે": 2.5,
+            "રાબિયા પાર્ક": 3,
+            "હોસ્પિટલ રોડ": 1.5,
+            "માર્કેટિંગ યાર્ડ": 2,
+            "સ્વામિનારાયણ મંદિર": 1,
+            "બસ સ્ટેન્ડ": 1
         };
 
         function getDrivers() {
@@ -458,12 +475,29 @@
             if(tabName === 'drivers') loadDriversToUI();
         }
 
-        // ઓટોમેટિક કિલોમીટર અને ભાડું શોધવાનું સ્માર્ટ ફંક્શન
+        function getCurrentLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        let lat = position.coords.latitude.toFixed(4);
+                        let lon = position.coords.longitude.toFixed(4);
+                        document.getElementById('pickupInput').value = `GPS લોકેશન (${lat}, ${lon})`;
+                        alert("✅ GPS લોકેશન સફળતાપૂર્વક મળી ગયું!");
+                    },
+                    (error) => {
+                        alert("❌ GPS લોકેશન મેળવવામાં ભૂલ આવી. કૃપા કરીને લોકેશન પરમિશન ચાલુ કરો.");
+                    }
+                );
+            } else {
+                alert("તમારું બ્રાઉઝર GPS સપોર્ટ કરતું નથી.");
+            }
+        }
+
+        // ઓટોમેટિક ભાડા ગણતરી (મહત્તમ ૨૫ કિમી મર્યાદા)
         function calculateFare() {
             let dropText = document.getElementById('dropInput').value.trim();
-            let km = 0;
+            let km = 3; // ડિફોલ્ટ લોકલ કિમી
 
-            // ડેટાબેઝમાંથી એરિયા અથવા ગામ શોધો
             for (let place in distanceDatabase) {
                 if (dropText.includes(place)) {
                     km = distanceDatabase[place];
@@ -471,19 +505,13 @@
                 }
             }
 
+            // મહત્તમ મર્યાદા ૨૫ કિમી લિમિટ
+            if (km > 25) km = 25;
+
             let baseFare = 40; // મિનિમમ બેઝ ભાડું
             let perKmRate = 10; // પ્રતિ કિલોમીટર ભાડું
-            let distanceFare = 0;
-            let subtext = "";
-
-            if (km > 0) {
-                distanceFare = baseFare + (km * perKmRate);
-                subtext = `${dropText} (${km} કિમી) - બેઝ ભાડું ₹40 + (${km} કિમી × ₹10)`;
-            } else {
-                // જો ગઢડા લોકલ હોય કે લિસ્ટ બહારનું નામ હોય તો મિનિમમ લોકલ ભાડું
-                distanceFare = baseFare;
-                subtext = `ગઢડા લોકલ એરિયા (મિનિમમ ભાડું ₹40)`;
-            }
+            let distanceFare = baseFare + (km * perKmRate);
+            let subtext = `${dropText || 'લોકલ'} (${km} કિમી) - બેઝ ભાડું ₹40 + (${km} કિમી × ₹10)`;
 
             let paxCount = parseInt(document.getElementById('passengerCount').value) || 1;
             let extraPax = (paxCount > 4) ? (paxCount - 4) * 10 : 0;
@@ -527,7 +555,7 @@
             };
 
             document.getElementById('rideStatusBox').style.display = 'block';
-            let msg = `नमस्ते, મારે રિક્ષા જોઇએ છે.\n👤 નામ: ${name}\n👥 પેસેન્જર: ${fareData.paxCount}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop}\n💰 ભાડું: ₹${fareData.total}\n🔑 OTP: ${currentOtp}`;
+            let msg = `नमस्ते, મારે રિક્ષા જોઇએ છે.\n👤 નામ: ${name}\n👥 પેસેન્જર: ${fareData.paxCount}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop} (${fareData.km} કિમી)\n💰 ભાડું: ₹${fareData.total}\n🔑 OTP: ${currentOtp}`;
             window.open(`https://wa.me/${driverPhone}?text=` + encodeURIComponent(msg), '_blank');
         }
 
