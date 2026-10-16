@@ -11,7 +11,7 @@
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; }
-        .fare-box { background: #fff3e0; padding: 10px; border-radius: 6px; text-align: center; font-size: 18px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
+        .fare-box { background: #fff3e0; padding: 12px; border-radius: 6px; text-align: center; font-size: 18px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
         .btn { background: #25d366; color: white; border: none; padding: 12px; width: 100%; font-size: 18px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
         .btn:hover { background: #1ebe5d; }
         .btn-cancel { background: #e74c3c; margin-top: 8px; }
@@ -25,21 +25,33 @@
     
     <div class="form-group">
         <label>ક્યાંથી બેસવું છે? (પીકઅપ લોકેશન):</label>
-        <input type="text" id="pickup" placeholder="ઉપાડવાનું સ્થળ જાતે લખો (દા.ત. બસ સ્ટેન્ડ)">
+        <input type="text" id="pickup" placeholder="ઉપાડવાનું સ્થળ જાતે લખો">
     </div>
 
     <div class="form-group">
         <label>ક્યાં જવું છે? (ડ્રોપ લોકેશન):</label>
-        <input type="text" id="dropoff" placeholder="જવાનું સ્થળ જાતે લખો (દા.ત. હોસ્પિટલ)">
+        <input type="text" id="dropoff" placeholder="જવાનું સ્થળ જાતે લખો">
     </div>
 
     <div class="form-group">
         <label>અંદાજિત અંતર (KM):</label>
-        <input type="number" id="distanceKm" placeholder="KM લખો" value="3" oninput="calculateFare()">
+        <input type="number" id="distanceKm" placeholder="KM લખો" value="1" min="1" oninput="calculateFare()">
+    </div>
+
+    <div class="form-group">
+        <label>પેસેન્જરની સંખ્યા:</label>
+        <select id="passengerCount" onchange="calculateFare()">
+            <option value="1">1 પેસેન્જર</option>
+            <option value="2">2 પેસેન્જર</option>
+            <option value="3">3 પેસેન્જર</option>
+            <option value="4" selected>4 પેસેન્જર</option>
+            <option value="5">5 પેસેન્જર (+₹10)</option>
+            <option value="6">6 પેસેન્જર (+₹20)</option>
+        </select>
     </div>
 
     <div class="fare-box">
-        અંદાજિત ભાડું: ₹ <span id="totalFare">60</span>
+        અંદાજિત ભાડું: ₹ <span id="totalFare">45</span>
     </div>
 
     <div class="form-group">
@@ -54,13 +66,24 @@
 </div>
 
 <script>
-    // Prati KM bhadu (Tame ahiya rakam badli sako cho, data.t. 20 rupiya per KM)
-    const ratePerKm = 20;
-
     function calculateFare() {
-        let km = document.getElementById('distanceKm').value;
-        let fare = km * ratePerKm;
-        document.getElementById('totalFare').textContent = fare > 0 ? fare : 0;
+        let km = parseFloat(document.getElementById('distanceKm').value) || 1;
+        let passengers = parseInt(document.getElementById('passengerCount').value) || 1;
+
+        // નિયમ: પહેલું 1 કિલોમીટરના ₹45, પછીના દરેક 1 KM ના ₹10 વત્તા
+        let baseFare = 45;
+        if (km > 1) {
+            baseFare += (km - 1) * 10;
+        }
+
+        // નિયમ: 4 પેસેન્જર સુધી કોઈ એક્સ્ટ્રા નહીં, 4 થી ઉપર દરેક પેસેન્જરના ₹10 એક્સ્ટ્રા
+        let extraPassengerFee = 0;
+        if (passengers > 4) {
+            extraPassengerFee = (passengers - 4) * 10;
+        }
+
+        let totalFare = baseFare + extraPassengerFee;
+        document.getElementById('totalFare').textContent = totalFare > 0 ? totalFare : 45;
     }
 
     function loadDrivers() {
@@ -85,6 +108,7 @@
         let pickup = document.getElementById('pickup').value;
         let dropoff = document.getElementById('dropoff').value;
         let km = document.getElementById('distanceKm').value;
+        let passengers = document.getElementById('passengerCount').value;
         let fare = document.getElementById('totalFare').textContent;
         let driverPhone = document.getElementById('driverSelect').value;
 
@@ -101,7 +125,7 @@
             return;
         }
 
-        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 ઉપાડવાનું સ્થળ: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + " KM\n💰 અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
+        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 ઉપાડવાનું સ્થળ: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + " KM\n👥 પેસેન્જર: " + passengers + "\n💰 કુલ અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
         let whatsappUrl = "https://wa.me/91" + driverPhone + "?text=" + encodeURIComponent(message);
         window.open(whatsappUrl, '_blank');
     }
@@ -109,7 +133,8 @@
     function cancelRide() {
         document.getElementById('pickup').value = '';
         document.getElementById('dropoff').value = '';
-        document.getElementById('distanceKm').value = '3';
+        document.getElementById('distanceKm').value = '1';
+        document.getElementById('passengerCount').selectedIndex = 3; // 4 passengers default
         calculateFare();
         document.getElementById('driverSelect').selectedIndex = 0;
         alert('બુકિંગ કેન્સલ કરી દેવામાં આવ્યું છે.');
