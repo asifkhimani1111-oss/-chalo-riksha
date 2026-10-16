@@ -230,13 +230,13 @@
                 <input type="text" id="passengerName" value="Asif Khimani">
             </div>
 
-            <!-- પિકઅપ સ્થળ (જાતે ટાઇપ કરવા માટેનું બોક્સ) -->
+            <!-- પિકઅપ સ્થળ -->
             <div class="form-group">
                 <label>પિકઅપ સ્થળ (ક્યાંથી બેસવું છે?):</label>
                 <input type="text" id="pickupInput" value="ગઢડા બસ સ્ટેન્ડ" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." oninput="calculateFare()">
             </div>
             
-            <!-- જવાનું સ્થળ (ડ્રોપ) (જાતે ટાઇપ કરવા માટેનું બોક્સ) -->
+            <!-- જવાનું સ્થળ (ડ્રોપ) -->
             <div class="form-group">
                 <label>જવાનું સ્થળ (ક્યાં જવું છે?):</label>
                 <input type="text" id="dropInput" value="માર્કેટિંગ યાર્ડ" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." oninput="calculateFare()">
@@ -271,8 +271,8 @@
             </div>
 
             <div class="fare-display-box" id="fareBox">
-                કુલ ભાડું: ₹55
-                <div class="fare-subtext" id="fareSubtext">મિનિમમ બેઝ ભાડું (₹55)</div>
+                કુલ ભાડું: ₹40
+                <div class="fare-subtext" id="fareSubtext">મિનિમમ બેઝ ભાડું (₹40)</div>
             </div>
 
             <div class="otp-box" id="otpDisplayBox" style="display: none;">
@@ -456,25 +456,25 @@
         function calculateFare() {
             let pickup = getPickupLocation();
             let drop = getDropLocation();
-            let baseFare = 55;
+            let baseFare = 40; // સુધારેલું બેઝ ભાડું ₹40
             let extraFare = 0;
-            let subtext = "મિનિમમ બેઝ ભાડું (₹55)";
+            let subtext = "મિનિમમ બેઝ ભાડું (₹40)";
 
             let localAreas = ["ગઢડા બસ સ્ટેન્ડ", "સ્વામિનારાયણ મંદિર", "માર્કેટિંગ યાર્ડ", "હોસ્પિટલ રોડ", "સામાકાંઠે"];
 
             if (pickup.toLowerCase() === drop.toLowerCase() || (localAreas.includes(pickup) && localAreas.includes(drop))) {
                 extraFare = 0;
-                subtext = "ગઢડા લોકલ એરિયા (મિનિમમ ₹55)";
+                subtext = "ગઢડા લોકલ એરિયા (મિનિમમ ₹40)";
             } else {
-                extraFare = 20;
+                extraFare = 15; // બહારગામ માટે વ્યાજબી વધારો
                 if (pickup.includes("ઉગામડી") || drop.includes("ઉગામડી") || pickup.includes("નિંગાળા") || drop.includes("નિંગાળા")) {
-                    extraFare = 35;
+                    extraFare = 25;
                 } else if (pickup.includes("રાબિયા પાર્ક") || drop.includes("રાબિયા પાર્ક") || pickup.includes("કોઠીવાડી") || drop.includes("કોઠીવાડી")) {
-                    extraFare = 15;
+                    extraFare = 10;
                 } else {
-                    extraFare = 40;
+                    extraFare = 30;
                 }
-                subtext = `મિનિમમ ₹55 + વધારાના ₹${extraFare}`;
+                subtext = `મિનિમમ ₹40 + વધારાના ₹${extraFare}`;
             }
 
             let standardFare = baseFare + extraFare;
