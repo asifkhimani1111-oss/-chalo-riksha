@@ -3,55 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ચલો રિક્ષા - Chalo Riksha</title>
+    <title>ચાલો રિક્ષા - Gadhada Auto Booking</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
         body {
-            background-color: #f2f4f7;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 10px;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 15px;
+            color: #333;
         }
         .container {
-            width: 100%;
-            max-width: 420px;
-            background: #ffffff;
+            max-width: 450px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 15px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
-            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        /* Tabs Styling */
         .tabs {
             display: flex;
-            background: #e4e7eb;
+            justify-content: space-between;
+            background: #e2e8f0;
             border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 20px;
-            overflow-x: auto;
+            padding: 5px;
+            margin-bottom: 15px;
         }
-        .tab {
+        .tab-btn {
             flex: 1;
+            padding: 10px 5px;
             text-align: center;
-            padding: 8px 4px;
-            font-size: 13px;
+            background: none;
+            border: none;
             font-weight: bold;
-            color: #333;
-            border-radius: 6px;
             cursor: pointer;
-            transition: 0.3s;
-            white-space: nowrap;
+            border-radius: 6px;
+            font-size: 14px;
         }
-        .tab.active {
-            background: #0f3d24;
-            color: #ffffff;
+        .tab-btn.active {
+            background: #064e3b;
+            color: white;
         }
         .tab-content {
             display: none;
@@ -59,423 +49,252 @@
         .tab-content.active {
             display: block;
         }
-        /* Header & Titles */
-        .header-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #1a2b3c;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        /* Form fields */
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
-        .form-group label {
+        label {
             display: block;
-            font-size: 14px;
-            color: #2c3e50;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             font-weight: bold;
+            font-size: 14px;
         }
-        .form-group input, .form-group select {
+        input, select {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        .main-btn {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ccd1d9;
-            border-radius: 8px;
-            font-size: 14px;
-            background-color: #f8fafc;
-        }
-        .form-group select {
-            margin-bottom: 6px;
-        }
-        /* Fare Box */
-        .fare-display-box {
-            background: #f0fdf4;
-            color: #166534;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-align: center;
-            border: 1px dashed #bbf7d0;
-        }
-        .fare-subtext {
-            font-size: 12px;
-            font-weight: normal;
-            margin-top: 4px;
-            color: #15803d;
-        }
-        .book-btn {
-            width: 100%;
             background-color: #00c853;
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 16px;
-            font-weight: bold;
             cursor: pointer;
-            margin-top: 5px;
-            box-shadow: 0 2px 5px rgba(0,200,83,0.3);
+            font-weight: bold;
+            margin-top: 10px;
         }
-        .book-btn:hover { background-color: #00b047; }
-        .note-text {
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 15px;
-            line-height: 1.5;
-        }
-        /* Driver Card */
         .driver-card {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            padding: 12px;
             border-radius: 8px;
-            padding: 12px 15px;
+            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .driver-info h3 {
-            font-size: 16px;
-            color: #222;
-            margin-bottom: 3px;
-        }
-        .driver-info p {
-            font-size: 13px;
-            color: #666;
         }
         .call-btn {
             background-color: #00c853;
             color: white;
+            padding: 8px 15px;
             border: none;
-            padding: 8px 14px;
             border-radius: 6px;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        /* Ledger Table */
-        .ledger-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 10px;
-            max-height: 250px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
-        .ledger-item {
-            padding: 8px;
-            border-bottom: 1px solid #e2e8f0;
-            font-size: 13px;
-            color: #334155;
-        }
-        .total-commission-box {
-            background: #eff6ff;
-            color: #1e40af;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
             font-weight: bold;
-            text-align: center;
-            border: 1px dashed #bfdbfe;
+        }
+        .cancel-btn {
+            background-color: #ff3b30;
+            color: white;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Tabs -->
-        <div class="tabs">
-            <div class="tab active" onclick="switchTab('musafir', event)">મુસાફર</div>
-            <div class="tab" onclick="switchTab('drivers', event)">ડ્રાઇવરો</div>
-            <div class="tab" onclick="switchTab('admin', event)">એડમિન</div>
-            <div class="tab" onclick="switchTab('ledger', event)">હિસાબ</div>
+<div class="container">
+    <!-- ચાર ટેબ્સ -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('passenger', this)">મુસાફર</button>
+        <button class="tab-btn" onclick="switchTab('drivers', this)">ડ્રાઇવરો</button>
+        <button class="tab-btn" onclick="switchTab('admin', this)">એડમિન</button>
+        <button class="tab-btn" onclick="switchTab('history', this)">હિસાબ</button>
+    </div>
+
+    <!-- ૧. મુસાફર ટેબ -->
+    <div id="passenger" class="tab-content active">
+        <h3>🛺 ચાલો રિક્ષા બુકિંગ</h3>
+        
+        <div class="form-group">
+            <label>મુસાફરનું નામ:</label>
+            <input type="text" id="p-name" placeholder="તમારું નામ લખો">
         </div>
 
-        <!-- 1. મુસાફર Tab -->
-        <div id="musafir-tab" class="tab-content active">
-            <div class="header-title">🛺 ચાલો રિક્ષા બુકિંગ</div>
-            
-            <div class="form-group">
-                <label>મુસાફરનું નામ:</label>
-                <input type="text" id="passengerName" value="Asif Khimani">
-            </div>
-
-            <div class="form-group">
-                <label>પિકઅપ સ્થળ:</label>
-                <select id="pickupSelect" onchange="updatePickupInput()">
-                    <option value="ગઢડા બસ સ્ટેન્ડ">ગઢડા બસ સ્ટેન્ડ</option>
-                    <option value="કોઠીવાડી">કોઠીવાડી</option>
-                    <option value="રાબિયા પાર્ક">રાબિયા પાર્ક</option>
-                    <option value="સામાકાંઠે">સામાકાંઠે</option>
-                    <option value="હરીપર">હરીપર</option>
-                    <option value="માંડધર">માંડધર</option>
-                    <option value="ખોલમા">ખોલમા</option>
-                    <option value="આટલા">આટલા</option>
-                    <option value="ગોરડીયા">ગોરડીયા</option>
-                    <option value="ઉગામડી">ઉગામડી</option>
-                    <option value="નિંગાળા">નિંગાળા</option>
-                    <option value="લખણકા">લખણકા</option>
-                    <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)...</option>
-                </select>
-                <input type="text" id="pickupCustom" placeholder="અથવા પિકઅપ એરિયાનું નામ લખો..." style="margin-top: 5px; display: none;">
-            </div>
-            
-            <div class="form-group">
-                <label>જવાનું સ્થળ (ડ્રોપ):</label>
-                <select id="dropSelect" onchange="updateDropInput()">
-                    <option value="માર્કેટિંગ યાર્ડ">માર્કેટિંગ યાર્ડ</option>
-                    <option value="કોઠીવાડી">કોઠીવાડી</option>
-                    <option value="રાબિયા પાર્ક">રાબિયા પાર્ક</option>
-                    <option value="સામાકાંઠે">સામાકાંઠે</option>
-                    <option value="હરીપર">હરીપર</option>
-                    <option value="માંડધર">માંડધર</option>
-                    <option value="ખોલમા">ખોલમા</option>
-                    <option value="આટલા">આટલા</option>
-                    <option value="ગોરડીયા">ગોરડીયા</option>
-                    <option value="ઉગામડી">ઉગામડી</option>
-                    <option value="નિંગાળા">નિંગાળા</option>
-                    <option value="લખણકા">લખણકા</option>
-                    <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)...</option>
-                </select>
-                <input type="text" id="dropCustom" placeholder="અથવા ડ્રોપ એરિયાનું નામ લખો..." style="margin-top: 5px; display: none;">
-            </div>
-
-            <div class="form-group">
-                <label>ડ્રાઇવર પસંદ કરો:</label>
-                <select id="selectedDriver">
-                    <option value="917779085469" data-name="સિક્કા ભાઈ (GJ-14-1111)">સિક્કા ભાઈ (GJ-14-1111)</option>
-                    <option value="917383940831" data-name="ચાવડા અલ્ફાઝ (GJ-14-2222)">ચાવડા અલ્ફાઝ (GJ-14-2222)</option>
-                    <option value="919327272466" data-name="ચાવડા ફિદ (GJ-14-3333)">ચાવડા ફિદ (GJ-14-3333)</option>
-                    <option value="919157003186" data-name="નાનો કોલસાવાળા (GJ-14-4444)">નાનો કોલસાવાળા (GJ-14-4444)</option>
-                </select>
-            </div>
-
-            <div class="fare-display-box" id="fareBox">
-                કુલ ભાડું: ₹55
-                <div class="fare-subtext" id="fareSubtext">બેઝ ભાડું (સ્ટાર્ટિંગ)</div>
-            </div>
-
-            <button class="book-btn" onclick="sendWhatsAppBooking()">💬 વોટ્સએપ પર બુક કરો</button>
-
-            <div class="note-text">
-                ભાડું: શરૂઆત ₹55, પ્રતિ રાઈડ કમિશન: ₹5 ફિક્સ.
-            </div>
+        <div class="form-group">
+            <label>પીકઅપ સ્થળ:</label>
+            <select id="pickup">
+                <option value="ગઢડા બસ સ્ટેન્ડ">ગઢડા બસ સ્ટેન્ડ</option>
+                <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
+                <option value="માર્કેટિંગ યાર્ડ">માર્કેટિંગ યાર્ડ</option>
+                <option value="હોસ્પિટલ રોડ">હોસ્પિટલ રોડ</option>
+            </select>
         </div>
 
-        <!-- 2. ડ્રાઇવરો Tab -->
-        <div id="drivers-tab" class="tab-content">
-            <div class="header-title">ઓનલાઇન રિક્ષા ડ્રાઇવરો</div>
-            <div style="font-size: 13px; color: #555; margin-bottom: 15px;">ગ્રાહક સીધો કોલ કરીને રિક્ષા બોલાવી શકે છે:</div>
-
-            <div class="driver-card">
-                <div class="driver-info">
-                    <h3>સિક્કા ભાઈ (GJ-14-1111)</h3>
-                    <p>મોબાઇલ: 7779085469</p>
-                </div>
-                <a href="tel:7779085469" class="call-btn">📞 કોલ કરો</a>
-            </div>
-
-            <div class="driver-card">
-                <div class="driver-info">
-                    <h3>ચાવડા અલ્ફાઝ (GJ-14-2222)</h3>
-                    <p>મોબાઇલ: 7383940831</p>
-                </div>
-                <a href="tel:7383940831" class="call-btn">📞 કોલ કરો</a>
-            </div>
-
-            <div class="driver-card">
-                <div class="driver-info">
-                    <h3>ચાવડા ફિદ (GJ-14-3333)</h3>
-                    <p>મોબાઇલ: 9327272466</p>
-                </div>
-                <a href="tel:9327272466" class="call-btn">📞 કોલ કરો</a>
-            </div>
+        <div class="form-group">
+            <label>જવાનું સ્થળ (ડ્રોપ):</label>
+            <select id="drop">
+                <option value="માર્કેટિંગ યાર્ડ">માર્કેટિંગ યાર્ડ</option>
+                <option value="ગઢડા બસ સ્ટેન્ડ">ગઢડા બસ સ્ટેન્ડ</option>
+                <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
+                <option value="રેલવે સ્ટેશન">રેલવે સ્ટેશન</option>
+            </select>
         </div>
 
-        <!-- 3. એડમિન Tab -->
-        <div id="admin-tab" class="tab-content">
-            <div class="header-title">એડમિન કંટ્રોલ પેનલ</div>
-            
-            <div class="form-group">
-                <label>એડમિન WhatsApp નંબર:</label>
-                <input type="text" id="adminWhatsapp" value="919426852334">
-            </div>
-
-            <div class="form-group">
-                <label>પ્રતિ રાઈડ કમિશન (₹):</label>
-                <input type="number" id="adminCommission" value="5">
-            </div>
-
-            <button class="book-btn" onclick="saveSettings()">સેટિંગ સેવ કરો</button>
-
-            <div class="note-text">
-                કમિશન અને એડમિન નંબર આ બ્રાઉઝરમાં સેવ થશે.
-            </div>
+        <div class="form-group">
+            <label>ડ્રાઈવર પસંદ કરો:</label>
+            <select id="selected-driver">
+                <option value="સિક્કા ભાઈ (GJ-14-1111)">સિક્કા ભાઈ (GJ-14-1111)</option>
+                <option value="ચાવડા અલ્ફાઝ (GJ-14-2222)">ચાવડા અલ્ફાઝ (GJ-14-2222)</option>
+                <option value="ચાવડા ફિદ (GJ-14-3333)">ચાવડા ફિદ (GJ-14-3333)</option>
+                <option value="ડ્રાઈવર ૪ (GJ-14-4444)">ડ્રાઈવર ૪ (GJ-14-4444)</option>
+                <option value="ડ્રાઈવર ૫ (GJ-14-5555)">ડ્રાઈવર ૫ (GJ-14-5555)</option>
+                <option value="ડ્રાઈવર ૬ (GJ-14-6666)">ડ્રાઈવર ૬ (GJ-14-6666)</option>
+                <option value="ડ્રાઈવર ૭ (GJ-14-7777)">ડ્રાઈવર ૭ (GJ-14-7777)</option>
+                <option value="ડ્રાઈવર ૮ (GJ-14-8888)">ડ્રાઈવર ૮ (GJ-14-8888)</option>
+                <option value="ડ્રાઈવર ૯ (GJ-14-9999)">ડ્રાઈવર ૯ (GJ-14-9999)</option>
+            </select>
         </div>
 
-        <!-- 4. હિસાબ Tab -->
-        <div id="ledger-tab" class="tab-content">
-            <div class="header-title">📊 કમિશન અને ટ્રીપ હિસાબ</div>
-            
-            <div class="total-commission-box" id="totalCommissionBox">
-                કુલ જમા કમિશન (પ્રતિ રાઈડ ₹5): ₹0
-            </div>
+        <div class="form-group">
+            <label>અંદાજિત ભાડું (₹):</label>
+            <input type="number" id="fare" value="55" oninput="calculateFare()">
+        </div>
 
-            <div style="font-size: 13px; font-weight: bold; margin: 15px 0 5px 0; color: #334155;">તમામ ટ્રીપનું લિસ્ટ:</div>
-            <div class="ledger-box" id="ledgerList">
-                <div style="text-align: center; color: #94a3b8; padding: 20px; font-size: 13px;">હજી સુધી કોઈ ટ્રીપ નોંધાઈ નથી.</div>
-            </div>
+        <div style="background: #e8f8f5; padding: 10px; border-radius: 6px; text-align: center; margin-bottom: 15px;">
+            <strong>કુલ ભાડું: ₹<span id="fare-display">55</span></strong><br>
+            <small>ઓટોમેટિક 5% કમિશન: ₹<span id="live-commission">2.75</span></small>
+        </div>
 
-            <button class="book-btn" style="background-color: #ef4444; font-size: 14px; padding: 10px;" onclick="clearLedger()">બધો હિસાબ રીસેટ કરો</button>
+        <button class="main-btn" onclick="bookRide()">રાઇડ બુક કરો</button>
+
+        <div id="ride-status-box" style="margin-top: 15px; display: none; background: #fff3cd; padding: 10px; border-radius: 6px;">
+            <p id="status-text">શોધ ચાલુ છે...</p>
+            <p><strong>કમિશન (5%):</strong> ₹<span id="commission-display">0</span></p>
+            <div id="ride-actions" style="margin-top: 10px;">
+                <button class="main-btn" style="background-color: #0288d1; margin-bottom: 5px;" onclick="acceptRide()">ડ્રાઈવર: એક્સેપ્ટ (Accept)</button>
+                <button class="main-btn cancel-btn" onclick="cancelRide()">મુસાફર: કેન્સલ (Cancel)</button>
+            </div>
         </div>
     </div>
 
-    <script>
-        function switchTab(tabName, event) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            event.target.classList.add('active');
-            document.getElementById(tabName + '-tab').classList.add('active');
-            
-            if(tabName === 'ledger') {
-                loadLedger();
-            }
+    <!-- ૨. ડ્રાઇવરો ટેબ (તમામ ૯ ડ્રાઇવરો) -->
+    <div id="drivers" class="tab-content">
+        <h3>ઓનલાઇન રિક્ષા ડ્રાઇવરો (૯ ડ્રાઇવરો)</h3>
+        <p><small>ગ્રાહક સીધો કોલ કરીને રિક્ષા બોલાવી શકે છે[span_7](start_span)[span_7](end_span):</small></p>
+
+        <div class="driver-card">
+            <div><strong>સિક્કા ભાઈ (GJ-14-1111)</strong><br><small>મોબાઇલ: 7779085469</small></div>
+            <a href="tel:7779085469" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-card">
+            <div><strong>ચાવડા અલ્ફાઝ (GJ-14-2222)</strong><br><small>મોબાઇલ: 7383940831</small></div>
+            <a href="tel:7383940831" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-card">
+            <div><strong>ચાવડા ફિદ (GJ-14-3333)</strong><br><small>મોબાઇલ: 9327272466</small></div>
+            <a href="tel:9327272466" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-card">
+            <div><strong>ડ્રાઈવર ૪ (GJ-14-4444)</strong><br><small>મોબાઇલ: 9876543210</small></div>
+            <a href="tel:9876543210" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-card">
+            <div><strong>ડ્રાઈવર ૫ (GJ-14-5555)</strong><br><small>મોબાઇલ: 9876543211</small></div>
+            <a href="tel:9876543211" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-card">
+            <div><strong>ડ્રાઈવર ૬ (GJ-14-6666)</strong><br><small>મોબાઇલ: 9876543212</small></div>
+            <a href="tel:9876543212" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-card">
+            <div><strong>ડ્રાઈવર ૭ (GJ-14-7777)</strong><br><small>મોબાઇલ: 9876543213</small></div>
+            <a href="tel:9876543213" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-card">
+            <div><strong>ડ્રાઈવર ૮ (GJ-14-8888)</strong><br><small>મોબાઇલ: 9876543214</small></div>
+            <a href="tel:9876543214" class="call-btn">📞 કોલ કરો</a>
+        </div>
+        <div class="driver-card">
+            <div><strong>ડ્રાઈવર ૯ (GJ-14-9999)</strong><br><small>મોબાઇલ: 9876543215</small></div>
+            <a href="tel:9876543215" class="call-btn">📞 કોલ કરો</a>
+        </div>
+    </div>
+
+    <!-- ૩. એડમિન ટેબ -->
+    <div id="admin" class="tab-content">
+        <h3>એડમિન કંટ્રોલ પેનલ</h3>
+        <div class="form-group">
+            <label>કમિશન ટકાવારી (%):</label>
+            <input type="text" value="5% (ઓટોમેટિક)" readonly>
+        </div>
+    </div>
+
+    <!-- ૪. હિસાબ ટેબ -->
+    <div id="history" class="tab-content">
+        <h3>કમિશન અને ટ્રીપ હિસાબ</h3>
+        <p>સફળ રાઇડ્સ પર 5% કમિશન જમા થશે. કેન્સલ થયેલ રાઇડ્સનું કમિશન ઝીરો રહેશે.</p>
+        <div style="background: #e2e8f0; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+            <strong>કુલ જમા કમિશન: ₹<span id="total-admin-commission">0</span></strong>
+        </div>
+    </div>
+</div>
+
+<script>
+    let totalCommissionCollected = 0;
+    let currentCalculatedCommission = 0;
+
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    function calculateFare() {
+        let fareInput = document.getElementById('fare').value || 0;
+        let fare = parseFloat(fareInput);
+        currentCalculatedCommission = fare * 0.05; // ૫% કમિશન ગણતરી
+        document.getElementById('fare-display').innerHTML = fare;
+        document.getElementById('live-commission').innerHTML = currentCalculatedCommission.toFixed(2);
+    }
+
+    function bookRide() {
+        let name = document.getElementById('p-name').value;
+        if(!name) {
+            alert("કૃપા કરીને મુસાફરનું નામ લખો!");
+            return;
         }
 
-        function updatePickupInput() {
-            let select = document.getElementById('pickupSelect');
-            let customInput = document.getElementById('pickupCustom');
-            if (select.value === 'અન્ય (જાતે લખો)') {
-                customInput.style.display = 'block';
-                customInput.focus();
-            } else {
-                customInput.style.display = 'none';
-            }
-            calculateFare();
+        calculateFare();
+
+        document.getElementById('ride-status-box').style.display = 'block';
+        document.getElementById('status-text').innerHTML = "⏳ ડ્રાઈવર દ્વારા રાઇડ સ્વીકારવાની રાહ જોવાય છે...";
+        document.getElementById('commission-display').innerHTML = currentCalculatedCommission.toFixed(2);
+        document.getElementById('ride-actions').style.display = 'block';
+    }
+
+    function acceptRide() {
+        totalCommissionCollected += currentCalculatedCommission;
+        document.getElementById('total-admin-commission').innerHTML = totalCommissionCollected.toFixed(2);
+
+        document.getElementById('status-text').innerHTML = "✅ ડ્રાઈવરે રાઇડ સ્વીકારી લીધી છે! કમિશન સફળતાપૂર્વક એડમિનમાં જમા થયું.";
+        document.getElementById('ride-actions').style.display = 'none';
+    }
+
+    function cancelRide() {
+        let confirmCancel = confirm("શું તમે રાઇડ કેન્સલ કરવા માંગો છો?");
+        if(confirmCancel) {
+            document.getElementById('commission-display').innerHTML = "0 (કેન્સલ - કોઈ કમિશન નહીં)";
+            document.getElementById('status-text').innerHTML = "❌ રાઇડ કેન્સલ કરવામાં આવી છે. એડમિન કમિશનમાં કોઈ રકમ એડ થઈ નથી.";
+            document.getElementById('ride-actions').style.display = 'none';
         }
+    }
 
-        function updateDropInput() {
-            let select = document.getElementById('dropSelect');
-            let customInput = document.getElementById('dropCustom');
-            if (select.value === 'અન્ય (જાતે લખો)') {
-                customInput.style.display = 'block';
-                customInput.focus();
-            } else {
-                customInput.style.display = 'none';
-            }
-            calculateFare();
-        }
+    // પેજ લોડ થાય ત્યારે શરૂઆતનું કમિશન સેટ કરો
+    calculateFare();
+</script>
 
-        function getPickupLocation() {
-            let select = document.getElementById('pickupSelect').value;
-            if (select === 'અન્ય (જાતે લખો)') {
-                return document.getElementById('pickupCustom').value || 'જાતે લખેલ પિકઅપ';
-            }
-            return select;
-        }
-
-        function getDropLocation() {
-            let select = document.getElementById('dropSelect').value;
-            if (select === 'અન્ય (જાતે લખો)') {
-                return document.getElementById('dropCustom').value || 'જાતે લખેલ ડ્રોપ';
-            }
-            return select;
-        }
-
-        function calculateFare() {
-            let pickup = getPickupLocation();
-            let drop = getDropLocation();
-            
-            let fare = 75;
-            let subtext = "માનક અંદાજિત ભાડું";
-            
-            if (pickup === drop) {
-                fare = 55;
-                subtext = "બેઝ ભાડું (એક જ એરિયા)";
-            }
-
-            document.getElementById('fareBox').innerHTML = `કુલ ભાડું: ₹${fare} <div class="fare-subtext">${subtext}</div>`;
-            return fare;
-        }
-
-        function sendWhatsAppBooking() {
-            let name = document.getElementById('passengerName').value;
-            let pickup = getPickupLocation();
-            let drop = getDropLocation();
-            let driverSelect = document.getElementById('selectedDriver');
-            let driverPhone = driverSelect.value;
-            let driverName = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-name');
-            let fare = calculateFare();
-            let commission = 5; // પ્રતિ રાઈડ ફિક્સ ₹5 કમિશન
-
-            let trips = JSON.parse(localStorage.getItem('rickshawTrips')) || [];
-            trips.push({
-                name: name,
-                driver: driverName,
-                pickup: pickup,
-                drop: drop,
-                fare: fare,
-                commission: commission,
-                date: new Date().toLocaleDateString('gu-IN')
-            });
-            localStorage.setItem('rickshawTrips', JSON.stringify(trips));
-
-            let fareText = document.getElementById('fareBox').innerText;
-            let msg = `नमस्ते, મારે રિક્ષા જોઇએ છે.\n👤 નામ: ${name}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop}\n💰 ${fareText}`;
-            let url = `https://wa.me/${driverPhone}?text=` + encodeURIComponent(msg);
-            window.open(url, '_blank');
-        }
-
-        function loadLedger() {
-            let trips = JSON.parse(localStorage.getItem('rickshawTrips')) || [];
-            let ledgerList = document.getElementById('ledgerList');
-            let totalBox = document.getElementById('totalCommissionBox');
-            
-            if(trips.length === 0) {
-                ledgerList.innerHTML = `<div style="text-align: center; color: #94a3b8; padding: 20px; font-size: 13px;">હજી સુધી કોઈ ટ્રીપ નોંધાઈ નથી.</div>`;
-                totalBox.innerText = `કુલ જમા કમિશન (પ્રતિ રાઈડ ₹5): ₹0`;
-                return;
-            }
-
-            let html = '';
-            let totalComm = 0;
-            trips.reverse().forEach((t) => {
-                totalComm += t.commission;
-                html += `<div class="ledger-item">
-                    <b>${t.name}</b> ➡️ <b>${t.driver}</b><br>
-                    📍 ${t.pickup} ➔ 🏁 ${t.drop}<br>
-                    ભાડું: ₹${t.fare} | <b>કમિશન: ₹${t.commission}</b><br>
-                    <span style="font-size: 11px; color: #64748b;">તારીખ: ${t.date}</span>
-                </div>`;
-            });
-
-            ledgerList.innerHTML = html;
-            totalBox.innerText = `કુલ જમા કમિશન (પ્રતિ રાઈડ ₹5): ₹${totalComm}`;
-        }
-
-        function clearLedger() {
-            if(confirm('શું તમે ખરેખર બધો હિસાબ ડિલીટ કરવા માંગો છો?')) {
-                localStorage.removeItem('rickshawTrips');
-                loadLedger();
-            }
-        }
-
-        function saveSettings() {
-            alert('સેટિંગ સફળતાપૂર્વક સેવ થઈ ગયું!');
-        }
-    </script>
 </body>
 </html>
