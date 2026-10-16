@@ -565,11 +565,11 @@
 
             let subTotal = standardFare + extraPaxCharge;
 
-            // જો રાઉન્ડ ટ્રીપ (આવા-જવાનું અથવા ખાલી ફેરી વળતર) સિલેક્ટ કર્યું હોય તો ભાડું ડબલ અથવા પ્લસ થશે
+            // રાઉન્ડ ટ્રીપ ચેક
             let isRoundTrip = document.getElementById('roundTripCheck').checked;
             let totalFare = subTotal;
             if (isRoundTrip) {
-                totalFare = subTotal * 2; // આવવા અને જવાનું બંનેનું ભેગું ભાડું
+                totalFare = subTotal * 2;
                 subtext += ` + 🔄 રાઉન્ડ ટ્રીપ (ખાલી ફેરી સહિત)`;
             }
 
