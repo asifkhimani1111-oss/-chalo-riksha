@@ -230,53 +230,16 @@
                 <input type="text" id="passengerName" value="Asif Khimani">
             </div>
 
-            <!-- પિકઅપ સ્થળ -->
+            <!-- પિકઅપ સ્થળ (હવે મુસાફર પોતાની મરજી મુજબ જાતે ટાઇપ કરી શકશે) -->
             <div class="form-group">
-                <label>પિકઅપ સ્થળ:</label>
-                <select id="pickupSelect" onchange="updatePickupInput()">
-                    <option value="ગઢડા બસ સ્ટેન્ડ">ગઢડા બસ સ્ટેન્ડ</option>
-                    <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
-                    <option value="માર્કેટિંગ યાર્ડ">માર્કેટિંગ યાર્ડ</option>
-                    <option value="હોસ્પિટલ રોડ">હોસ્પિટલ રોડ</option>
-                    <option value="સામાકાંઠે">સામાકાંઠે</option>
-                    <option value="કોઠીવાડી">કોઠીવાડી</option>
-                    <option value="રાબિયા પાર્ક">રાબિયા પાર્ક</option>
-                    <option value="હરીપર">હરીપર</option>
-                    <option value="માંડધર">માંડધર</option>
-                    <option value="ખોલમા">ખોલમા</option>
-                    <option value="આટલા">આટલા</option>
-                    <option value="ગોરડીયા">ગોરડીયા</option>
-                    <option value="ઉગામડી">ઉગામડી</option>
-                    <option value="નિંગાળા">નિંગાળા</option>
-                    <option value="લખણકા">લખણકા</option>
-                    <option value="અન્ય">અન્ય (જાતે લખો)</option>
-                </select>
-                <input type="text" id="pickupCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 8px; display: none;" oninput="calculateFare()">
+                <label>પિકઅપ સ્થળ (ક્યાંથી બેસવું છે?):</label>
+                <input type="text" id="pickupInput" value="ગઢડા બસ સ્ટેન્ડ" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." oninput="calculateFare()">
             </div>
             
-            <!-- જવાનું સ્થળ (ડ્રોપ) -->
+            <!-- જવાનું સ્થળ (ડ્રોપ) (હવે મુસાફર ગમે તે નામ જાતે લખી શકશે) -->
             <div class="form-group">
-                <label>જવાનું સ્થળ (ડ્રોપ):</label>
-                <select id="dropSelect" onchange="updateDropInput()">
-                    <option value="માર્કેટિંગ યાર્ડ">માર્કેટિંગ યાર્ડ</option>
-                    <option value="ગઢડા બસ સ્ટેન્ડ">ગઢડા બસ સ્ટેન્ડ</option>
-                    <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
-                    <option value="હોસ્પિટલ રોડ">હોસ્પિટલ રોડ</option>
-                    <option value="સામાકાંઠે">સામાકાંઠે</option>
-                    <option value="રેલવે સ્ટેશન">રેલવે સ્ટેશન</option>
-                    <option value="કોઠીવાડી">કોઠીવાડી</option>
-                    <option value="રાબિયા પાર્ક">રાબિયા પાર્ક</option>
-                    <option value="હરીપર">હરીપર</option>
-                    <option value="માંડધર">માંડધર</option>
-                    <option value="ખોલમા">ખોલમા</option>
-                    <option value="આટલા">આટલા</option>
-                    <option value="ગોરડીયા">ગોરડીયા</option>
-                    <option value="ઉગામડી">ઉગામડી</option>
-                    <option value="નિંગાળા">નિંગાળા</option>
-                    <option value="લખણકા">લખણકા</option>
-                    <option value="અન્ય">અન્ય (જાતે લખો)</option>
-                </select>
-                <input type="text" id="dropCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 8px; display: none;" oninput="calculateFare()">
+                <label>જવાનું સ્થળ (ક્યાં જવું છે?):</label>
+                <input type="text" id="dropInput" value="માર્કેટિંગ યાર્ડ" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." oninput="calculateFare()">
             </div>
 
             <!-- મુસાફરોની સંખ્યા -->
@@ -331,7 +294,7 @@
             </div>
         </div>
 
-        <!-- 2. ડ્રાઇવરો Tab (જાતે ડ્રાઇવર ઉમેરવાનું ફોર્મ) -->
+        <!-- 2. ડ્રાઇવરો Tab -->
         <div id="drivers-tab" class="tab-content">
             <div class="header-title">🛺 ડ્રાઈવર રજિસ્ટ્રેશન (જાતે એડ થાઓ)</div>
             <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 15px;">
@@ -480,52 +443,14 @@
             if(tabName === 'drivers') loadDriversToUI();
         }
 
-        function updatePickupInput() {
-            let select = document.getElementById('pickupSelect');
-            let custom = document.getElementById('pickupCustom');
-            if (select && custom) {
-                if (select.value === 'અન્ય') {
-                    custom.style.display = 'block';
-                    custom.focus();
-                } else {
-                    custom.style.display = 'none';
-                    custom.value = '';
-                }
-            }
-            calculateFare();
-        }
-
-        function updateDropInput() {
-            let select = document.getElementById('dropSelect');
-            let custom = document.getElementById('dropCustom');
-            if (select && custom) {
-                if (select.value === 'અન્ય') {
-                    custom.style.display = 'block';
-                    custom.focus();
-                } else {
-                    custom.style.display = 'none';
-                    custom.value = '';
-                }
-            }
-            calculateFare();
-        }
-
         function getPickupLocation() {
-            let select = document.getElementById('pickupSelect');
-            let custom = document.getElementById('pickupCustom');
-            if (select && select.value === 'અન્ય' && custom && custom.value.trim() !== '') {
-                return custom.value.trim();
-            }
-            return select ? select.value : 'ગઢડા બસ સ્ટેન્ડ';
+            let input = document.getElementById('pickupInput');
+            return input && input.value.trim() !== '' ? input.value.trim() : 'ગઢડા બસ સ્ટેન્ડ';
         }
 
         function getDropLocation() {
-            let select = document.getElementById('dropSelect');
-            let custom = document.getElementById('dropCustom');
-            if (select && select.value === 'અન્ય' && custom && custom.value.trim() !== '') {
-                return custom.value.trim();
-            }
-            return select ? select.value : 'માર્કેટિંગ યાર્ડ';
+            let input = document.getElementById('dropInput');
+            return input && input.value.trim() !== '' ? input.value.trim() : 'માર્કેટિંગ યાર્ડ';
         }
 
         function calculateFare() {
@@ -537,7 +462,7 @@
 
             let localAreas = ["ગઢડા બસ સ્ટેન્ડ", "સ્વામિનારાયણ મંદિર", "માર્કેટિંગ યાર્ડ", "હોસ્પિટલ રોડ", "સામાકાંઠે"];
 
-            if (pickup === drop || (localAreas.includes(pickup) && localAreas.includes(drop))) {
+            if (pickup.toLowerCase() === drop.toLowerCase() || (localAreas.includes(pickup) && localAreas.includes(drop))) {
                 extraFare = 0;
                 subtext = "ગઢડા લોકલ એરિયા (મિનિમમ ₹55)";
             } else {
