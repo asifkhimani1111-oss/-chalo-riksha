@@ -281,7 +281,7 @@
 
             <div class="fare-display-box" id="fareBox">
                 કુલ ભાડું: ₹55
-                <div class="fare-subtext" id="fareSubtext">મિનિમમ ભાડું (₹55)</div>
+                <div class="fare-subtext" id="fareSubtext">મિનિમમ બેઝ ભાડું (₹55)</div>
             </div>
 
             <button class="book-btn" onclick="sendWhatsAppBooking()">💬 વોટ્સએપ પર બુક કરો</button>
@@ -296,7 +296,7 @@
             </div>
 
             <div class="note-text">
-                ભાડું: મિનિમમ ₹55 અને પ્રતિ કિમી ₹10 ના હિસાબે ઓટોમેટિક ગણાશે.
+                ભાડું: મિનિમમ ₹55 પ્લસ એરિયા મુજબ વધારાનું ભાડું ઓટોમેટિક ઉમેરાશે.
             </div>
         </div>
 
@@ -366,7 +366,7 @@
                     <h3>ડ્રાઈવર ૯ (GJ-14-9999)</h3>
                     <p>મોબાઇલ: 9876543215</p>
                 </div>
-                <a href="tel:9876543215" class="call-btn">📞 કોල් કરો</a>
+                <a href="tel:9876543215" class="call-btn">📞 કોલ કરો</a>
             </div>
         </div>
 
@@ -470,39 +470,34 @@
         function calculateFare() {
             let pickup = getPickupLocation();
             let drop = getDropLocation();
-            let fare = 55;
-            let subtext = "મિનિમમ ભાડું (₹55)";
+            let baseFare = 55;
+            let extraFare = 0;
+            let subtext = "મિનિમમ બેઝ ભાડું (₹55)";
 
-            // ગઢડાના નજીકના/લોકલ મુખ્ય વિસ્તારો કે જેની વચ્ચે મિનિમમ ભાડું લાગુ પડે
+            // ગઢડાના લોકલ વિસ્તારો
             let localAreas = ["ગઢડા બસ સ્ટેન્ડ", "સ્વામિનારાયણ મંદિર", "માર્કેટિંગ યાર્ડ", "હોસ્પિટલ રોડ", "સામાકાંઠે"];
 
             if (pickup === drop) {
-                fare = 55;
-                subtext = "એક જ એરિયા (મિનિમમ ભાડું)";
+                extraFare = 0;
+                subtext = "એક જ એરિયા (મિનિમમ ₹55)";
             } else if (localAreas.includes(pickup) && localAreas.includes(drop)) {
-                fare = 55;
-                subtext = "ગઢડા લોકલ એરિયા (મિનિમમ ભાડું)";
+                extraFare = 0;
+                subtext = "ગઢડા લોકલ એરિયા (મિનિમમ ₹55)";
             } else {
-                // અન્ય દૂરના ગામડાઓ માટે અંદાજિત કિમી અંતર અને પ્રતિ કિમી ₹10 લેખે ગણતરી (મિનિમમ ₹55 થી વધુ)
-                // ઉદાહરણ તરીકે દૂરના સ્થળો માટે અંદાજિત અંતર કિમી મુજબ:
-                let distanceKm = 8; // ડિફોલ્ટ લાંબા અંતર માટે અંદાજિત કિમી
-                
-                // જો ચોક્કસ ગામડા હોય તો એ પ્રમાણે અંદાજિત અંતર સેટ કરી શકાય
-                if (pickup.includes("ઉગામડી") || drop.includes("ઉગામડી")) distanceKm = 9;
-                if (pickup.includes("નિંગાળા") || drop.includes("નિંગાળા")) distanceKm = 12;
-                if (pickup.includes("લખણકા") || drop.includes("લખણકા")) distanceKm = 10;
-                if (pickup.includes("હરીપર") || drop.includes("હરીપર")) distanceKm = 7;
-                if (pickup.includes("માંડધર") || drop.includes("માંડધર")) distanceKm = 8;
-                if (pickup.includes("કોઠીવાડી") || drop.includes("કોઠીવાડી")) distanceKm = 6;
-                if (pickup.includes("રાબિયા પાર્ક") || drop.includes("રાબિયા પાર્ક")) distanceKm = 4;
+                extraFare = 20; // પ્લસ ₹20 વધારાનું એરિયા ભાડું
 
-                // પ્રતિ કિમી ₹10 લેખે ભાડું (મિનિમમ 55 રૂપિયા રહેશે)
-                fare = Math.max(55, distanceKm * 10);
-                subtext = `અંદાજિત અંતર (${distanceKm} કિમી × ₹10 પ્રતિ કિમી)`;
+                if (pickup.includes("ઉગામડી") || drop.includes("ઉગામડી") || pickup.includes("નિંગાળા") || drop.includes("નિંગાળા")) {
+                    extraFare = 35;
+                } else if (pickup.includes("રાબિયા પાર્ક") || drop.includes("રાબિયા પાર્ક") || pickup.includes("કોઠીવાડી") || drop.includes("કોઠીવાડી")) {
+                    extraFare = 15;
+                }
+
+                subtext = `મિનિમમ ₹55 + વધારાના ₹${extraFare}`;
             }
 
-            document.getElementById('fareBox').innerHTML = `કુલ ભાડું: ₹${fare} <div class="fare-subtext">${subtext}</div>`;
-            return fare;
+            let totalFare = baseFare + extraFare;
+            document.getElementById('fareBox').innerHTML = `કુલ ભાડું: ₹${totalFare} <div class="fare-subtext">${subtext}</div>`;
+            return totalFare;
         }
 
         function sendWhatsAppBooking() {
