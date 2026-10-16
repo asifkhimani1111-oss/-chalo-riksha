@@ -160,18 +160,6 @@
             box-shadow: 0 2px 5px rgba(0,200,83,0.3);
         }
         .book-btn:hover { background-color: #00b047; }
-        .cancel-btn {
-            background-color: #ff3b30 !important;
-        }
-        .accept-btn {
-            background-color: #0288d1 !important;
-        }
-        .note-text {
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 15px;
-            line-height: 1.5;
-        }
         .driver-card {
             background: #ffffff;
             border: 1px solid #e0e0e0;
@@ -261,9 +249,9 @@
                     <option value="ઉગામડી">ઉગામડી</option>
                     <option value="નિંગાળા">નિંગાળા</option>
                     <option value="લખણકા">લખણકા</option>
-                    <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)...</option>
+                    <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)</option>
                 </select>
-                <input type="text" id="pickupCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
+                <input type="text" id="pickupCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 8px; display: none;" oninput="calculateFare()">
             </div>
             
             <!-- જવાનું સ્થળ (ડ્રોપ) -->
@@ -286,9 +274,9 @@
                     <option value="ઉગામડી">ઉગામડી</option>
                     <option value="નિંગાળા">નિંગાળા</option>
                     <option value="લખણકા">લખણકા</option>
-                    <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)...</option>
+                    <option value="અન્ય (જાતે લખો)">અન્ય (જાતે લખો)</option>
                 </select>
-                <input type="text" id="dropCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
+                <input type="text" id="dropCustom" placeholder="ગામ કે એરિયાનું નામ જાતે લખો..." style="margin-top: 8px; display: none;" oninput="calculateFare()">
             </div>
 
             <!-- મુસાફરોની સંખ્યા -->
@@ -315,7 +303,7 @@
             <div class="form-group">
                 <label>ડ્રાઇવર પસંદ કરો:</label>
                 <select id="selectedDriver">
-                    <!-- JavaScript દ્વારા ડ્રાઇવરો અહીં લોડ થશે -->
+                    <!-- JavaScript દ્વારા લોડ થશે -->
                 </select>
             </div>
 
@@ -337,8 +325,8 @@
             <div id="rideStatusBox" style="margin-top: 15px; display: none; background: #fffbeb; padding: 12px; border-radius: 8px; border: 1px solid #fef3c7;">
                 <p id="rideStatusText" style="font-size: 13px; font-weight: bold; color: #b45309; margin-bottom: 8px;">સ્થિતિ: ડ્રાઈવરની મંજૂરીની રાહ જોવાય છે...</p>
                 <div style="display: flex; gap: 8px;">
-                    <button class="book-btn accept-btn" style="margin-top:0; padding:8px; font-size:13px;" onclick="acceptRideByDriver()">ડ્રાઈવર: Accept (OTP પૂછો)</button>
-                    <button class="book-btn cancel-btn" style="margin-top:0; padding:8px; font-size:13px;" onclick="cancelRideByPassenger()">મુસાફર: Cancel</button>
+                    <button class="book-btn" style="background:#0288d1; margin-top:0; padding:8px; font-size:13px;" onclick="acceptRideByDriver()">ડ્રાઈવર: Accept (OTP પૂછો)</button>
+                    <button class="book-btn" style="background:#ff3b30; margin-top:0; padding:8px; font-size:13px;" onclick="cancelRideByPassenger()">મુસાફર: Cancel</button>
                 </div>
             </div>
         </div>
@@ -386,7 +374,7 @@
             <div class="total-commission-box" id="totalCommissionBox">કુલ જમા કમિશન (5%): ₹0</div>
             <div style="font-size: 13px; font-weight: bold; margin: 15px 0 5px 0; color: #334155;">ટ્રીપનું લિસ્ટ:</div>
             <div class="ledger-box" id="ledgerList">
-                <div style="text-align: center; color: #94a3b8; padding: 20px; font-size: 13px;">કોઈ ટ્રીપ નથી.</div>
+                <div style="text-align: center; color: #94a3b8; padding: 20px;">કોઈ ટ્રીપ નથી.</div>
             </div>
             <button class="book-btn" style="background-color: #ef4444; font-size: 14px; padding: 10px;" onclick="clearLedger()">બધો હિસાબ રીસેટ કરો</button>
         </div>
@@ -396,7 +384,6 @@
         let currentTripData = null;
         let currentOtp = "";
 
-        // ડિફોલ્ટ ડ્રાઇવરો
         const defaultDrivers = [
             { name: "સિક્કા ભાઈ", riksha: "GJ-14-1111", phone: "917779085469" },
             { name: "ચાવડા અલ્ફાઝ", riksha: "GJ-14-2222", phone: "917383940831" },
@@ -490,8 +477,13 @@
             let select = document.getElementById('pickupSelect');
             let custom = document.getElementById('pickupCustom');
             if (select && custom) {
-                custom.style.display = (select.value === 'અન્ય (જાતે લખો)') ? 'block' : 'none';
-                if(select.value === 'અન્ય (જાતે લખો)') custom.focus();
+                if (select.value === 'અન્ય (જાતે લખો)') {
+                    custom.style.display = 'block';
+                    custom.focus();
+                } else {
+                    custom.style.display = 'none';
+                    custom.value = '';
+                }
             }
             calculateFare();
         }
@@ -500,8 +492,13 @@
             let select = document.getElementById('dropSelect');
             let custom = document.getElementById('dropCustom');
             if (select && custom) {
-                custom.style.display = (select.value === 'અન્ય (જાતે લખો)') ? 'block' : 'none';
-                if(select.value === 'અન્ય (જાતે લખો)') custom.focus();
+                if (select.value === 'અન્ય (જાતે લખો)') {
+                    custom.style.display = 'block';
+                    custom.focus();
+                } else {
+                    custom.style.display = 'none';
+                    custom.value = '';
+                }
             }
             calculateFare();
         }
