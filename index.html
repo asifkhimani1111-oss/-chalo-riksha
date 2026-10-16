@@ -25,7 +25,6 @@
             background: #ffffff;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            overflow: hidden;
             padding: 20px;
         }
         .tabs {
@@ -69,7 +68,6 @@
         }
         .form-group {
             margin-bottom: 15px;
-            position: relative;
         }
         .form-group label {
             display: block;
@@ -85,31 +83,6 @@
             border-radius: 8px;
             font-size: 15px;
             background-color: #f8fafc;
-        }
-        /* ઓટોમેટિક સજેશન લિસ્ટ */
-        .suggestions-list {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: #ffffff;
-            border: 1px solid #ccd1d9;
-            border-top: none;
-            border-radius: 0 0 8px 8px;
-            max-height: 150px;
-            overflow-y: auto;
-            z-index: 100;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .suggestion-item {
-            padding: 10px 12px;
-            font-size: 14px;
-            color: #333;
-            cursor: pointer;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .suggestion-item:hover {
-            background-color: #e2f0d9;
         }
         .gps-btn {
             background-color: #0288d1;
@@ -249,7 +222,7 @@
 
         <!-- 1. મુસાફર Tab -->
         <div id="musafir-tab" class="tab-content active">
-            <div class="header-title">🛺 ચાલો રિક્ષા બુકિંગ (ડાયરેક્ટ વોટ્સએપ)</div>
+            <div class="header-title">🛺 ચાલો રિક્ષા બુકિંગ (ગઢડા અને આજુબાજુ)</div>
             
             <div class="form-group">
                 <label>મુસાફરનું નામ:</label>
@@ -259,15 +232,42 @@
             <!-- પિકઅપ સ્થળ -->
             <div class="form-group">
                 <label>પિકઅપ સ્થળ:</label>
-                <input type="text" id="pickupInput" value="ગઢડા બસ સ્ટેન્ડ" placeholder="ક્યાંથી બેસવું છે?">
-                <button type="button" class="gps-btn" onclick="getCurrentLocation()">📍 મારું GPS લાઈવ લોકેશન લો</button>
+                <input type="text" id="pickupInput" list="villageList" value="ગઢડા બસ સ્ટેન્ડ" placeholder="ક્યાંથી બેસવું છે?">
             </div>
             
-            <!-- જવાનું સ્થળ -->
+            <!-- જવાનું સ્થળ (નેટિવ ડેટાલિસ્ટ સાથે) -->
             <div class="form-group">
                 <label>જવાનું સ્થળ (ડ્રોપ):</label>
-                <input type="text" id="dropInput" value="બોટાદ" placeholder="ગામ કે વિસ્તારનું નામ લખો..." oninput="handleDropInput()">
-                <div id="suggestionsContainer" class="suggestions-list" style="display: none;"></div>
+                <input type="text" id="dropInput" list="villageList" value="બોટાદ" placeholder="ગામ કે વિસ્તારનું નામ લખો..." oninput="calculateFare()">
+                
+                <!-- મોબાઈલ ફ્રેન્ડલી નેટિવ ડેટાલિસ્ટ યાદી -->
+                <datalist id="villageList">
+                    <option value="ગઢડા બસ સ્ટેન્ડ">
+                    <option value="સામાકાંઠે">
+                    <option value="કોઠીવાડી">
+                    <option value="રાબિયા પાર્ક">
+                    <option value="નાગજીપરા">
+                    <option value="બોટાદ રોડ">
+                    <option value="બોટાદ">
+                    <option value="ગોરડીયા">
+                    <option value="તમારી">
+                    <option value="ભીંડા">
+                    <option value="ઉગામડી">
+                    <option value="નિંગાળા">
+                    <option value="રોહિસાલા">
+                    <option value="ભાડલી ગેટ">
+                    <option value="ધાડા રોડ">
+                    <option value="ઢસા ગામ">
+                    <option value="ગુંદાળા">
+                    <option value="માલપરા">
+                    <option value="ખોલમા">
+                    <option value="લખણકા">
+                    <option value="આટલા">
+                    <option value="માંડધર">
+                    <option value="ભાડલી">
+                    <option value="કેરાળા">
+                    <option value="રામપરા">
+                </datalist>
             </div>
 
             <!-- મુસાફરોની સંખ્યા -->
@@ -304,7 +304,7 @@
             </div>
 
             <div class="rule-note">
-                ℹ️ વોટ્સએપ પર ક્લિક કરો અને ડ્રાઇવરને સીધી બુકિંગ મોકલો.
+                ℹ️ બોક્સ પર ક્લિક કરતા જ ગામોની યાદી દેખાશે અથવા ટાઈપ કરતા ઓટોમેટિક ફિલ્ટર થશે.
             </div>
 
             <button class="book-btn" onclick="sendWhatsAppBooking()">💬 ડાયરેક્ટ વોટ્સએપ પર મોકલો</button>
@@ -373,31 +373,31 @@
         ];
 
         const distanceDatabase = {
-            "ગઢડા બસ સ્ટેન્ડ": 1, "gadhada bud stand": 1,
-            "સામાકાંઠે": 2.5, "samakathe": 2.5,
-            "કોઠીવાડી": 2.5, "kothivadi": 2.5,
-            "રાબિયા પાર્ક": 3, "rabiya park": 3,
-            "નાગજીપરા": 1.5, "nagjipura": 1.5,
-            "બોટાદ રોડ": 4, "botad raad": 4,
-            "બોટાદ": 25, "botad": 25,
-            "ગોરડીયા": 7, "gordia": 7,
-            "તમારી": 6, "tamari": 6,
-            "ભીંડા": 11, "bhinda": 11,
-            "ઉગામડી": 8, "ugaamedi": 8,
-            "નિંગાળા": 12, "ningala": 12,
-            "રોહિસાલા": 15, "rohisala": 15,
-            "ભાડલી ગેટ": 14, "bhadli get": 14,
-            "ધાડા રોડ": 16, "dhada road": 16,
-            "ઢસા ગામ": 18, "dhasa gaam": 18,
-            "ગુંદાળા": 10, "gundala": 10,
-            "માલપરા": 13, "malpara": 13,
-            "ખોલમા": 4, "kholama": 4,
-            "લખણકા": 9, "lakhanka": 9,
-            "આટલા": 6, "aatala": 6,
-            "માંડધર": 10, "mand dhar": 10,
-            "ભાડલી": 15, "bhadli": 15,
-            "કેરાળા": 14, "kerala": 14,
-            "રામપરા": 11, "raampara": 11
+            "ગઢડા બસ સ્ટેન્ડ": 1,
+            "સામાકાંઠે": 2.5,
+            "કોઠીવાડી": 2.5,
+            "રાબિયા પાર્ક": 3,
+            "નાગજીપરા": 1.5,
+            "બોટાદ રોડ": 4,
+            "બોટાદ": 25,
+            "ગોરડીયા": 7,
+            "તમારી": 6,
+            "ભીંડા": 11,
+            "ઉગામડી": 8,
+            "નિંગાળા": 12,
+            "રોહિસાલા": 15,
+            "ભાડલી ગેટ": 14,
+            "ધાડા રોડ": 16,
+            "ઢસા ગામ": 18,
+            "ગુંદાળા": 10,
+            "માલપરા": 13,
+            "ખોલમા": 4,
+            "લખણકા": 9,
+            "આટલા": 6,
+            "માંડધર": 10,
+            "ભાડલી": 15,
+            "કેરાળા": 14,
+            "રામપરા": 11
         };
 
         function getDrivers() {
@@ -484,64 +484,12 @@
             if(tabName === 'drivers') loadDriversToUI();
         }
 
-        function getCurrentLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        let lat = position.coords.latitude.toFixed(4);
-                        let lon = position.coords.longitude.toFixed(4);
-                        document.getElementById('pickupInput').value = `GPS (${lat}, ${lon})`;
-                        alert("✅ GPS લોકેશન સફળતાપૂર્વક મળી ગયું!");
-                        calculateFare();
-                    },
-                    (error) => {
-                        alert("❌ GPS લોકેશન મેળવવામાં ભૂલ આવી. કૃપા કરીને લોકેશન પરમિશન ચાલુ કરો.");
-                    }
-                );
-            } else {
-                alert("તમારું બ્રાઉઝર GPS સપોર્ટ કરતું નથી.");
-            }
-        }
-
-        function handleDropInput() {
-            let inputVal = document.getElementById('dropInput').value.trim().toLowerCase();
-            let container = document.getElementById('suggestionsContainer');
-            container.innerHTML = '';
-            
-            if (inputVal.length === 0) {
-                container.style.display = 'none';
-                calculateFare();
-                return;
-            }
-
-            let matches = Object.keys(distanceDatabase).filter(place => place.toLowerCase().includes(inputVal));
-
-            if (matches.length > 0) {
-                container.style.display = 'block';
-                matches.forEach(place => {
-                    let item = document.createElement('div');
-                    item.className = 'suggestion-item';
-                    item.innerText = `${place} (${distanceDatabase[place]} કિમી)`;
-                    item.onclick = function() {
-                        document.getElementById('dropInput').value = place;
-                        container.style.display = 'none';
-                        calculateFare();
-                    };
-                    container.appendChild(item);
-                });
-            } else {
-                container.style.display = 'none';
-            }
-
-            calculateFare();
-        }
-
         function calculateFare() {
-            let dropText = document.getElementById('dropInput').value.trim().toLowerCase();
+            let dropText = document.getElementById('dropInput').value.trim();
             let km = 2; // ડિફોલ્ટ મિનિમમ 2 કિમી (₹60)
 
             for (let place in distanceDatabase) {
-                if (dropText === place.toLowerCase() || dropText.includes(place.toLowerCase())) {
+                if (dropText === place || dropText.includes(place)) {
                     km = distanceDatabase[place];
                     break;
                 }
@@ -581,7 +529,6 @@
             let fareData = calculateFare();
             let commission = fareData.total * 0.05;
 
-            // હિસાબ સેવ કરો (લેજર માટે)
             let tripData = {
                 name, driver: driverName, pickup, drop, 
                 pax: fareData.paxCount, roundTrip: fareData.isRound, 
@@ -629,7 +576,7 @@
                 return;
             }
             localStorage.setItem('adminWhatsappNumber', adminNum);
-            alert('એડમિન સેટિંગ સફળતાપૂર્વક સેવ થઈ ગયું!');
+            alert('એડમિન સફળતાપૂર્વક સેવ થઈ ગયું!');
         }
 
         window.onload = function() {
