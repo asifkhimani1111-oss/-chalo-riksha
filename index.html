@@ -91,6 +91,28 @@
         .form-group select {
             margin-bottom: 6px;
         }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #fffbeb;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #fef3c7;
+            margin-bottom: 15px;
+        }
+        .checkbox-group input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .checkbox-group label {
+            font-size: 14px;
+            color: #b45309;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 0;
+        }
         .fare-display-box {
             background: #f0fdf4;
             color: #166534;
@@ -98,7 +120,7 @@
             border-radius: 8px;
             font-size: 18px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             text-align: center;
             border: 1px dashed #bbf7d0;
         }
@@ -107,6 +129,17 @@
             font-weight: normal;
             margin-top: 4px;
             color: #15803d;
+        }
+        .rule-note {
+            font-size: 12px;
+            color: #b45309;
+            background: #fffbeb;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #fef3c7;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
         }
         .book-btn {
             width: 100%;
@@ -264,6 +297,26 @@
                 <input type="text" id="dropCustom" placeholder="અથવા ડ્રોપ એરિયાનું નામ લખો..." style="margin-top: 5px; display: none;" oninput="calculateFare()">
             </div>
 
+            <!-- મુસાફરોની સંખ્યા પસંદ કરવા માટેનું ઓપ્શન -->
+            <div class="form-group">
+                <label>મુસાફરોની સંખ્યા (સીટ):</label>
+                <select id="passengerCount" onchange="calculateFare()">
+                    <option value="1">૧ પેસેન્જર</option>
+                    <option value="2">૨ પેસેન્જર</option>
+                    <option value="3">૩ પેસેન્જર</option>
+                    <option value="4" selected>૪ પેસેન્જર (સ્ટાન્ડર્ડ)</option>
+                    <option value="5">૫ પેસેન્જર (મોટી રિક્ષા)</option>
+                    <option value="6">૬ પેસેન્જર (મોટી રિક્ષા)</option>
+                    <option value="7">૭ પેસેન્જર (મોટી રિક્ષા)</option>
+                </select>
+            </div>
+
+            <!-- રાઉન્ડ ટ્રીપ / ખાલી ફેરી વળતર ઓપ્શન -->
+            <div class="checkbox-group">
+                <input type="checkbox" id="roundTripCheck" onchange="calculateFare()">
+                <label for="roundTripCheck">🔄 રાઉન્ડ ટ્રીપ / ખાલી ફેરી વળતર (આવા-જવાનું)</label>
+            </div>
+
             <div class="form-group">
                 <label>ડ્રાઇવર પસંદ કરો:</label>
                 <select id="selectedDriver">
@@ -284,6 +337,11 @@
                 <div class="fare-subtext" id="fareSubtext">મિનિમમ બેઝ ભાડું (₹55)</div>
             </div>
 
+            <!-- સૂચના -->
+            <div class="rule-note">
+                ℹ️ ૪ પેસેન્જર સુધી ફિક્સ ભાડું, ૪ થી વધુ માટે પ્રતિ પેસેન્જર ₹10 એક્સ્ટ્રા. બહારગામ માટે ખાલી ફેરી લાગુ પડે છે.
+            </div>
+
             <button class="book-btn" onclick="sendWhatsAppBooking()">💬 વોટ્સએપ પર બુક કરો</button>
 
             <!-- રાઇડ સ્ટેટસ અને એક્સેપ્ટ/કેન્સલ બટન્સ -->
@@ -296,14 +354,14 @@
             </div>
 
             <div class="note-text">
-                ભાડું: મિનિમમ ₹55 પ્લસ એરિયા મુજબ વધારાનું ભાડું ઓટોમેટિક ઉમેરાશે.
+                ભાડું: એરિયા, મુસાફરોની સંખ્યા અને રાઉન્ડ ટ્રીપ મુજબ ઓટોમેટિક ગણાશે.
             </div>
         </div>
 
         <!-- 2. ડ્રાઇવરો Tab -->
         <div id="drivers-tab" class="tab-content">
             <div class="header-title">ઓનલાઇન રિક્ષા ડ્રાઇવરો (૯ ડ્રાઇવરો)</div>
-            <div style="font-size: 13px; color: #555; margin-bottom: 15px;">ગ્રાહક સીધો કોલ કરીને રિક્ષા બોલાવી શકે છે[span_0](start_span)[span_0](end_span):</div>
+            <div style="font-size: 13px; color: #555; margin-bottom: 15px;">ગ્રાહક સીધો કોલ કરીને રિક્ષા બોલાવી શકે છે:</div>
 
             <div class="driver-card">
                 <div class="driver-info">
@@ -495,9 +553,28 @@
                 subtext = `મિનિમમ ₹55 + વધારાના ₹${extraFare}`;
             }
 
-            let totalFare = baseFare + extraFare;
+            let standardFare = baseFare + extraFare;
+
+            // મુસાફરોની સંખ્યા મુજબ વધારાનું ભાડું (૪ થી વધુ પેસેન્જર પર પ્રતિ પેસેન્જર ₹10 એક્સ્ટ્રા)
+            let paxCount = parseInt(document.getElementById('passengerCount').value) || 1;
+            let extraPaxCharge = 0;
+            if (paxCount > 4) {
+                extraPaxCharge = (paxCount - 4) * 10;
+                subtext += ` + ${paxCount} મુસાફર માટે (₹${extraPaxCharge})`;
+            }
+
+            let subTotal = standardFare + extraPaxCharge;
+
+            // જો રાઉન્ડ ટ્રીપ (આવા-જવાનું અથવા ખાલી ફેરી વળતર) સિલેક્ટ કર્યું હોય તો ભાડું ડબલ અથવા પ્લસ થશે
+            let isRoundTrip = document.getElementById('roundTripCheck').checked;
+            let totalFare = subTotal;
+            if (isRoundTrip) {
+                totalFare = subTotal * 2; // આવવા અને જવાનું બંનેનું ભેગું ભાડું
+                subtext += ` + 🔄 રાઉન્ડ ટ્રીપ (ખાલી ફેરી સહિત)`;
+            }
+
             document.getElementById('fareBox').innerHTML = `કુલ ભાડું: ₹${totalFare} <div class="fare-subtext">${subtext}</div>`;
-            return totalFare;
+            return { totalFare, paxCount, isRoundTrip };
         }
 
         function sendWhatsAppBooking() {
@@ -507,7 +584,11 @@
             let driverSelect = document.getElementById('selectedDriver');
             let driverPhone = driverSelect.value;
             let driverName = driverSelect.options[driverSelect.selectedIndex].getAttribute('data-name');
-            let fare = calculateFare();
+            
+            let fareData = calculateFare();
+            let fare = fareData.totalFare;
+            let paxCount = fareData.paxCount;
+            let isRoundTrip = fareData.isRoundTrip;
             let commission = fare * 0.05; // 5% કમિશન
 
             currentTripData = {
@@ -515,6 +596,8 @@
                 driver: driverName,
                 pickup: pickup,
                 drop: drop,
+                pax: paxCount,
+                roundTrip: isRoundTrip,
                 fare: fare,
                 commission: commission,
                 date: new Date().toLocaleDateString('gu-IN')
@@ -523,7 +606,8 @@
             document.getElementById('rideStatusBox').style.display = 'block';
             document.getElementById('rideStatusText').innerHTML = "સ્થિતિ: રાઇડ મોકલવામાં આવી છે. ડ્રાઈવર એક્સેપ્ટ કરે તેની રાહ છે.";
 
-            let msg = `नमस्ते, મારે રિક્ષા જોઇએ છે.\n👤 નામ: ${name}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop}\n💰 કુલ ભાડું: ₹${fare}`;
+            let tripTypeMsg = isRoundTrip ? "🔄 રાઉન્ડ ટ્રીપ (આવા-જવાનું)" : "➡️ વન-વે";
+            let msg = `नमस्ते, મારે રિક્ષા જોઇએ છે.\n👤 નામ: ${name}\n👥 મુસાફરો: ${paxCount} જણા\n📌 પ્રવાસ: ${tripTypeMsg}\n📍 પિકઅપ: ${pickup}\n🏁 ડ્રોપ: ${drop}\n💰 કુલ ભાડું: ₹${fare}`;
             let url = `https://wa.me/${driverPhone}?text=` + encodeURIComponent(msg);
             window.open(url, '_blank');
         }
@@ -563,8 +647,10 @@
             let totalComm = 0;
             trips.slice().reverse().forEach((t) => {
                 totalComm += t.commission;
+                let paxInfo = t.pax ? ` | 👥 ${t.pax} પેસેન્જર` : '';
+                let rtTag = t.roundTrip ? ` <span style="color:#b45309; font-weight:bold;">(રાઉન્ડ ટ્રીપ)</span>` : '';
                 html += `<div class="ledger-item">
-                    <b>${t.name}</b> ➡️ <b>${t.driver}</b><br>
+                    <b>${t.name}</b> ➡️ <b>${t.driver}</b>${paxInfo}${rtTag}<br>
                     📍 ${t.pickup} ➔ 🏁 ${t.drop}<br>
                     ભાડું: ₹${t.fare} | <b>કમિશન (5%): ₹${t.commission.toFixed(2)}</b><br>
                     <span style="font-size: 11px; color: #64748b;">તારીખ: ${t.date}</span>
