@@ -227,23 +227,20 @@
     document.getElementById('tripType').addEventListener('change', calculateFare);
 
     function loadDrivers() {
-        let defaultDrivers = [
-            { name: "રમેશભાઈ", phone: "9876543210", ricshaNo: "GJ-00-1" },
-            { name: "સુરેશભાઈ", phone: "9876543211", ricshaNo: "GJ-00-2" },
-            { name: "મહમૂદભાઈ", phone: "9876543212", ricshaNo: "GJ-00-3" },
-            { name: "અબ્દુલભાઈ", phone: "9876543213", ricshaNo: "GJ-00-4" }
-        ];
-
-        let savedDrivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
-        let drivers = savedDrivers.length > 0 ? savedDrivers : defaultDrivers;
-
+        // હવે ફક્ત એડમિન પેનલમાંથી સેવ થયેલા સાચા ડ્રાઇવરો જ દેખાશે, કોઈ ખોટા નામ નહીં આવે
+        let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
         let select = document.getElementById('driverSelect');
         select.innerHTML = '<option value="">-- ડ્રાઇવર પસંદ કરો --</option>';
+        
+        if(drivers.length === 0) {
+            select.innerHTML += '<option value="" disabled>હાલ કોઈ ડ્રાઇવર ઉપલબ્ધ નથી (એડમિન પેનલથી ડ્રાઇવર ઉમેરો)</option>';
+            return;
+        }
 
         drivers.forEach(function(driver) {
             let opt = document.createElement('option');
             opt.value = driver.phone;
-            opt.textContent = driver.name + ' (' + (driver.ricshaNo || 'રિક્ષા') + ')';
+            opt.textContent = driver.name + ' (' + (driver.ricshaNo || 'રિક્ષા') + ') - ' + driver.phone;
             select.appendChild(opt);
         });
     }
