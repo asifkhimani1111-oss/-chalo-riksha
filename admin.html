@@ -27,7 +27,7 @@
     
     <div class="form-group">
         <label>ડ્રાઇવરનું નામ:</label>
-        <input type="text" id="driverName" placeholder="ડ્રાઇવરનુંૂર પૂરું નામ લખો">
+        <input type="text" id="driverName" placeholder="ડ્રાઇવરનું પૂરું નામ લખો">
     </div>
 
     <div class="form-group">
@@ -69,7 +69,6 @@
 
         let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
 
-        // ચેક કરો કે નંબર પહેલેથી છે કે નહીં, હોય તો અપડેટ કરો નહિતર નવો ઉમેરો
         let existingIndex = drivers.findIndex(d => d.phone === phone);
         if (existingIndex !== -1) {
             drivers[existingIndex].name = name;
@@ -82,7 +81,6 @@
         localStorage.setItem('rickshawDrivers', JSON.stringify(drivers));
         alert('ડ્રાઇવરની માહિતી અને હિસાબ સફળતાપૂર્વક સેવ થઈ ગયો!');
         
-        // ફોર્મ ખાલી કરો
         document.getElementById('driverName').value = '';
         document.getElementById('ricshaNo').value = '';
         document.getElementById('driverPhone').value = '';
@@ -92,7 +90,7 @@
     }
 
     function loadDriverList() {
-        let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
+        let drivers = JSON.parse(localStorage.getItem('rickshaDrivers')) || [];
         let listDiv = document.getElementById('driverList');
         listDiv.innerHTML = '';
 
