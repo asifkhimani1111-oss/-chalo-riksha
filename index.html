@@ -131,7 +131,7 @@
     </div>
 
     <div class="form-group">
-        <label>અંદાજિત અંતર (KM - ઓટોમેટિક):</label>
+        <label>અંદાજિત અંતર (KM):</label>
         <input type="text" id="distanceKm" value="1 KM" readonly>
     </div>
 
@@ -163,6 +163,10 @@
 </div>
 
 <script>
+    // છેલ્લી બુક થયેલી રાઈડનો રેકોર્ડ યાદ રાખવા માટે જેથી કેન્સલ કરતી વખતે કમિશન માઈનસ થઈ શકે
+    let lastBookedDriverPhone = null;
+    let lastBookedCommission = 0;
+
     function updateKmAndFare() {
         let selectDrop = document.getElementById('dropoff');
         let selectedOption = selectDrop.options[selectDrop.selectedIndex];
@@ -178,13 +182,11 @@
         let km = parseFloat(selectedOption.getAttribute('data-km')) || 1;
         let passengers = parseInt(document.getElementById('passengerCount').value) || 1;
 
-        // નિયમ: પહેલું 1 કિલોમીટરના ₹45 ફિક્સ, પછીના દરેક વધારાના 1 KM ના ₹10 વત્તા
         let baseFare = 45;
         if (km > 1) {
             baseFare += (km - 1) * 10;
         }
 
-        // નિયમ: 4 પેસેન્જર સુધી કોઈ એક્સ્ટ્રા નહીં, 4 થી ઉપર પ્રતિ પેસેન્જર ₹10 એક્સ્ટ્રા
         let extraPassengerFee = 0;
         if (passengers > 4) {
             extraPassengerFee = (passengers - 4) * 10;
@@ -220,7 +222,7 @@
         let dropoff = dropoffSelect.value;
         let km = document.getElementById('distanceKm').value;
         let passengers = document.getElementById('passengerCount').value;
-        let fare = document.getElementById('totalFare').textContent;
+        let fare = parseInt(document.getElementById('totalFare').textContent) || 45;
         let driverPhone = document.getElementById('driverSelect').value;
 
         if (!pickup) {
@@ -236,19 +238,49 @@
             return;
         }
 
+        // 5% કમિશન ગણતરી
+        let commission = Math.round(fare * 0.05);
+        let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
+        
+        drivers.forEach(function(driver) {
+            if(driver.phone === driverPhone) {
+                driver.commission = (parseFloat(driver.commission) || 0) + commission;
+            }
+        });
+        localStorage.setItem('rickshawDrivers', JSON.stringify(drivers));
+
+        // સેવ કરી રાખો જેથી કેન્સલ થાય તો પાછું બાદ કરી શકાય
+        lastBookedDriverPhone = driverPhone;
+        lastBookedCommission = commission;
+
         let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 ઉપાડવાનું સ્થળ: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + "\n👥 પેસેન્જર: " + passengers + "\n💰 કુલ અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
         let whatsappUrl = "https://wa.me/91" + driverPhone + "?text=" + encodeURIComponent(message);
         window.open(whatsappUrl, '_blank');
     }
 
     function cancelRide() {
+        // જો રાઈડ બુક થઈ ચૂકી હોય અને પછી કેન્સલ થાય, તો ડ્રાઇવરના ખાતામાંથી કમિશન માઈનસ કરો
+        if (lastBookedDriverPhone && lastBookedCommission > 0) {
+            let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
+            drivers.forEach(function(driver) {
+                if(driver.phone === lastBookedDriverPhone) {
+                    driver.commission = Math.max(0, (parseFloat(driver.commission) || 0) - lastBookedCommission);
+                }
+            });
+            localStorage.setItem('rickshawDrivers', JSON.stringify(drivers));
+            
+            // રીસેટ કરો
+            lastBookedDriverPhone = null;
+            lastBookedCommission = 0;
+        }
+
         document.getElementById('pickup').value = '';
         document.getElementById('dropoff').selectedIndex = 0;
         document.getElementById('distanceKm').value = '1 KM';
-        document.getElementById('passengerCount').selectedIndex = 3; // 4 passengers default
+        document.getElementById('passengerCount').selectedIndex = 3;
         calculateFare();
         document.getElementById('driverSelect').selectedIndex = 0;
-        alert('બુકિંગ કેન્સલ કરી દેવામાં આવ્યું છે.');
+        alert('બુકિંગ કેન્સલ કરી દેવામાં આવ્યું છે અને જો કમિશન ઉમેરાયું હતું તો તે રદ થઈ ગયું છે.');
     }
 
     window.onload = function() {
