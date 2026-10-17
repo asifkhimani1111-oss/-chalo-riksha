@@ -202,7 +202,6 @@
 
         let totalFare = baseFare + extraPassengerFee;
 
-        // જો રાઉન્ડ ટ્રિપ હોય તો અંદાજિત ભાડું ડબલ ગણાય (બાકી રૂબરૂ નક્કી થાય)
         if (tripType === 'Round Trip') {
             totalFare = totalFare * 2;
         }
@@ -214,19 +213,26 @@
     document.getElementById('tripType').addEventListener('change', calculateFare);
 
     function loadDrivers() {
-        let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
+        // જો લોકલ સ્ટોરેજ ખાલી હોય, તો ડિફોલ્ટ ૪ ડ્રાઇવરો આપોઆપ દેખાશે જેથી મુસાફરોને ક્યારેય ખાલી લિસ્ટ ન દેખાય
+        let defaultDrivers = [
+            { name: "રમેશભાઈ", phone: "9876543210", ricshaNo: "GJ-00-1" },
+            { name: "સુરેશભાઈ", phone: "9876543211", ricshaNo: "GJ-00-2" },
+            { name: "મહમૂદભાઈ", phone: "9876543212", ricshaNo: "GJ-00-3" },
+            { name: "અબ્દુલભાઈ", phone: "9876543213", ricshaNo: "GJ-00-4" }
+        ];
+
+        let savedDrivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
+        
+        // જો એડમિન પેનલમાંથી ડ્રાઇવરો ઉમેર્યા હોય તો એ લો, નહીંતર ડિફોલ્ટ વાપરો
+        let drivers = savedDrivers.length > 0 ? savedDrivers : defaultDrivers;
+
         let select = document.getElementById('driverSelect');
         select.innerHTML = '<option value="">-- ડ્રાઇવર પસંદ કરો --</option>';
-        
-        if(drivers.length === 0) {
-            select.innerHTML += '<option value="" disabled>હાલ કોઈ ડ્રાઇવર ઉપલબ્ધ નથી</option>';
-            return;
-        }
 
         drivers.forEach(function(driver) {
             let opt = document.createElement('option');
             opt.value = driver.phone;
-            opt.textContent = driver.name + ' (' + driver.ricshaNo + ')';
+            opt.textContent = driver.name + ' (' + (driver.ricshaNo || 'રિક્ષા') + ')';
             select.appendChild(opt);
         });
     }
@@ -254,7 +260,6 @@
             return;
         }
 
-        // 5% કમિશન ગણતરી
         let commission = Math.round(fare * 0.05);
         let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
         
