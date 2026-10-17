@@ -34,7 +34,21 @@
         <select id="dropoff" onchange="updateKmAndFare()">
             <option value="" data-km="1">-- ડ્રોપ લોકેશન પસંદ કરો --</option>
             
-            <optgroup label="ગઢડા શહેરના અંદરના વિસ્તારો અને સોસાયટીઓ">
+            <optgroup label="ગઢડા મુખ્ય વિસ્તારો અને નવા સ્થળો">
+                <option value="કોઠીવાડી (Kothivadi)" data-km="1">કોઠીવાડી (1 KM - ₹45)</option>
+                <option value="રાજધાની પાન (Rajdhani Pan)" data-km="1">રાજધાની પાન (1 KM - ₹45)</option>
+                <option value="ગાભાબાપુ દરગાહ રોડ" data-km="2">ગાભાબાપુ દરગાહ રોડ (2 KM - ₹55)</option>
+                <option value="બોટાદ જાંપે" data-km="1">બોટાદ જાંપે (1 KM - ₹45)</option>
+                <option value="ફોર લાઈન (4 Line)" data-km="2">ફોર લાઈન (2 KM - ₹55)</option>
+                <option value="ન્યુ એસબીઆઈ (New SBI)" data-km="1">ન્યુ એસબીઆઈ (1 KM - ₹45)</option>
+                <option value="સામાકાંઠે (Samakathe)" data-km="2">સામાકાંઠે (2 KM - ₹55)</option>
+                <option value="નવું મંદિર (Navu Mundir)" data-km="1">નવું મંદિર (1 KM - ₹45)</option>
+                <option value="ભાડલી ગેટ" data-km="2">ભાડલી ગેટ (2 KM - ₹55)</option>
+                <option value="ન્યુ બસ સ્ટેન્ડ" data-km="1">ન્યુ બસ સ્ટેન્ડ (1 KM - ₹45)</option>
+                <option value="રાધાવાવ" data-km="3">રાધાવાવ (3 KM - ₹65)</option>
+            </optgroup>
+
+            <optgroup label="ગઢડા શહેરના અન્ય વિસ્તારો અને સોસાયટીઓ">
                 <option value="સ્વામિનારાયણ ચોક / મંદિર વિસ્તાર" data-km="1">સ્વામિનારાયણ ચોક / મંદિર વિસ્તાર (1 KM - ₹45)</option>
                 <option value="બજાર લાઇન / મેઈન બજાર" data-km="1">બજાર લાઇન / મેઈન બજાર (1 KM - ₹45)</option>
                 <option value="બસ સ્ટેશન રોડ" data-km="1">બસ સ્ટેશન રોડ (1 KM - ₹45)</option>
@@ -213,7 +227,6 @@
     document.getElementById('tripType').addEventListener('change', calculateFare);
 
     function loadDrivers() {
-        // જો લોકલ સ્ટોરેજ ખાલી હોય, તો ડિફોલ્ટ ૪ ડ્રાઇવરો આપોઆપ દેખાશે જેથી મુસાફરોને ક્યારેય ખાલી લિસ્ટ ન દેખાય
         let defaultDrivers = [
             { name: "રમેશભાઈ", phone: "9876543210", ricshaNo: "GJ-00-1" },
             { name: "સુરેશભાઈ", phone: "9876543211", ricshaNo: "GJ-00-2" },
@@ -222,8 +235,6 @@
         ];
 
         let savedDrivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
-        
-        // જો એડમિન પેનલમાંથી ડ્રાઇવરો ઉમેર્યા હોય તો એ લો, નહીંતર ડિફોલ્ટ વાપરો
         let drivers = savedDrivers.length > 0 ? savedDrivers : defaultDrivers;
 
         let select = document.getElementById('driverSelect');
