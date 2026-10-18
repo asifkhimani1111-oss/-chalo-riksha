@@ -29,7 +29,6 @@
 <div class="container">
     <h2>🛺 ચાલો રિક્ષા બુકિંગ</h2>
     
-    <!-- સક્સેસફુલ બુકિંગનું ઈમાનદાર કાઉન્ટર -->
     <div class="counter-banner" id="counterDisplay">
         🚀 અત્યાર સુધી સફળ બુકિંગ: 0 રિક્ષા
     </div>
@@ -44,7 +43,7 @@
         <label>ક્યાં જવું છે? (ડ્રોપ લોકેશન પસંદ કરો):</label>
         <select id="dropoff" onchange="updateKmAndFare()">
             <option value="" data-km="1">-- ડ્રોપ લોકેશન પસંદ કરો --</option>
-            <optgroup label="ગઢડા મુખ્ય વિસ્તારો અને નવા સ્થળો">
+            <optgroup label="ગઢડા શહેરના મુખ્ય વિસ્તારો">
                 <option value="કોઠીવાડી (Kothivadi)" data-km="1">કોઠીવાડી (1 KM - ₹45)</option>
                 <option value="રાજધાની પાન (Rajdhani Pan)" data-km="1">રાજધાની પાન (1 KM - ₹45)</option>
                 <option value="ગાભાબાપુ દરગાહ રોડ" data-km="2">ગાભાબાપુ દરગાહ રોડ (2 KM - ₹55)</option>
@@ -56,28 +55,18 @@
                 <option value="ભાડલી ગેટ" data-km="2">ભાડલી ગેટ (2 KM - ₹55)</option>
                 <option value="ન્યુ બસ સ્ટેન્ડ" data-km="1">ન્યુ બસ સ્ટેન્ડ (1 KM - ₹45)</option>
                 <option value="રાધાવાવ" data-km="3">રાધાવાવ (3 KM - ₹65)</option>
-            </optgroup>
-            <optgroup label="ગઢડા શહેરના અન્ય વિસ્તારો અને સોસાયટીઓ">
                 <option value="સ્વામિનારાયણ ચોક / મંદિર વિસ્તાર" data-km="1">સ્વામિનારાયણ ચોક / મંદિર વિસ્તાર (1 KM - ₹45)</option>
                 <option value="બજાર લાઇન / મેઈન બજાર" data-km="1">બજાર લાઇન / મેઈન બજાર (1 KM - ₹45)</option>
                 <option value="બસ સ્ટેશન રોડ" data-km="1">બસ સ્ટેશન રોડ (1 KM - ₹45)</option>
                 <option value="હોસ્પિટલ રોડ" data-km="2">હોસ્પિટલ રોડ (2 KM - ₹55)</option>
                 <option value="સ્ટેશન રોડ" data-km="2">સ્ટેશન રોડ (2 KM - ₹55)</option>
                 <option value="છાસિયા તળાવ વિસ્તાર" data-km="2">છાસિયા તળાવ વિસ્તાર (2 KM - ₹55)</option>
-                <option value="ગાયત્રીનગર" data-km="3">ગાયત્રીનગર (3 KM - ₹65)</option>
-                <option value="સોમનાથ સોસાયટી" data-km="3">સોમનાથ સોસાયટી (3 KM - ₹65)</option>
-                <option value="મારુતિ નગર" data-km="3">મારુતિ નગર (3 KM - ₹65)</option>
-                <option value="સરદાર પટેલ સોસાયટી" data-km="3">સરદાર પટેલ સોસાયટી (3 KM - ₹65)</option>
-                <option value="જલારામ નગર" data-km="2">જલારામ નગર (2 KM - ₹55)</option>
-                <option value="કૃષ્ણનગર" data-km="3">કૃષ્ણનગર (3 KM - ₹65)</option>
-                <option value="રામનગર" data-km="4">રામનગર (4 KM - ₹75)</option>
-                <option value="ઘનશ્યામ નગર" data-km="2">ઘનશ્યામ નગર (2 KM - ₹55)</option>
-                <option value="હરિદર્શન સોસાયટી" data-km="3">હરિદર્શન સોસાયટી (3 KM - ₹65)</option>
-                <option value="શિવ શક્તિ સોસાયટી" data-km="3">શિવ શક્તિ સોસાયટી (3 KM - ₹65)</option>
-                <option value="અક્ષરધામ સોસાયટી" data-km="4">અક્ષરધામ સોસાયટી (4 KM - ₹75)</option>
-                <option value="કોલેજ રોડ વિસ્તાર" data-km="3">કોલેજ રોડ વિસ્તાર (3 KM - ₹65)</option>
-                <option value="જુની પોલીસ ચોકી વિસ્તાર" data-km="1">જુની પોલીસ ચોકી વિસ્તાર (1 KM - ₹45)</option>
-                <option value="ગઢડા નગરપાલિકા આસપાસનો વિસ્તાર" data-km="2">ગઢડા નગરપાલિકા આસપાસનો વિસ્તાર (2 KM - ₹55)</option>
+            </optgroup>
+            <optgroup label="ગઢડા તાલુકાના ગામડાઓ (ખોપાડા, વિરડી વગેરે)">
+                <option value="ખોપાડા (Khopada)" data-km="8">ખોપાડા (8 KM - ₹115)</option>
+                <option value="વિરડી (Virdi)" data-km="10">વિરડી (10 KM - ₹135)</option>
+                <option value="કાપરડી (Kaparadi)" data-km="7">કાપરડી (7 KM - ₹105)</option>
+                <option value="હરીપર (Haripar)" data-km="9">હરીપર (9 KM - ₹125)</option>
             </optgroup>
         </select>
     </div>
@@ -130,7 +119,6 @@
 
     function updateCounterDisplay() {
         let totalBookings = localStorage.getItem('totalSuccessfulBookings') || 0;
-        document.getElementById('counterDisplayinnerHTML', `🚀 અત્યાર સુધી સફળ બુકિંગ: ${totalBookings} રિક્ષા`);
         document.getElementById('counterDisplay').textContent = `🚀 અત્યાર સુધી સફળ બુકિંગ: ${totalBookings} રિક્ષા`;
     }
 
@@ -186,9 +174,7 @@
 
     function loadDrivers() {
         let defaultDrivers = [
-            { name: "રમેશભાઈ", phone: "9876543210", ricshaNo: "GJ-00-1" },
-            { name: "સુરેશભાઈ", phone: "9876543211", ricshaNo: "GJ-00-2" },
-            { name: "મહમૂદભાઈ", phone: "9876543212", ricshaNo: "GJ-00-3" }
+            { name: "રમેશભાઈ", phone: "9876543210", ricshaNo: "GJ-00-1" }
         ];
 
         let savedDrivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
@@ -228,7 +214,6 @@
             return;
         }
 
-        // સક્સેસફુલ બુકિંગ થતાં જ ઈમાનદારીથી કાઉન્ટર એક પ્લસ થશે
         let currentCount = parseInt(localStorage.getItem('totalSuccessfulBookings')) || 0;
         localStorage.setItem('totalSuccessfulBookings', currentCount + 1);
         updateCounterDisplay();
@@ -272,7 +257,6 @@
             lastBookedCommission = 0;
         }
 
-        // જો બુકિંગ કેન્સલ થાય તો કાઉન્ટર પાછું માઈનસ કરી દઈએ જેથી ખોટો આંકડો ન બતાવે!
         let currentCount = parseInt(localStorage.getItem('totalSuccessfulBookings')) || 0;
         if (currentCount > 0) {
             localStorage.setItem('totalSuccessfulBookings', currentCount - 1);
