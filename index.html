@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ચાલો રિક્ષા - ઓટો બુકિંગ (GPS)</title>
+    <title>ચાલો રિક્ષા - ઓટો બુકિંગ</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 15px; color: #333; }
         .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #ff9800; margin-bottom: 20px; }
+        h2 { text-align: center; color: #ff9800; margin-bottom: 10px; }
+        .counter-banner { background: #e8f5e9; color: #2e7d32; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 15px; border: 1px solid #c8e6c9; }
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; background: #fff; }
@@ -28,6 +29,11 @@
 <div class="container">
     <h2>🛺 ચાલો રિક્ષા બુકિંગ</h2>
     
+    <!-- સક્સેસફુલ બુકિંગનું ઈમાનદાર કાઉન્ટર -->
+    <div class="counter-banner" id="counterDisplay">
+        🚀 અત્યાર સુધી સફળ બુકિંગ: 0 રિક્ષા
+    </div>
+
     <div class="form-group">
         <label>ક્યાંથી બેસવું છે? (પીકઅપ લોકેશન):</label>
         <button class="btn btn-gps" onclick="getLocationGPS()">📍 મારું લાઈવ GPS લોકેશન લો</button>
@@ -38,7 +44,6 @@
         <label>ક્યાં જવું છે? (ડ્રોપ લોકેશન પસંદ કરો):</label>
         <select id="dropoff" onchange="updateKmAndFare()">
             <option value="" data-km="1">-- ડ્રોપ લોકેશન પસંદ કરો --</option>
-            
             <optgroup label="ગઢડા મુખ્ય વિસ્તારો અને નવા સ્થળો">
                 <option value="કોઠીવાડી (Kothivadi)" data-km="1">કોઠીવાડી (1 KM - ₹45)</option>
                 <option value="રાજધાની પાન (Rajdhani Pan)" data-km="1">રાજધાની પાન (1 KM - ₹45)</option>
@@ -52,7 +57,6 @@
                 <option value="ન્યુ બસ સ્ટેન્ડ" data-km="1">ન્યુ બસ સ્ટેન્ડ (1 KM - ₹45)</option>
                 <option value="રાધાવાવ" data-km="3">રાધાવાવ (3 KM - ₹65)</option>
             </optgroup>
-
             <optgroup label="ગઢડા શહેરના અન્ય વિસ્તારો અને સોસાયટીઓ">
                 <option value="સ્વામિનારાયણ ચોક / મંદિર વિસ્તાર" data-km="1">સ્વામિનારાયણ ચોક / મંદિર વિસ્તાર (1 KM - ₹45)</option>
                 <option value="બજાર લાઇન / મેઈન બજાર" data-km="1">બજાર લાઇન / મેઈન બજાર (1 KM - ₹45)</option>
@@ -124,6 +128,12 @@
     let lastBookedCommission = 0;
     let gpsLink = "";
 
+    function updateCounterDisplay() {
+        let totalBookings = localStorage.getItem('totalSuccessfulBookings') || 0;
+        document.getElementById('counterDisplayinnerHTML', `🚀 અત્યાર સુધી સફળ બુકિંગ: ${totalBookings} રિક્ષા`);
+        document.getElementById('counterDisplay').textContent = `🚀 અત્યાર સુધી સફળ બુકિંગ: ${totalBookings} રિક્ષા`;
+    }
+
     function getLocationGPS() {
         if (navigator.geolocation) {
             alert('GPS લોકેશન મેળવાઈ રહ્યું છે, કૃપા કરીને રાહ જુઓ...');
@@ -134,7 +144,7 @@
                 document.getElementById('pickup').value = `GPS લોકેશન (Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)})`;
                 alert('GPS લોકેશન સફળતાપૂર્વક મળી ગયું!');
             }, function(error) {
-                alert('GPS લોકેશન મેળવવામાં નિષ્ફળતા. કૃપા કરીને લોકેશન પરમિશન ચાલુ કરો.');
+                alert('GPS લોકેશન મેળવવામાં નિષ્ફળતા. લોકેશન પરમિશન ચાલુ કરો.');
             });
         } else {
             alert('તમારું બ્રાઉઝર GPS સપોર્ટ કરતું નથી.');
@@ -145,7 +155,6 @@
         let selectDrop = document.getElementById('dropoff');
         let selectedOption = selectDrop.options[selectDrop.selectedIndex];
         let km = parseFloat(selectedOption.getAttribute('data-km')) || 1;
-        
         document.getElementById('distanceKm').value = km + " KM";
         calculateFare();
     }
@@ -162,11 +171,7 @@
             baseFare += (km - 1) * 10;
         }
 
-        let extraPassengerFee = 0;
-        if (passengers > 4) {
-            extraPassengerFee = (passengers - 4) * 10;
-        }
-
+        let extraPassengerFee = passengers > 4 ? (passengers - 4) * 10 : 0;
         let totalFare = baseFare + extraPassengerFee;
 
         if (tripType === 'Round Trip') {
@@ -181,10 +186,9 @@
 
     function loadDrivers() {
         let defaultDrivers = [
-            { name: "રમેશભાઈ રિક્ષાવાળા", phone: "9876543210", ricshaNo: "GJ-00-1" },
-            { name: "સુરેશભાઈ રિક્ષાવાળા", phone: "9876543211", ricshaNo: "GJ-00-2" },
-            { name: "મહમૂદભાઈ રિક્ષાવાળા", phone: "9876543212", ricshaNo: "GJ-00-3" },
-            { name: "અબ્દુલભાઈ રિક્ષાવાળા", phone: "9876543213", ricshaNo: "GJ-00-4" }
+            { name: "રમેશભાઈ", phone: "9876543210", ricshaNo: "GJ-00-1" },
+            { name: "સુરેશભાઈ", phone: "9876543211", ricshaNo: "GJ-00-2" },
+            { name: "મહમૂદભાઈ", phone: "9876543212", ricshaNo: "GJ-00-3" }
         ];
 
         let savedDrivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
@@ -212,7 +216,7 @@
         let driverPhone = document.getElementById('driverSelect').value;
 
         if (!pickup) {
-            alert('કૃપા કરીને પહેલાં "મારું લાઈવ GPS લોકેશન લો" બટન દબાવો!');
+            alert('કૃપા કરીને પહેલાં GPS લોકેશન લો!');
             return;
         }
         if (!dropoff) {
@@ -224,9 +228,13 @@
             return;
         }
 
+        // સક્સેસફુલ બુકિંગ થતાં જ ઈમાનદારીથી કાઉન્ટર એક પ્લસ થશે
+        let currentCount = parseInt(localStorage.getItem('totalSuccessfulBookings')) || 0;
+        localStorage.setItem('totalSuccessfulBookings', currentCount + 1);
+        updateCounterDisplay();
+
         let commission = Math.round(fare * 0.05);
         let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
-        
         drivers.forEach(function(driver) {
             if(driver.phone === driverPhone) {
                 driver.commission = (parseFloat(driver.commission) || 0) + commission;
@@ -260,9 +268,15 @@
                 }
             });
             localStorage.setItem('rickshawDrivers', JSON.stringify(drivers));
-            
             lastBookedDriverPhone = null;
             lastBookedCommission = 0;
+        }
+
+        // જો બુકિંગ કેન્સલ થાય તો કાઉન્ટર પાછું માઈનસ કરી દઈએ જેથી ખોટો આંકડો ન બતાવે!
+        let currentCount = parseInt(localStorage.getItem('totalSuccessfulBookings')) || 0;
+        if (currentCount > 0) {
+            localStorage.setItem('totalSuccessfulBookings', currentCount - 1);
+            updateCounterDisplay();
         }
 
         document.getElementById('pickup').value = '';
@@ -279,6 +293,7 @@
     window.onload = function() {
         loadDrivers();
         calculateFare();
+        updateCounterDisplay();
     };
 </script>
 
