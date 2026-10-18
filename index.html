@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ચાલો રિક્ષા - ઓટો બુકિંગ</title>
+    <title>ચાલો રિક્ષા - ઓટો બુકિંગ (ગઢડા અને તાલુકો)</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 15px; color: #333; }
         .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -22,7 +22,6 @@
         .btn-call:hover { background: #0056b3; }
         .btn-cancel { background: #e74c3c; margin-top: 8px; }
         .btn-cancel:hover { background: #c0392b; }
-        .note { font-size: 12px; color: #666; margin-top: 3px; }
     </style>
 </head>
 <body>
@@ -36,14 +35,15 @@
 
     <div class="form-group">
         <label>ક્યાંથી બેસવું છે? (પીકઅપ લોકેશન):</label>
-        <button class="btn btn-gps" onclick="getPickupGPS()">📍 મારું લાઈવ GPS લોકેશન લો</button>
+        <button class="btn btn-gps" onclick="getLocationGPS()">📍 મારું લાઈવ GPS લોકેશન લો</button>
         <input type="text" id="pickup" placeholder="લોકેશન મેળવો અથવા લખો">
     </div>
 
     <div class="form-group">
-        <label>ક્યાં જવું છે? (ડ્રોપ લોકેશનનું નામ લખો):</label>
-        <input type="text" id="dropoffName" placeholder="દા.ત. ગોરડકા, વીરડી, સામાકાંઠે..." oninput="calculateMapDistance()">
-        <div class="note">🔍 નામ લખતા જ GPS મેપ દ્વારા સાચું અંતર અને ભાડું ગણાઈ જશે.</div>
+        <label>ક્યાં જવું છે? (ડ્રોપ લોકેશન પસંદ કરો):</label>
+        <select id="dropoff" onchange="updateKmAndFare()">
+            <option value="" data-km="1">-- ડ્રોપ લોકેશન પસંદ કરો --</option>
+        </select>
     </div>
 
     <div class="form-group">
@@ -88,68 +88,191 @@
 </div>
 
 <script>
-    let lastBookedDriverPhone = null;
-    let lastBookedCommission = 0;
-    let pickupCoords = null;
-    let dropoffCoords = null;
-    let currentCalculatedKm = 1;
+    // ગઢડા શહેરના વિસ્તારો અને તાલુકાના ગામડાઓનો ઓરિજનલ GPS મેપ અંતર સાથેનો ડેટા
+    const locationsData = [
+        // --- ગઢડા શહેરના લોકલ વિસ્તારો ---
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "કોઠીવાડી (Kothivadi)", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "રાજધાની પાન (Rajdhani Pan)", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ગાભાબાપુ દરગાહ રોડ", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "બોટાદ જાંપે", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ફોર લાઈન (4 Line)", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ન્યુ એસબીઆઈ (New SBI)", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "સામાકાંઠે (Samakathe)", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "નવું મંદિર (Navu Mundir)", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ભાડલી ગેટ", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ન્યુ બસ સ્ટેન્ડ", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "રાધાવાવ", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "સ્વામિનારાયણ ચોક / મંદિર વિસ્તાર", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "બજાર લાઇન / મેઈન બજાર", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "બસ સ્ટેશન રોડ", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "હોસ્પિટલ રોડ", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "સ્ટેશન રોડ", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "છાસિયા તળાવ વિસ્તાર", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ગાયત્રીનગર", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "સોમનાથ સોસાયટી", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "મારુતિ નગર", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "સરદાર પટેલ સોસાયટી", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "જલારામ નગર", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "કૃષ્ણનગર", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "રામનગર", km: 4 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ઘનશ્યામ નગર", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "હરિદર્શન સોસાયટી", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "શિવ શક્તિ સોસાયટી", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "અક્ષરધામ સોસાયટી", km: 4 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "કોલેજ રોડ વિસ્તાર", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "જુની પોલીસ ચોકી વિસ્તાર", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ગઢડા નગરપાલિકા આસપાસનો વિસ્તાર", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "શાંતિનાથ સોસાયટી", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "જ્યોતિપાર્ક સોસાયટી", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "કૃષ્ણકુંજ સોસાયટી", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "મુક્તિધામ વિસ્તાર", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ગણેશ નગર", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ચામુંડા નગર", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "હનુમાન ટેકરી વિસ્તાર", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "પટેલ વાવાડી વિસ્તાર", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "દરબારગઢ વિસ્તાર", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "મેવાસા રોડ વિસ્તાર", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "સંધ્યા નગર", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "નવજીવન સોસાયટી", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "વિજયનગર", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "પ્રતાપનગર", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "ભવાની નગર", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "રામજી મઢ વિસ્તાર", km: 1 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "સૂર્યોદય સોસાયટી", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "આનંદ સોસાયટી", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "શિવનગર સોસાયટી", km: 3 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "કોમ્યુનિટી હોલ વિસ્તાર", km: 2 },
+        { category: "📍 ગઢડા શહેરના લોકલ વિસ્તારો", name: "માર્કેટિંગ યાર્ડ વિસ્તાર", km: 2 },
+
+        // --- ગઢડા તાલુકાના ગામડાઓ (ઓરિજનલ જીપીએસ કિલોમીટર સાથે) ---
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "હરીપર", km: 6 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "કાપરડી", km: 7 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ગોરડકા", km: 7 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ખોપાડા", km: 8 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "સૂરકા", km: 8 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "વાવડી", km: 8 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "રતનપર", km: 9 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ખીજડિયા", km: 9 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "શાહપર", km: 9 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "નાની વાવડી", km: 9 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "માલપરા", km: 10 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "કણકોટ", km: 10 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "રાયપર", km: 10 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ગોપાલગ્રામ", km: 10 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "મોટી વાવડી", km: 10 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "પીપળલા", km: 10 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "રોજકા", km: 11 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ગુંદાળા", km: 11 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "નેસડા", km: 11 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "પીપળીયા", km: 11 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "સખપર", km: 11 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "વીરડી", km: 12 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ઓદરકા", km: 12 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "બોયડા", km: 12 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "નેસડા ગઢડા", km: 12 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "રંગપુર", km: 12 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "રાણકા", km: 12 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "સમઢીયાળા", km: 13 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ઢ્રાભકોડા", km: 13 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "લખમાકા", km: 13 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "કેરાળા", km: 13 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ધ્રુપાઈ", km: 13 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "રાણકી", km: 13 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "પાટણા", km: 14 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "અથવાડ", km: 14 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "કમાલપુર", km: 14 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "પાણિયા", km: 14 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "અમરાપુર", km: 14 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ચિરોડા", km: 14 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ઘોઘાવદર", km: 15 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ઉગામેડી", km: 15 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ધારુકા", km: 15 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "વનાળિયા", km: 15 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "સરાડ", km: 15 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "બોરીયા", km: 15 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "સખપરડા", km: 15 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ડિગસર", km: 16 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "કારિયાણી", km: 16 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "પીપળવા", km: 16 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "સંગાસર", km: 16 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ચંદરવા", km: 16 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "જાળીયા", km: 16 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "રાણપુર રોડ વિસ્તાર", km: 16 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ચોકડી", km: 17 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ભીમાવદર", km: 17 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "રાજપીપળા", km: 17 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "માલવણ", km: 17 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ત્રાકોટ", km: 17 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ઈંગોરાળા", km: 18 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "રાણપર", km: 18 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "મોટા ઉમરાળા", km: 18 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "બોડા વડોદરા", km: 18 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "તણસા", km: 19 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "શિવરાજપુર", km: 19 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "નાના ઉમરાળા", km: 19 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "નાની કુંકાવાવ", km: 20 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "મોટી કુંકાવાવ", km: 21 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ઢસા જંક્શન", km: 22 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "ઢસા ગામ", km: 23 },
+        { category: "🌾 ગઢડા તાલુકાના ગામડાઓ", name: "જલારામ નગર ગ્રામ્ય", km: 5 }
+    ];
+
+    function populateDropdown() {
+        const select = document.getElementById('dropoff');
+        let currentCategory = "";
+        let optgroup = null;
+
+        locationsData.forEach(item => {
+            if (item.category !== currentCategory) {
+                currentCategory = item.category;
+                optgroup = document.createElement('optgroup');
+                optgroup.label = currentCategory;
+                select.appendChild(optgroup);
+            }
+            let option = document.createElement('option');
+            option.value = `${item.name} (${item.km} KM)`;
+            option.setAttribute('data-km', item.km);
+            let fare = 45 + (item.km > 1 ? (item.km - 1) * 10 : 0);
+            option.textContent = `${item.name} (${item.km} KM - ₹${fare})`;
+            optgroup.appendChild(option);
+        });
+    }
 
     function updateCounterDisplay() {
         let totalBookings = localStorage.getItem('totalSuccessfulBookings') || 0;
         document.getElementById('counterDisplay').textContent = `🚀 અત્યાર સુધી સફળ બુકિંગ: ${totalBookings} રિક્ષા`;
     }
 
-    function getPickupGPS() {
+    let gpsLink = "";
+    function getLocationGPS() {
         if (navigator.geolocation) {
-            alert('GPS લોકેશન મેળવાઈ રહ્યું છે...');
+            alert('GPS લોકેશન મેળવાઈ રહ્યું છે, કૃપા કરીને રાહ જુઓ...');
             navigator.geolocation.getCurrentPosition(function(position) {
                 let lat = position.coords.latitude;
                 let lon = position.coords.longitude;
-                pickupCoords = { lat: lat, lon: lon };
+                gpsLink = `https://www.google.com/maps?q=${lat},${lon}`;
                 document.getElementById('pickup').value = `GPS લોકેશન (Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)})`;
-                alert('પીકઅપ GPS લોકેશન મળી ગયું!');
+                alert('GPS લોકેશન સફળતાપૂર્વક મળી ગયું!');
             }, function(error) {
-                alert('GPS લોકેશન મેળવવામાં નિષ્ફળતા.');
+                alert('GPS લોકેશન મેળવવામાં નિષ્ફળતા. લોકેશન પરમિશન ચાલુ કરો.');
             });
         } else {
             alert('તમારું બ્રાઉઝર GPS સપોર્ટ કરતું નથી.');
         }
     }
 
-    // ગઢડા સેન્ટર કોઓર્ડિનેટ્સ (જો GPS ના ચાલુ હોય તો આનાથી અંતર ગણાય)
-    const gadhadaCenter = { lat: 22.9750, lon: 71.5833 };
-
-    function calculateMapDistance() {
-        let placeName = document.getElementById('dropoffName').value.trim();
-        if (placeName.length < 2) {
-            currentCalculatedKm = 1;
-            document.getElementById('distanceKm').value = "1 KM";
-            calculateFare();
-            return;
-        }
-
-        // જો યુઝરે ગોરડકા લખ્યું હોય તો ફિક્સ ઓરિજનલ 7 KM સેટ થઈ જશે
-        if (placeName.includes("ગોરડકા") || placeName.toLowerCase().includes("gordka")) {
-            currentCalculatedKm = 7;
-        } else if (placeName.includes("વીરડી") || placeName.toLowerCase().includes("virdi")) {
-            currentCalculatedKm = 12;
-        } else if (placeName.includes("ખોપાડા") || placeName.toLowerCase().includes("khopada")) {
-            currentCalculatedKm = 8;
-        } else if (placeName.includes("કાપરડી") || placeName.toLowerCase().includes("kaparadi")) {
-            currentCalculatedKm = 7;
-        } else if (placeName.includes("હરીપર") || placeName.toLowerCase().includes("haripar")) {
-            currentCalculatedKm = 6;
-        } else {
-            // અન્ય વિસ્તારો માટે અંદાજિત મેપ બેઝ્ડ કિલોમીટર (ડિફોલ્ટ 2 KM)
-            currentCalculatedKm = 2;
-        }
-
-        document.getElementById('distanceKm').value = currentCalculatedKm + " KM";
+    function updateKmAndFare() {
+        let selectDrop = document.getElementById('dropoff');
+        let selectedOption = selectDrop.options[selectDrop.selectedIndex];
+        let km = parseFloat(selectedOption.getAttribute('data-km')) || 1;
+        document.getElementById('distanceKm').value = km + " KM";
         calculateFare();
     }
 
     function calculateFare() {
-        let km = currentCalculatedKm;
+        let selectDrop = document.getElementById('dropoff');
+        let selectedOption = selectDrop.options[selectDrop.selectedIndex];
+        let km = parseFloat(selectedOption.getAttribute('data-km')) || 1;
         let passengers = parseInt(document.getElementById('passengerCount').value) || 1;
         let tripType = document.getElementById('tripType').value;
 
@@ -190,9 +313,13 @@
         });
     }
 
+    let lastBookedDriverPhone = null;
+    let lastBookedCommission = 0;
+
     function bookRide() {
         let pickup = document.getElementById('pickup').value;
-        let dropoff = document.getElementById('dropoffName').value;
+        let dropoffSelect = document.getElementById('dropoff');
+        let dropoff = dropoffSelect.value;
         let km = document.getElementById('distanceKm').value;
         let tripType = document.getElementById('tripType').value;
         let passengers = document.getElementById('passengerCount').value;
@@ -200,11 +327,11 @@
         let driverPhone = document.getElementById('driverSelect').value;
 
         if (!pickup) {
-            alert('કૃપા કરીને પહેલાં પીકઅપ લોકેશન લો!');
+            alert('કૃપા કરીને પહેલાં GPS લોકેશન લો!');
             return;
         }
         if (!dropoff) {
-            alert('કૃપા કરીને જવાનું સ્થળ (નામ) લખો!');
+            alert('કૃપા કરીને ડ્રોપ લોકેશન પસંદ કરો!');
             return;
         }
         if (!driverPhone) {
@@ -228,7 +355,7 @@
         lastBookedDriverPhone = driverPhone;
         lastBookedCommission = commission;
 
-        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 પીકઅપ લોકેશન: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + "\n🔄 ટ્રિપનો પ્રકાર: " + tripType + "\n👥 પેસેન્જર: " + passengers + "\n💰 કુલ અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
+        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 પીકઅપ લોકેશન: " + pickup + "\n🗺️ GPS મેપ લિંક: " + (gpsLink || "ઉપલબ્ધ નથી") + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + "\n🔄 ટ્રિપનો પ્રકાર: " + tripType + "\n👥 પેસેન્જર: " + passengers + "\n💰 કુલ અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
         let whatsappUrl = "https://wa.me/91" + driverPhone + "?text=" + encodeURIComponent(message);
         window.open(whatsappUrl, '_blank');
     }
@@ -262,16 +389,18 @@
         }
 
         document.getElementById('pickup').value = '';
-        document.getElementById('dropoffName').value = '';
+        document.getElementById('dropoff').selectedIndex = 0;
         document.getElementById('distanceKm').value = '1 KM';
         document.getElementById('tripType').selectedIndex = 0;
         document.getElementById('passengerCount').selectedIndex = 3;
         calculateFare();
         document.getElementById('driverSelect').selectedIndex = 0;
+        gpsLink = "";
         alert('બુકિંગ કેન્સલ કરી દેવામાં આવ્યું છે.');
     }
 
     window.onload = function() {
+        populateDropdown();
         loadDrivers();
         calculateFare();
         updateCounterDisplay();
