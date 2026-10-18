@@ -26,17 +26,17 @@
     <h2>🛺 એડમિન ડેશબોર્ડ & હિસાબ</h2>
     
     <div class="form-group">
-        <label>ડ્રાઇવરનું નામ:</label>
+        <label>ડ્રાઇવરનું નામ (ફરજિયાત):</label>
         <input type="text" id="driverName" placeholder="ડ્રાઇવરનું પૂરું નામ લખો">
     </div>
 
     <div class="form-group">
-        <label>રિક્ષા નંબર:</label>
+        <label>રિક્ષા નંબર (વૈકલ્પિક - ન હોય તો ખાલી રાખો):</label>
         <input type="text" id="ricshaNo" placeholder="દા.ત. GJ-13-XX-1234">
     </div>
 
     <div class="form-group">
-        <label>મોબાઈલ નંબર (WhatsApp):</label>
+        <label>મોબાઈલ નંબર / WhatsApp (ફરજિયાત):</label>
         <input type="tel" id="driverPhone" placeholder="10 આંકડાનો નંબર લખો">
     </div>
 
@@ -58,12 +58,12 @@
 <script>
     function registerDriver() {
         let name = document.getElementById('driverName').value.trim();
-        let ricshaNo = document.getElementById('ricshaNo').value.trim();
+        let ricshaNo = document.getElementById('ricshaNo').value.trim() || 'રિક્ષા';
         let phone = document.getElementById('driverPhone').value.trim();
-        let commission = document.getElementById('driverCommission').value.trim();
+        let commission = document.getElementById('driverCommission').value.trim() || '0';
 
-        if (!name || !ricshaNo || !phone) {
-            alert('કૃપા કરીને બધી વિગતો ભરો!');
+        if (!name || !phone) {
+            alert('કૃપા કરીને ડ્રાઇવરનું નામ અને મોબાઈલ નંબર જરૂર ભરો!');
             return;
         }
 
@@ -79,7 +79,7 @@
         }
 
         localStorage.setItem('rickshawDrivers', JSON.stringify(drivers));
-        alert('ડ્રાઇવરની માહિતી અને હિસાબ સફળતાપૂર્વક સેવ થઈ ગયો!');
+        alert('ડ્રાઇવરની માહિતી સફળતાપૂર્વક સેવ થઈ ગઈ!');
         
         document.getElementById('driverName').value = '';
         document.getElementById('ricshaNo').value = '';
@@ -90,7 +90,7 @@
     }
 
     function loadDriverList() {
-        let drivers = JSON.parse(localStorage.getItem('rickshaDrivers')) || [];
+        let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
         let listDiv = document.getElementById('driverList');
         listDiv.innerHTML = '';
 
