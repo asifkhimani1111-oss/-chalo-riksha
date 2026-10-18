@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>મસ્જિદે મદીના - નમાઝ ટાઈમ્સ & તસ્બીહ</title>
+    <!-- Tailwind CSS for modern design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        /* મસ્જિદના અંદરના ફોટાનું બેકગ્રાઉન્ડ સેટિંગ */
+        body {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.92)), url('1000020942.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen flex flex-col justify-between">
+
+    <!-- Header with Masjid Outer Photo -->
+    <header class="bg-slate-900/80 backdrop-blur-md p-4 text-center shadow-lg border-b border-slate-800">
+        <div class="max-w-md mx-auto flex items-center gap-3">
+            <!-- બહારનો ફોટો (લોગો તરીકે) -->
+            <img src="1000020941.jpg" alt="Masjid Outer" class="w-14 h-14 rounded-full object-cover border-2 border-emerald-400 shadow-md">
+            <div class="text-left">
+                <h1 class="text-lg font-bold text-emerald-400">🕌 મસ્જિદે મદીના</h1>
+                <p id="location-name" class="text-xs text-slate-300">લોકેશન મેળવી રહ્યા છીએ...</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="p-4 max-w-md mx-auto w-full space-y-4 flex-grow">
+        
+        <!-- Date Box -->
+        <div class="bg-slate-800/80 backdrop-blur-md rounded-2xl p-4 shadow-lg text-center border border-slate-700">
+            <h2 class="text-xs text-slate-400">તારીખ (હિजरी / ઈસવીસन)</h2>
+            <div id="date-display" class="text-base font-semibold text-emerald-300 mt-1">--</div>
+        </div>
+
+        <!-- Prayer Times List -->
+        <div>
+            <h3 class="text-xs font-semibold text-slate-300 mb-2 px-1">📅 આજનો નમાઝનો સમય (શરૂઆત અને અંત)</h3>
+            <div class="space-y-2.5" id="prayer-list">
+                <div class="text-center text-slate-400 py-6 bg-slate-800/80 rounded-xl">લોકેશન ચાલુ કરો અને રાહ જુઓ...</div>
+            </div>
+        </div>
+
+        <!-- Digital Tasbih Section -->
+        <div class="bg-slate-800/80 backdrop-blur-md rounded-2xl p-5 shadow-lg text-center border border-slate-700">
+            <h3 class="text-sm font-semibold text-emerald-400 mb-2">📿 ડિજિટલ તસ્બીહ કાઉન્ટર</h3>
+            
+            <div id="tasbih-count" class="text-5xl font-black text-emerald-300 my-3">0</div>
+            
+            <div class="flex gap-3 justify-center">
+                <!-- Count Button -->
+                <button onclick="incrementTasbih()" class="bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition transform">
+                    ગણો (Count) 👆
+                </button>
+                
+                <!-- Reset Button -->
+                <button onclick="resetTasbih()" class="bg-rose-600/80 hover:bg-rose-500 active:scale-95 text-white font-medium py-3 px-4 rounded-xl shadow transition">
+                    રીસેટ 🔄
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center p-3 text-xs text-slate-400 bg-slate-900/80 backdrop-blur-md mt-4 border-t border-slate-800">
+        મસ્જિદે મદીના - ફ્રી મોબાઈલ લિંક એપ
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // --- Namaz Time Logic ---
+        function getPrayerTimesByLocation() {
+            const locText = document.getElementById('location-name');
+            
+            if (navigator.geolocation) {
+                locText.innerText = "GPS લોકેશન ફેચ થઈ રહ્યું છે...";
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        fetchTimes(lat, lon);
+                    }, 
+                    (error) => {
+                        console.warn("GPS પરવાનગી ન મળી:", error.message);
+                        locText.innerText = "લોકેશન પરવાનગી ન મળી (અમદાવાદ સમય)";
+                        fetchTimes(23.0225, 72.5714);
+                    },
+                    { timeout: 10000, enableHighAccuracy: true }
+                );
+            } else {
+                locText.innerText = "બ્રાઉઝર લોકેશન સપોર્ટ કરતું નથી.";
+                fetchTimes(23.0225, 72.5714);
+            }
+        }
+
+        async function fetchTimes(lat, lon) {
+            try {
+                const response = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=1`);
+                const data = await response.json();
+                const timings = data.data.timings;
+                const dateHijri = data.data.date.hijri;
+                const dateGregorian = data.data.date.gregorian;
+
+                document.getElementById('location-name').innerText = `GPS લોકેશન સક્રિય છે`;
+                document.getElementById('date-display').innerText = `${dateHijri.day} ${dateHijri.month.en} ${dateHijri.year} AH (${dateGregorian.date})`;
+
+                const prayers = [
+                    { name: '🌅 ફજર (Fajr)', time: timings.Fajr, end: `સૂર્યોદય: ${timings.Sunrise}` },
+                    { name: '☀️ સૂર્યોદય (Sunrise)', time: timings.Sunrise, end: '-' },
+                    { name: '🕛 જુહર (Dhuhr)', time: timings.Dhuhr, end: `અસ્ર શરૂ: ${timings.Asr}` },
+                    { name: ' عصر અસ્ર (Asr)', time: timings.Asr, end: `સૂર્યાસ્ત: ${timings.Sunset}` },
+                    { name: '🌇 મગરિબ (Maghrib)', time: timings.Maghrib, end: `ઇશા શરૂ: ${timings.Isha}` },
+                    { name: '🌙 ઇશા (Isha)', time: timings.Isha, end: 'ફજર પહેલા સુધી' }
+                ];
+
+                let listHtml = '';
+                prayers.forEach(p => {
+                    listHtml += `
+                        <div class="bg-slate-800/80 backdrop-blur-md p-3 rounded-xl flex justify-between items-center border border-slate-700 shadow-sm">
+                            <span class="font-medium text-slate-200 text-sm">${p.name}</span>
+                            <div class="text-right">
+                                <span class="text-emerald-400 font-bold text-base">${p.time}</span>
+                                <div class="text-[11px] text-slate-300">${p.end}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('prayer-list').innerHTML = listHtml;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('location-name').innerText = "ડेटा લોડ કરવામાં ભૂલ થઈ.";
+            }
+        }
+
+        // --- Tasbih Counter Logic ---
+        let count = 0;
+        const countDisplay = document.getElementById('tasbih-count');
+
+        let incrementTasbih = () => {
+            count++;
+            countDisplay.innerText = count;
+            if (navigator.vibrate) {
+                navigator.vibrate(40);
+            }
+        };
+
+        let resetTasbih = () => {
+            if (count > 0 && confirm('શું તમે તસ્બીહ રિસેટ કરવા માંગો છો?')) {
+                count = 0;
+                countDisplay.innerText = count;
+            }
+        };
+
+        getPrayerTimesByLocation();
+    </script>
+</body>
+</html>
