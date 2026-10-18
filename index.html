@@ -36,7 +36,7 @@
     <div class="form-group">
         <label>ક્યાંથી બેસવું છે? (પીકઅપ લોકેશન):</label>
         <button class="btn btn-gps" onclick="getLocationGPS()">📍 મારું લાઈવ GPS લોકેશન લો</button>
-        <input type="text" id="pickup" placeholder="લોકેશન મેળવો અથવા લખો">
+        <input type="text" id="pickup" placeholder="ગઢડા બસ સ્ટેન્ડ અથવા લાઈવ લોકેશન">
     </div>
 
     <div class="form-group">
@@ -47,7 +47,7 @@
     </div>
 
     <div class="form-group">
-        <label>અંદાજિત અંતર (KM):</label>
+        <label>અંદાજિત અંતર (બસ સ્ટેન્ડથી KM):</label>
         <input type="text" id="distanceKm" value="1 KM" readonly>
     </div>
 
@@ -72,7 +72,7 @@
     </div>
 
     <div class="fare-box">
-        કુલ અંદાજિત ભાડું: ₹ <span id="totalFare">45</span>
+        કુલ અંદાજિત ભાડું: ₹ <span id="totalFare">55</span>
     </div>
 
     <div class="form-group">
@@ -88,10 +88,9 @@
 </div>
 
 <script>
-    // ગઢડા શહેરના વિસ્તારો અને તાલુકાના ગામડાઓ (સાચા કિલોમીટર સાથે)
     const locationsData = [
         // --- ગઢડા શહેરના વિસ્તારો ---
-        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "ગઢડા મેઇನ್ માર્કેટ / નગરપાલિકા", km: 1 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "ગઢડા મેઇન માર્કેટ / નગરપાલિકા", km: 1 },
         { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "ગોપીનાથજી મંદિર વિસ્તાર", km: 1 },
         { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "ગોપીનાથ સોસાયટી", km: 2 },
         { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "નાગજીપરા", km: 1 },
@@ -112,7 +111,7 @@
         { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "હોસ્પિટલ રોડ", km: 2 },
         { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "સ્ટેશન રોડ", km: 2 },
 
-        // --- ગઢડા તાલુકાનાં ગામો (કિલોમીટર સાથે) ---
+        // --- ગઢડા તાલુકાનાં ગામો ---
         { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "અડતાળા", km: 5 },
         { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "અનીડા", km: 20 },
         { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "અંકડિયા", km: 12 },
@@ -204,7 +203,7 @@
             let option = document.createElement('option');
             option.value = `${item.name} (${item.km} KM)`;
             option.setAttribute('data-km', item.km);
-            let fare = 45 + (item.km > 1 ? (item.km - 1) * 10 : 0);
+            let fare = 55 + (item.km > 1 ? (item.km - 1) * 10 : 0);
             option.textContent = `${item.name} (${item.km} KM - ₹${fare})`;
             optgroup.appendChild(option);
         });
@@ -248,7 +247,8 @@
         let passengers = parseInt(document.getElementById('passengerCount').value) || 1;
         let tripType = document.getElementById('tripType').value;
 
-        let baseFare = 45;
+        // Base fare 55 for start, and +10 for every extra km
+        let baseFare = 55;
         if (km > 1) {
             baseFare += (km - 1) * 10;
         }
@@ -260,7 +260,7 @@
             totalFare = totalFare * 2;
         }
 
-        document.getElementById('totalFare').textContent = totalFare > 0 ? totalFare : 45;
+        document.getElementById('totalFare').textContent = totalFare > 0 ? totalFare : 55;
     }
 
     document.getElementById('passengerCount').addEventListener('change', calculateFare);
@@ -289,19 +289,15 @@
     let lastBookedCommission = 0;
 
     function bookRide() {
-        let pickup = document.getElementById('pickup').value;
+        let pickup = document.getElementById('pickup').value || "ગઢડા બસ સ્ટેન્ડ";
         let dropoffSelect = document.getElementById('dropoff');
         let dropoff = dropoffSelect.value;
         let km = document.getElementById('distanceKm').value;
         let tripType = document.getElementById('tripType').value;
         let passengers = document.getElementById('passengerCount').value;
-        let fare = parseInt(document.getElementById('totalFare').textContent) || 45;
+        let fare = parseInt(document.getElementById('totalFare').textContent) || 55;
         let driverPhone = document.getElementById('driverSelect').value;
 
-        if (!pickup) {
-            alert('કૃપા કરીને પહેલાં GPS લોકેશન લો!');
-            return;
-        }
         if (!dropoff) {
             alert('કૃપા કરીને ડ્રોપ લોકેશન પસંદ કરો!');
             return;
@@ -327,7 +323,7 @@
         lastBookedDriverPhone = driverPhone;
         lastBookedCommission = commission;
 
-        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 પીકઅપ લોકેશન: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર: " + km + "\n🔄 ટ્રિપનો પ્રકાર: " + tripType + "\n👥 પેસેન્જર: " + passengers + "\n💰 કુલ અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
+        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 પીકઅપ લોકેશન: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 અંતર (બસ સ્ટેન્ડથી): " + km + "\n🔄 ટ્રિપનો પ્રકાર: " + tripType + "\n👥 પેસેન્જર: " + passengers + "\n💰 કુલ અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ સ્વીકારો.";
         let whatsappUrl = "https://wa.me/91" + driverPhone + "?text=" + encodeURIComponent(message);
         window.open(whatsappUrl, '_blank');
     }
@@ -335,7 +331,7 @@
     function callDriver() {
         let driverPhone = document.getElementById('driverSelect').value;
         if (!driverPhone) {
-            alert('કૃપા કરીને પહેલાં ડ્રાઇવર પસંદ કરો!');
+            alert('કૃપા કરીને ડ્રાઇવર પસંદ કરો!');
             return;
         }
         window.location.href = "tel:+91" + driverPhone;
