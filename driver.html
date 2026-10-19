@@ -17,13 +17,16 @@
         th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
         th { background: #ff9800; color: white; }
         .admin-box { background: #e8f5e9; padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .gps-status { font-size: 13px; color: #388e3c; margin-bottom: 10px; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🛺 ડ્રાઇવર રજિસ્ટ્રેશન</h2>
+    <h2>🛺 ડ્રાઇવર રજિસ્ટ્રેશન અને GPS</h2>
     
+    <div id="driverGpsStatus" class="gps-status">📍 ડ્રાઇવરનું GPS લોકેશન ચકરાવા પર છે...</div>
+
     <div class="form-group">
         <label>ડ્રાઇવરનું નામ:</label>
         <input type="text" id="driverName" placeholder="ડ્રાઇવરનું નામ લખો">
@@ -47,7 +50,7 @@
                     <th>કુલ ભાડું (₹)</th>
                     <th>એડમિન કમિશન (૫%) (₹)</th>
                 </tr>
-            െ</thead>
+            </thead>
             <tbody id="adminTableBody">
                 <!-- અહીં ઓટોમેટિક ડેટા આવશે -->
             </tbody>
@@ -56,17 +59,42 @@
 </div>
 
 <script>
+    let driverLat = null;
+    let driverLng = null;
+
+    // ડ્રાઇવરનું GPS લોકેશન ચેક કરવા માટે
+    window.onload = function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                driverLat = position.coords.latitude;
+                driverLng = position.coords.longitude;
+                document.getElementById('driverGpsStatus').innerText = "✅ ડ્રાઇવરનું GPS લોકેશન સક્રિય છે!";
+            }, function(error) {
+                document.getElementById('driverGpsStatus').innerText = "⚠️ કૃપા કરીને તમારું GPS લોકેશન ચાલુ કરો!";
+                alert("ડ્રાઇવર તરીકે નોંધણી કરવા માટે GPS લોકેશન ચાલુ હોવું જરૂરી છે!");
+            });
+        } else {
+            alert("તમારો બ્રાઉઝર જીપીએસ સપોર્ટ કરતો નથી.");
+        }
+        loadAdminData();
+    };
+
     function registerDriver() {
         let name = document.getElementById('driverName').value;
         let phone = document.getElementById('driverPhone').value;
 
-        if(!name || !phone) {
+        if (!driverLat || !driverLng) {
+            alert("GPS લોકેશન ચાલુ ન હોવાથી રજિસ્ટ્રેશન થઈ શકશે નહીં!");
+            return;
+        }
+
+        if (!name || !phone) {
             alert('કૃપા કરીને નામ અને નંબર બંને લખો!');
             return;
         }
 
         let drivers = JSON.parse(localStorage.getItem('chaloRikshaDrivers')) || [];
-        drivers.push({ name, phone });
+        drivers.push({ name, phone, lat: driverLat, lng: driverLng });
         localStorage.setItem('chaloRikshaDrivers', JSON.stringify(drivers));
 
         alert('ડ્રાઇવરની માહિતી સફળતાપૂર્વક સેવ થઈ ગઈ છે!');
@@ -75,27 +103,25 @@
 
     function loadAdminData() {
         let bookings = JSON.parse(localStorage.getItem('chaloRikshaBookings')) || [];
-        let drivers = JSON.parse(localStorage.getItem('chaloRikshaDrivers')) || [{name: 'રમેશભાઈ', phone: '9876543210'}]; // Default demo driver
+        let drivers = JSON.parse(localStorage.getItem('chaloRikshaDrivers')) || [{name: 'રમેશભાઈ (Demo)', phone: '9876543210'}];
 
         let tableBody = document.getElementById('adminTableBody');
         tableBody.innerHTML = '';
 
         drivers.forEach(driver => {
-            let successRides = bookings.length; // સરળતા માટે કુલ સક્સેસફુલ બુકિંગ ગણેલ છે
+            let successRides = bookings.length;
             let totalFare = bookings.reduce((sum, b) => sum + Number(b.fare || 0), 0);
-            let adminCommission = totalFare * 0.05; // ૫% કમિશન
+            let adminCommission = totalFare * 0.05; // ૫% એડમિન કમિશન
 
             let row = `<tr>
                 <td>${driver.name}</td>
                 <td>${successRides}</td>
                 <td>₹${totalFare}</td>
-                <td style="font-weight: bold; color: #d32f2f;">₹${adminCommission}</td>
+                <td style="font-weight: bold; color: #d32f2f;">₹${adminCommission.toFixed(2)}</td>
             </tr>`;
             tableBody.innerHTML += row;
         });
     }
-
-    window.onload = loadAdminData;
 </script>
 
 </body>
