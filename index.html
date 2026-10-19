@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ચાલો રિક્ષા - મુસાફર બુકિંગ</title>
+    <title>ચાલો રિક્ષા - જીપીએસ બુકિંગ</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 20px; color: #333; }
         .container { max-width: 450px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -15,12 +15,13 @@
         .btn-cancel { background: #e53935; }
         .btn:hover { opacity: 0.9; }
         #fareSection { background: #fff3e0; padding: 15px; border-radius: 6px; margin-top: 15px; text-align: center; font-size: 18px; font-weight: bold; color: #e65100; }
+        .gps-status { font-size: 13px; color: #388e3c; margin-top: 5px; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>🛺 ચાલો રિક્ષા બુકિંગ</h2>
+    <h2>🛺 ચાલો રિક્ષા - GPS બુકિંગ</h2>
     
     <div class="form-group">
         <label>તમારું નામ:</label>
@@ -28,82 +29,137 @@
     </div>
 
     <div class="form-group">
-        <label>ક્યાંથી બેસવું છે (Pickup):</label>
-        <select id="pickup">
-            <option value="ગઢડા બસ સ્ટેન્ડ">ગઢડા બસ સ્ટેન્ડ</option>
-            <option value="સ્વામિનારાયણ મંદિર">સ્વામિનારાયણ મંદિર</option>
-            <option value="રોહશાળા">રોહશાળા</option>
-            <option value="ઢસા રોડ">ઢસા રોડ</option>
+        <label>ક્યાં જવું છે (Drop Destination):</label>
+        <select id="drop" onchange="calculateGPSFare()">
+            <option value="સ્થળ પસંદ કરો">સ્થળ પસંદ કરો</option>
+            <option value="રોહશાળા" data-lat="21.9650" data-lng="71.6000">રોહશાળા</option>
+            <option value="ઢસા" data-lat="21.8500" data-lng="71.5000">ઢસા</option>
+            <option value="બોટાદ" data-lat="22.1700" data-lng="71.6600">બોટાદ</option>
         </select>
     </div>
 
-    <div class="form-group">
-        <label>ક્યાં જવું છે (Drop):</label>
-        <select id="drop" onchange="calculateFare()">
-            <option value="સ્થળ પસંદ કરો">સ્થળ પસંદ કરો</option>
-            <option value="રોહશાળા">રોહશાળા - ₹૧૦૦</option>
-            <option value="ઢસા">ઢસા - ₹૨૫૦</option>
-            <option value="બોટાદ">બોટાદ - ₹૩૫૦</option>
-        </select>
-    </div>
+    <div id="gpsStatus" class="gps-status">📍 જીપીએસ લોકેશન મેળવવામાં આવી રહ્યું છે...</div>
 
     <div id="fareSection" style="display:none;">
-        અંદાજિત ભાડું: <span id="fareAmount">૦</span> ₹<br>
+        અંતર: <span id="distanceText">૦</span> કિ.મી.<br>
+        ઓટોમેટિક ભાડું: ₹<span id="fareAmount">૦</span><br>
         <small style="color: #666; font-size: 12px;">(૫% એડમિન કમિશન શામેલ)</small>
     </div>
 
-    <button class="btn" onclick="bookRike()">WhatsApp દ્વારા બુક કરો</button>
+    <button class="btn" onclick="bookRideGPS()">WhatsApp દ્વારા GPS બુકિંગ કરો</button>
     <button class="btn btn-cancel" onclick="cancelRide()" style="display:none;" id="cancelBtn">રાઈડ કેન્સલ કરો</button>
 </div>
 
 <script>
     let currentBooking = null;
+    let userLat = null;
+    let userLng = null;
 
-    function calculateFare() {
-        let drop = document.getElementById('drop').value;
-        let fare = 0;
-        if(drop === 'રોહશાળા') fare = 100;
-        else if(drop === 'ઢસા') fare = 250;
-        else if(drop === 'બોટાદ') fare = 350;
-
-        if(fare > 0) {
-            document.getElementById('fareAmountinnerText' || 'fareAmount').innerText = fare;
-            document.getElementById('fareSection').style.display = 'block';
+    // પેજ ખુલે એટલે ઓટોમેટિક મુસાફરનું GPS લોકેશન ચાલુ કરાવો
+    window.onload = function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                userLat = position.coords.latitude;
+                userLng = position.coords.longitude;
+                document.getElementById('gpsStatus').innerText = "✅ GPS લોકેશન ચાલુ છે અને મેળવી લીધું છે!";
+            }, function(error) {
+                document.getElementById('gpsStatus').innerText = "⚠️ કૃપા કરીને તમારું GPS લોકેશન ચાલુ કરો!";
+                alert("બુકિંગ માટે તમારું GPS લોકેશન ચાલુ હોવું જરૂરી છે!");
+            });
+        } else {
+            alert("તમારો બ્રાઉઝર જીપીએસ સપોર્ટ કરતો નથી.");
         }
+    };
+
+    // અંતર (Distance) ગણવાનું સૂત્ર (Haversine Formula)
+    function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+        let R = 6371; // Radius of the earth in km
+        let dLat = deg2rad(lat2-lat1);
+        let dLon = deg2rad(lon2-lon1);
+        let a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2)
+        ; 
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        let d = R * c; // Distance in km
+        return d;
     }
 
-    function bookRike() {
+    function deg2rad(deg) {
+        return deg * (Math.PI/180);
+    }
+
+    // ભાડાની ગણતરી નિયમ મુજબ
+    function calculateGPSFare() {
+        if (!userLat || !userLng) {
+            alert("પહેલા તમારું GPS લોકેશન ચાલુ થવા દો!");
+            return;
+        }
+
+        let dropSelect = document.getElementById('drop');
+        let selectedOption = dropSelect.options[dropSelect.selectedIndex];
+        let destLat = selectedOption.getAttribute('data-lat');
+        let destLng = selectedOption.getAttribute('data-lng');
+
+        if (!destLat) return;
+
+        // કિલોમીટર ગણો
+        let distanceKm = getDistanceFromLatLonInKm(userLat, userLng, parseFloat(destLat), parseFloat(destLng));
+        let distanceMeters = distanceKm * 1000;
+        let fare = 0;
+
+        // તમારા નિયમ મુજબ ભાડું:
+        if (distanceMeters <= 500) {
+            fare = 35;
+        } else if (distanceMeters <= 600) {
+            fare = 40;
+        } else {
+            // 600 મીટર પછી દર 1 કિલોમીટરના ₹10 લેખે
+            let extraKm = Math.ceil((distanceMeters - 600) / 1000);
+            fare = 40 + (extraKm * 10);
+        }
+
+        document.getElementById('distanceText').innerText = distanceKm.toFixed(2);
+        document.getElementById('fareAmount').innerText = fare;
+        document.getElementById('fareSection').style.display = 'block';
+    }
+
+    function bookRideGPS() {
         let name = document.getElementById('passName').value;
-        let pickup = document.getElementById('pickup').value;
         let drop = document.getElementById('drop').value;
         let fare = document.getElementById('fareAmount').innerText;
 
-        if(!name || drop === 'સ્થળ પસંદ કરો') {
+        if (!userLat || !userLng) {
+            alert("GPS લોકેશન ચાલુ ન હોવાથી બુકિંગ થઈ શકશે નહીં!");
+            return;
+        }
+
+        if (!name || drop === 'સ્થળ પસંદ કરો') {
             alert('કૃપા કરીને નામ અને જવાનું સ્થળ પસંદ કરો!');
             return;
         }
 
-        currentBooking = { name, pickup, drop, fare, status: 'Success' };
+        let mapLink = `https://maps.google.com/?q=${userLat},${userLng}`;
+        currentBooking = { name, drop, fare, status: 'Success' };
         
-        // LocalStorage માં ડ્રાઇવર અને એડમિન માટે સેવ કરવું
         let bookings = JSON.parse(localStorage.getItem('chaloRikshaBookings')) || [];
         bookings.push(currentBooking);
         localStorage.setItem('chaloRikshaBookings', JSON.stringify(bookings));
 
         document.getElementById('cancelBtn').style.display = 'block';
 
-        let msg = `નવું બુકિંગ!\nનામ: ${name}\nઉપાડ: ${pickup}\nપહોંચવું: ${drop}\nભાડું: ₹${fare}`;
+        let msg = `🛺 GPS નવું બુકિંગ!\nનામ: ${name}\nપહોંચવું: ${drop}\nભાડું: ₹${fare}\nલાઈવ લોકેશન GPS: ${mapLink}`;
         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
     function cancelRide() {
-        if(currentBooking) {
+        if (currentBooking) {
             let bookings = JSON.parse(localStorage.getItem('chaloRikshaBookings')) || [];
-            // કેન્સલ થયેલી રાઈડ સ્ટેટસ બદલી નાખવું અથવા લિસ્ટમાંથી હટાવવું
             bookings = bookings.filter(b => b.name !== currentBooking.name);
             localStorage.setItem('chaloRikshaBookings', JSON.stringify(bookings));
             
-            alert('તમારી રાઈડ સફળતાપૂર્વક કેન્સલ કરી દેવામાં આવી છે અને હિસાબમાંથી રદ થઈ ગઈ છે.');
+            alert('તમારી રાઈડ સફળતાપૂર્વક કેન્સલ કરી દેવામાં આવી છે.');
             location.reload();
         }
     }
