@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ચાલો રિક્ષા - લાઈવ GPS ઓટો બુકિંગ</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 15px; color: #333; }
+        .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #ff9800; margin-bottom: 10px; }
+        .counter-banner { background: #e8f5e9; color: #2e7d32; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 15px; border: 1px solid #c8e6c9; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; box-sizing: border-box; background: #fff; }
+        input[readonly] { background: #e9ecef; color: #495057; font-weight: bold; }
+        .fare-box { background: #fff3e0; padding: 12px; border-radius: 6px; text-align: center; font-size: 18px; font-weight: bold; color: #e65100; margin-bottom: 15px; }
+        .btn { background: #25d366; color: white; border: none; padding: 12px; width: 100%; font-size: 18px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .btn:hover { background: #1ebe5d; }
+        .btn-gps { background: #ff9800; margin-bottom: 10px; }
+        .btn-gps:hover { background: #e68900; }
+        .btn-call { background: #007bff; margin-top: 8px; }
+        .btn-call:hover { background: #0056b3; }
+        .btn-cancel { background: #e74c3c; margin-top: 8px; }
+        .btn-cancel:hover { background: #c0392b; }
+        .map-link { display: block; text-align: center; margin-top: 10px; color: #007bff; text-decoration: none; font-weight: bold; }
+        .status-badge { font-size: 13px; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 5px; font-weight: bold; }
+        .status-off { background: #ffebee; color: #c62828; }
+        .status-on { background: #e8f5e9; color: #2e7d32; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛺 ચાલો રિક્ષા લાઈવ બુકિંગ</h2>
+    
+    <div class="counter-banner" id="counterDisplay">
+        🚀 અત્યાર સુધી સફળ બુકિંગ: 0 રિક્ષા
+    </div>
+
+    <div class="form-group">
+        <label>૧. મુસાફરનું પીકઅપ લોકેશન:</label>
+        <button class="btn btn-gps" onclick="getLiveLocation()">📍 મારું લાઈવ GPS લોકેશન ચાલુ કરો</button>
+        <input type="text" id="pickup" placeholder="લોકેશન ચાલુ કરવા માટે ઉપર ક્લિક કરો..." readonly>
+        <div id="passengerGpsStatus" class="status-badge status-off">❌ મુસાફરનું GPS બંધ છે</div>
+    </div>
+
+    <div class="form-group">
+        <label>૨. ડ્રોપ લોકેશન પસંદ કરો (ગામ કે વિસ્તાર):</label>
+        <select id="dropoff" onchange="updateLocationData()">
+            <option value="" data-km="1" data-lat="" data-lon="">-- ડ્રોપ લોકેશન પસંદ કરો --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>અંદાજિત અંતર:</label>
+        <input type="text" id="distanceKm" value="1 KM" readonly>
+    </div>
+
+    <a id="googleMapRoute" class="map-link" href="#" target="_blank" style="display:none;">🗺️ ગૂગલ મેપ પર લાઈવ રૂટ જુઓ</a>
+
+    <div class="form-group" style="margin-top: 15px;">
+        <label>ટ્રિપનો પ્રકાર:</label>
+        <select id="tripType" onchange="calculateFare()">
+            <option value="One Way">વન-વે (એક બાજુની સફર)</option>
+            <option value="Round Trip">રાઉન્ડ ટ્રિપ / રિટર્ન (આવવાનું અને જવાનું)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>પેસેન્જરની સંખ્યા:</label>
+        <select id="passengerCount" onchange="calculateFare()">
+            <option value="1">1 પેસેન્જર</option>
+            <option value="2">2 પેસેન્જર</option>
+            <option value="3">3 પેસેન્જર</option>
+            <option value="4" selected>4 પેસેન્જર</option>
+            <option value="5">5 પેસેન્જર (+₹10)</option>
+            <option value="6">6 પેસેન્જર (+₹20)</option>
+        </select>
+    </div>
+
+    <div class="fare-box">
+        કુલ અંદાજિત ભાડું: ₹ <span id="totalFare">40</span>
+    </div>
+
+    <div class="form-group">
+        <label>૩. ડ્રાઇવર પસંદ કરો (લોકેશન ફરજિયાત):</label>
+        <select id="driverSelect" onchange="checkDriverLocation()">
+            <option value="">-- ડ્રાઇવર પસંદ કરો --</option>
+        </select>
+        <div id="driverGpsStatus" class="status-badge status-off">❌ ડ્રાઇવરનું લોકેશન ઓફ છે</div>
+    </div>
+
+    <button class="btn" onclick="bookRide()">WhatsApp પર બુકિંગ મોકલો</button>
+    <button class="btn btn-call" onclick="callDriver()">📞 ડ્રાઇવરને ડાયરેક્ટ કોલ કરો</button>
+    <button class="btn btn-cancel" onclick="cancelRide()">બુકિંગ કેન્સલ કરો</button>
+</div>
+
+<script>
+    const locationsData = [
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "ગઢડા મેઇન માર્કેટ / નગરપાલિકા", km: 1, lat: 21.9682, lon: 71.5832 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "ગોપીનાથજી મંદિર વિસ્તાર", km: 1, lat: 21.9675, lon: 71.5840 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "ગોપીનાથ સોસાયટી", km: 2, lat: 21.9700, lon: 71.5880 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "નાગજીપરા", km: 1, lat: 21.9650, lon: 71.5800 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "ધામેલિયા વાડી", km: 2, lat: 21.9720, lon: 71.5850 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "હુસેની ચોક", km: 1, lat: 21.9660, lon: 71.5820 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "BAPS સ્વામિનારાયણ મંદિર", km: 1, lat: 21.9670, lon: 71.5845 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "કોઠીવાડી", km: 1, lat: 21.9640, lon: 71.5790 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "ન્યુ બસ સ્ટેન્ડ", km: 1, lat: 21.9690, lon: 71.5810 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "હોસ્પિટલ રોડ", km: 2, lat: 21.9710, lon: 71.5830 },
+        { category: "📍 ગઢડા શહેરના વિસ્તારો", name: "સ્ટેશન રોડ", km: 2, lat: 21.9730, lon: 71.5805 },
+
+        // --- ગઢડા તાલુકાનાં ગામો ---
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "અડતાળા", km: 5, lat: 21.9900, lon: 71.5500 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "હરિપર", km: 6, lat: 22.0100, lon: 71.5600 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "ગોરડકા", km: 7, lat: 21.9300, lon: 71.5400 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "બોડકી", km: 8, lat: 22.0300, lon: 71.6000 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "સમઢિયાળા", km: 8, lat: 21.9100, lon: 71.6200 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "ઉગામેડી", km: 8, lat: 22.0400, lon: 71.5200 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "ચિરોડા", km: 10, lat: 21.8900, lon: 71.5000 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "ગુંડાળા", km: 10, lat: 22.0500, lon: 71.6500 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "ગઢાળી", km: 11, lat: 21.8800, lon: 71.6400 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "ખોપાળા", km: 12, lat: 21.8600, lon: 71.6600 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "રતનપર", km: 12, lat: 22.0700, lon: 71.5000 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "ભીમદડ", km: 17, lat: 21.8200, lon: 71.7000 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "અનીડા", km: 20, lat: 21.7900, lon: 71.7500 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "મોટા ઉમરડા", km: 32, lat: 21.7000, lon: 71.8500 },
+        { category: "🌾 ગઢડા તાલુકાનાં ગામો", name: "વિકળિયા", km: 38, lat: 21.6000, lon: 71.9500 }
+    ];
+
+    let userLat = null;
+    let userLon = null;
+    let gpsActive = false;
+    let driverLocationActive = false;
+    let exactDistanceMeters = 1000;
+
+    function populateDropdown() {
+        const select = document.getElementById('dropoff');
+        let currentCategory = "";
+        let optgroup = null;
+
+        locationsData.forEach(item => {
+            if (item.category !== currentCategory) {
+                currentCategory = item.category;
+                optgroup = document.createElement('optgroup');
+                optgroup.label = currentCategory;
+                select.appendChild(optgroup);
+            }
+            let option = document.createElement('option');
+            option.value = item.name;
+            option.setAttribute('data-km', item.km);
+            option.setAttribute('data-lat', item.lat);
+            option.setAttribute('data-lon', item.lon);
+            
+            let defaultMeters = item.km * 1000;
+            let fare = 40;
+            if (defaultMeters <= 500) { fare = 35; }
+            else if (defaultMeters <= 1000) { fare = 40; }
+            else { fare = 40 + (item.km - 1) * 10; }
+
+            option.textContent = `${item.name} (${item.km} KM - ₹${fare})`;
+            optgroup.appendChild(option);
+        });
+    }
+
+    function updateCounterDisplay() {
+        let totalBookings = localStorage.getItem('totalSuccessfulBookings') || 0;
+        document.getElementById('counterDisplay').textContent = `🚀 અત્યાર સુધી સફળ બુકિંગ: ${totalBookings} રિક્ષા`;
+    }
+
+    function getLiveLocation() {
+        if (navigator.geolocation) {
+            alert('મુસાફરનું લાઈવ GPS લોકેશન મેળવાઈ રહ્યું છે...');
+            navigator.geolocation.getCurrentPosition(function(position) {
+                userLat = position.coords.latitude;
+                userLon = position.coords.longitude;
+                gpsActive = true;
+                document.getElementById('pickup').value = `લાઈવ GPS (Lat: ${userLat.toFixed(4)}, Lon: ${userLon.toFixed(4)})`;
+                
+                let statusBadge = document.getElementById('passengerGpsStatus');
+                statusBadge.className = "status-badge status-on";
+                statusBadge.textContent = "✔ મુસાફરનું GPS ચાલુ છે";
+                
+                updateLocationData();
+            }, function(error) {
+                alert('GPS લોકેશન મેળવવામાં નિષ્ફળતા. કૃપા કરીને ફોનનું લોકેશન (GPS) ચાલુ કરો.');
+            }, { enableHighAccuracy: true, timeout: 20000 });
+        } else {
+            alert('તમારું બ્રાઉઝર GPS સપોર્ટ કરતું નથી.');
+        }
+    }
+
+    function calculateDistanceMeters(lat1, lon1, lat2, lon2) {
+        let R = 6371000;
+        let dLat = (lat2 - lat1) * Math.PI / 180;
+        let dLon = (lon2 - lon1) * Math.PI / 180;
+        let a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function updateLocationData() {
+        let selectDrop = document.getElementById('dropoff');
+        let selectedOption = selectDrop.options[selectDrop.selectedIndex];
+        let dropLat = parseFloat(selectedOption.getAttribute('data-lat'));
+        let dropLon = parseFloat(selectedOption.getAttribute('data-lon'));
+        let defaultKm = parseFloat(selectedOption.getAttribute('data-km')) || 1;
+
+        if (gpsActive && userLat && userLon && dropLat && dropLon) {
+            exactDistanceMeters = calculateDistanceMeters(userLat, userLon, dropLat, dropLon);
+            let displayKmText = exactDistanceMeters < 1000 ? Math.round(exactDistanceMeters) + " Meters" : (exactDistanceMeters / 1000).toFixed(1) + " KM";
+            document.getElementById('distanceKm').value = displayKmText + " (લાઈવ GPS મેપ મુજબ)";
+            
+            let mapUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLat},${userLon}&destination=${dropLat},${dropLon}&travelmode=driving`;
+            let mapLinkElem = document.getElementById('googleMapRoute');
+            mapLinkElem.href = mapUrl;
+            mapLinkElem.style.display = 'block';
+        } else {
+            exactDistanceMeters = defaultKm * 1000;
+            document.getElementById('distanceKm').value = defaultKm + " KM (ડિરેક્ટરી મુજબ)";
+            document.getElementById('googleMapRoute').style.display = 'none';
+        }
+
+        calculateFareDynamic(exactDistanceMeters);
+    }
+
+    function calculateFareDynamic(meters) {
+        let passengers = parseInt(document.getElementById('passengerCount').value) || 1;
+        let tripType = document.getElementById('tripType').value;
+
+        let baseFare = 40;
+        if (meters <= 500) {
+            baseFare = 35;
+        } else if (meters <= 1000) {
+            baseFare = 40;
+        } else {
+            let kmExtra = Math.ceil((meters - 1000) / 1000);
+            baseFare = 40 + (kmExtra * 10);
+        }
+
+        let extraPassengerFee = passengers > 4 ? (passengers - 4) * 10 : 0;
+        let totalFare = baseFare + extraPassengerFee;
+
+        if (tripType === 'Round Trip') {
+            totalFare = totalFare * 2;
+        }
+
+        document.getElementById('totalFare').textContent = totalFare > 0 ? totalFare : 40;
+    }
+
+    function calculateFare() {
+        updateLocationData();
+    }
+
+    document.getElementById('passengerCount').addEventListener('change', calculateFare);
+    document.getElementById('tripType').addEventListener('change', calculateFare);
+
+    function loadDrivers() {
+        let defaultDrivers = [
+            { name: "રમેશભાઈ", phone: "9876543210" }
+        ];
+
+        let savedDrivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
+        let drivers = savedDrivers.length > 0 ? savedDrivers : defaultDrivers;
+
+        let select = document.getElementById('driverSelect');
+        select.innerHTML = '<option value="">-- ડ્રાઇવર પસંદ કરો --</option>';
+
+        drivers.forEach(function(driver) {
+            let opt = document.createElement('option');
+            opt.value = driver.phone;
+            opt.textContent = driver.name + ' - ' + driver.phone;
+            select.appendChild(opt);
+        });
+    }
+
+    function checkDriverLocation() {
+        let driverPhone = document.getElementById('driverSelect').value;
+        let statusBadge = document.getElementById('driverGpsStatus');
+        
+        if (driverPhone) {
+            driverLocationActive = true;
+            statusBadge.className = "status-badge status-on";
+            statusBadge.textContent = "✔ ડ્રાઇવરનું લોકેશન ચાલુ છે (એક્સેપ્ટ કરવા તૈયાર)";
+        } else {
+            driverLocationActive = false;
+            statusBadge.className = "status-badge status-off";
+            statusBadge.textContent = "❌ ડ્રાઇવરનું લોકેશન ઓફ છે";
+        }
+    }
+
+    let lastBookedDriverPhone = null;
+    let lastBookedCommission = 0;
+
+    function bookRide() {
+        let pickup = document.getElementById('pickup').value;
+        let dropoffSelect = document.getElementById('dropoff');
+        let dropoff = dropoffSelect.value;
+        let km = document.getElementById('distanceKm').value;
+        let tripType = document.getElementById('tripType').value;
+        let passengers = document.getElementById('passengerCount').value;
+        let fare = parseInt(document.getElementById('totalFare').textContent) || 40;
+        let driverPhone = document.getElementById('driverSelect').value;
+
+        if (!gpsActive || !pickup) {
+            alert('કૃપા કરીને પહેલાં "મારું લાઈવ GPS લોકેશન ચાલુ કરો" પર ક્લિક કરો!');
+            return;
+        }
+        if (!dropoff) {
+            alert('કૃપા કરીને ડ્રોપ લોકેશન પસંદ કરો!');
+            return;
+        }
+        if (!driverPhone || !driverLocationActive) {
+            alert('કૃપા કરીને ડ્રાઇવર પસંદ કરો જેનું લોકેશન ચાલુ હોય!');
+            return;
+        }
+
+        let currentCount = parseInt(localStorage.getItem('totalSuccessfulBookings')) || 0;
+        localStorage.setItem('totalSuccessfulBookings', currentCount + 1);
+        updateCounterDisplay();
+
+        let commission = Math.round(fare * 0.05);
+        let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
+        drivers.forEach(function(driver) {
+            if(driver.phone === driverPhone) {
+                driver.commission = (parseFloat(driver.commission) || 0) + commission;
+            }
+        });
+        localStorage.setItem('rickshawDrivers', JSON.stringify(drivers));
+
+        lastBookedDriverPhone = driverPhone;
+        lastBookedCommission = commission;
+
+        let message = "નમસ્કાર ડ્રાઇવર ભાઈ, મારે રિક્ષાની જરૂર છે.\n📍 લાઈવ GPS પીકઅપ: " + pickup + "\n🏁 જવાનું સ્થળ: " + dropoff + "\n📏 લાઈવ અંતર: " + km + "\n🔄 ટ્રિપનો પ્રકાર: " + tripType + "\n👥 પેસેન્જર: " + passengers + "\n💰 કુલ અંદાજિત ભાડું: ₹" + fare + "\nકૃપા કરીને રાઈડ એક્સેપ્ટ કરો.";
+        let whatsappUrl = "https://wa.me/91" + driverPhone + "?text=" + encodeURIComponent(message);
+        window.open(whatsappUrl, '_blank');
+    }
+
+    function callDriver() {
+        let driverPhone = document.getElementById('driverSelect').value;
+        if (!driverPhone) {
+            alert('કૃપા કરીને ડ્રાઇવર પસંદ કરો!');
+            return;
+        }
+        window.location.href = "tel:+91" + driverPhone;
+    }
+
+    function cancelRide() {
+        if (lastBookedDriverPhone && lastBookedCommission > 0) {
+            let drivers = JSON.parse(localStorage.getItem('rickshawDrivers')) || [];
+            drivers.forEach(function(driver) {
+                if(driver.phone === lastBookedDriverPhone) {
+                    driver.commission = Math.max(0, (parseFloat(driver.commission) || 0) - lastBookedCommission);
+                }
+            });
+            localStorage.setItem('rickshawDrivers', JSON.stringify(drivers));
+            lastBookedDriverPhone = null;
+            lastBookedCommission = 0;
+        }
+
+        let currentCount = parseInt(localStorage.getItem('totalSuccessfulBookings')) || 0;
+        if (currentCount > 0) {
+            localStorage.setItem('totalSuccessfulBookings', currentCount - 1);
+            updateCounterDisplay();
+        }
+
+        document.getElementById('pickup').value = '';
+        document.getElementById('dropoff').selectedIndex = 0;
+        document.getElementById('distanceKm').value = '1 KM';
+        document.getElementById('tripType').selectedIndex = 0;
+        document.getElementById('passengerCount').selectedIndex = 3;
+        calculateFare();
+        document.getElementById('driverSelect').selectedIndex = 0;
+        document.getElementById('passengerGpsStatus').className = "status-badge status-off";
+        document.getElementById('passengerGpsStatus').textContent = "❌ મુસાફરનું GPS બંધ છે";
+        document.getElementById('driverGpsStatus').className = "status-badge status-off";
+        document.getElementById('driverGpsStatus').textContent = "❌ ડ્રાઇવરનું લોકેશન ઓફ છે";
+        gpsActive = false;
+        driverLocationActive = false;
+        alert('બુકિંગ કેન્સલ કરી દેવામાં આવ્યું છે.');
+    }
+
+    window.onload = function() {
+        populateDropdown();
+        loadDrivers();
+        calculateFare();
+        updateCounterDisplay();
+    };
+</script>
+
+</body>
+</html>
